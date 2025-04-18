@@ -7,7 +7,7 @@ const Header: React.FC = () => {
     { href: "/", label: "Home" },
     { href: "/about", label: "About" },
     { href: "/services", label: "Services" },
-    { href: "/contact", label: "Contact" },
+    { href: "/contact", label: "Sign in" },
   ];
 
   return (
@@ -22,7 +22,7 @@ const Header: React.FC = () => {
             height={40}
             className="mr-2"
           />
-          <span className="text-xl font-semibold">MyApp</span>
+          <span className="text-xl text-black font-semibold">CodeConquest</span>
         </Link>
 
         {/* Navigation */}
