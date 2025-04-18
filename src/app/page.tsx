@@ -6,7 +6,7 @@ export default function Home() {
           Welcome to CodeConquest 🚀
         </h1>
         <p className="text-lg sm:text-xl text-zinc-600 dark:text-zinc-300">
-          A simple platform to help you improve your coding fundamentals through practice.
+          A simple platform to help you improve your coding fundamentals through interactive learning and practice.
         </p>
       </main>
 
