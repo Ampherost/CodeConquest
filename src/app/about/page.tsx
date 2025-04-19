@@ -8,7 +8,7 @@ export default function About() {
           </h1>
           <p className="text-lg sm:text-xl text-zinc-600 dark:text-zinc-300">
             CodeConquest is a simple, interactive platform designed to strengthen
-            your coding fundamentals through hands‑on exercises and instant feedback.
+            your coding fundamentals through in-depth guides, interactive exercises and instant feedback.
           </p>
           <p className="text-lg sm:text-xl text-zinc-600 dark:text-zinc-300">
             Our mission is to make learning to code engaging and accessible,

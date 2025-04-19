@@ -6,23 +6,23 @@ const Header: React.FC = () => {
   const links = [
     { href: "/", label: "Home" },
     { href: "/about", label: "About" },
-    { href: "/services", label: "Services" },
+    { href: "/services", label: "Modules" },
     { href: "/contact", label: "Sign in" },
   ];
 
   return (
     <header className="bg-white shadow-md">
-      <div className="container mx-auto px-6 py-4 flex items-center justify-between">
+      <div className="container mx-auto bg-amber-400 px-6 py-4 flex items-center justify-between">
         {/* Logo */}
         <Link href="/" className="flex items-center">
           <Image
             src={Logo}
             alt="Logo"
-            width={40}
-            height={40}
+            width={60}
+            height={60}
             className="mr-2"
           />
-          <span className="text-xl text-black font-semibold">CodeConquest</span>
+          <span className="text-2xl text-black font-semibold">CodeConquest</span>
         </Link>
 
         {/* Navigation */}
