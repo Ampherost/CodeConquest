@@ -10,9 +10,11 @@ const Header: React.FC = () => {
     { href: "/contact", label: "Sign in" },
   ];
 
+  // The modules and sign in pages do not exist yet
+
   return (
-    <header className=" bg-sky-500 shadow-md">
-      <div className="container mx-auto bg-amber-400 px-6 py-4 flex items-center justify-between">
+    <header className="bg-gradient-to-r from-zinc-800 to-zinc-950 shadow-md">
+      <div className="container mx-auto bg-zinc-900 px-6 py-4 flex items-center justify-between">
         {/* Logo */}
         <Link href="/" className="flex items-center">
           <Image
@@ -22,7 +24,7 @@ const Header: React.FC = () => {
             height={60}
             className="mr-2"
           />
-          <span className="text-2xl text-black font-semibold">CodeConquest</span>
+          <span className="text-2xl text-white font-semibold">CodeConquest</span>
         </Link>
 
         {/* Navigation */}
@@ -31,7 +33,7 @@ const Header: React.FC = () => {
             <Link
               key={link.href}
               href={link.href}
-              className="text-gray-700 hover:text-blue-600 transition"
+              className="text-white hover:text-blue-600 transition"
             >
               {link.label}
             </Link>
