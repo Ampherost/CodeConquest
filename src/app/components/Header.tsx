@@ -1,6 +1,5 @@
 import Link from "next/link";
 import Image from "next/image";
-import Logo from "@/app/assets/LogoTwo.png";
 
 const Header: React.FC = () => {
   const links = [
@@ -18,7 +17,7 @@ const Header: React.FC = () => {
         {/* Logo */}
         <Link href="/" className="flex items-center">
           <Image
-            src={Logo}
+            src="/assets/CodeConquestLogo.png"
             alt="Logo"
             width={60}
             height={60}
