@@ -5,14 +5,14 @@ const Header: React.FC = () => {
   const links = [
     { href: "/", label: "Home" },
     { href: "/about", label: "About" },
-    { href: "/services", label: "Modules" },
+    { href: "/modules", label: "Modules" },
     { href: "/contact", label: "Sign in" },
   ];
 
   // The modules and sign in pages do not exist yet
 
   return (
-    <header className="bg-gradient-to-r from-zinc-800 to-zinc-950 shadow-md">
+    <header className="bg-zinc-900 shadow-md">
       <div className="container mx-auto bg-zinc-900 px-6 py-4 flex items-center justify-between">
         {/* Logo */}
         <Link href="/" className="flex items-center">
