@@ -9,7 +9,7 @@ const Header: React.FC = () => {
     { href: "/contact", label: "Sign in" },
   ];
 
-  // The modules and sign in pages do not exist yet
+  // The sign in page does not exist yet
 
   return (
     <header className="bg-zinc-900 shadow-md">
