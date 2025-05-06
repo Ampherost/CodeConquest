@@ -11,7 +11,6 @@ const passwordRequirements = z.string()
 export const businessSchema = z.object({
   business_name: z.string().min(5, "Business name is required"),
   business_email: z.string().email("Invalid business email"),
-  position_title: z.string().min(5, "Position title is required"),
   password: passwordRequirements,
   confirm_password: z.string(),
 }).superRefine((data, ctx) => {
