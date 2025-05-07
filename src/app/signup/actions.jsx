@@ -88,7 +88,6 @@ export async function handleSubmit(state, formData, userType) {
             user_id: userId,
             first_name: payload.first_name,
             last_name: payload.last_name,
-            email: payload.email,
           };
 
     const tableName =
@@ -110,7 +109,8 @@ export async function handleSubmit(state, formData, userType) {
       success: true,
       message: "Signup successful!",
     };
-  } catch (error) {
+  } 
+  catch (error) {
     console.error("Error during signup:", error);
     return {
       success: false,

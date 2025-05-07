@@ -25,11 +25,10 @@ export async function updateSession(request: NextRequest) {
     }
   );
 
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const  { data: { user }, } = await supabase.auth.getUser();
 
-  const publicPaths = [
+  const publicPaths = 
+  [
     '/login',
     '/signup',
     '/about',
@@ -40,14 +39,16 @@ export async function updateSession(request: NextRequest) {
     publicPaths.some((path) => request.nextUrl.pathname.startsWith(path)) ||
     /^\/blog\/[^\/]+$/.test(request.nextUrl.pathname);
 
-  if (!user && !isPublicRoute) {
+  if (!user && !isPublicRoute) 
+  {
     const url = request.nextUrl.clone();
     url.pathname = '/login';
     return NextResponse.redirect(url);
   }
 
   // If user is logged in, check role
-  if (user) {
+  if (user) 
+    {
     const { data: userData, error } = await supabase
       .from('users')
       .select('role')

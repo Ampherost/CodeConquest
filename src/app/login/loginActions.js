@@ -1,43 +1,65 @@
 'use server';
 
-import { createClient } from '@/utils/supabase/server'
+import { createClient } from '@/utils/supabase/server';
 import { handleError } from '@/app/signup/lib/utility';
 import { redirect } from 'next/navigation';
 
-export async function HandleSignIn(state, formData) {
+export async function HandleSignIn(state, formData) 
+{
   const payload = {
     email: formData.get('email') || '',
-    password: formData.get('password') || ''
+    password: formData.get('password') || '',
   };
 
   try {
     const client = await createClient();
-    const { error } = await client.auth.signInWithPassword(payload);
+    const { error: signInError } = await client.auth.signInWithPassword(payload);
 
-    if (error) {
+    if (signInError) {
       return {
         success: false,
         error: {
-          message: error.message,
-          status: error.status || 500,
+          message: signInError.message,
+          status: signInError.status || 500,
         },
       };
     }
 
-    // For local development, use a relative URL for redirection
-    // This will trigger a redirect only on the server-side render
-     // Use a relative path instead of full URL for client-side rendering
+    const {
+      data: { user },
+    } = await client.auth.getUser();
 
-    // If you need to handle the redirect in the server, consider adding a custom response like res.writeHead(302, { Location: '/dashboard' })
-  } catch (error) {
+    if (!user) {
+      return {
+        success: false,
+        error: {
+          message: 'User not found after sign in.',
+          status: 401,
+        },
+      };
+    }
+
+    const { data: userData, error: roleError } = await client
+      .from('users')
+      .select('role')
+      .eq('user_id', user.id)
+      .single();
+
+    if (roleError || !userData?.role) {
+      return redirect('/unauthorized');
+    }
+
+    //Redirect to role-specific dashboard
+    return redirect(`/${userData.role}/dashboard`);
+  } 
+  catch (err) 
+  {
     return {
       success: false,
       error: {
-        message: handleError(error),
+        message: handleError(err),
         status: 500,
       },
     };
   }
-
-  redirect('/dashboard');
 }
