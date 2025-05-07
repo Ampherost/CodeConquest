@@ -33,6 +33,8 @@ export async function updateSession(request: NextRequest) {
     '/signup',
     '/about',
     '/',
+    '/modules',
+    '/components',
   ];
 
   const isPublicRoute =
