@@ -22,6 +22,6 @@
       "@/*": ["./src/*"]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "src/app/signup/page.jsx"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "src/app/signup/page.jsx", "src/app/signup/lib/utility.js", "src/app/middleware.js", "util/supabase/server.js", "src/lib/supabase/server.js", "src/app/login/page.jsx", "src/app/dashboard/page.tsx", "src/app/signup/lib/enums.js", "src/app/signup/user.js", "src/app/signup/actions.jsx", "src/app/signup/lib/userType.js", "src/app/business/dashboard/page.jsx"],
   "exclude": ["node_modules"]
 }
