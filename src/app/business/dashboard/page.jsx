@@ -14,3 +14,5 @@ export default async function PrivatePage()
 
   return (<p>Business Profile: {data.user.email}</p>)
 }
+
+
