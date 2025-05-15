@@ -1,5 +1,6 @@
 // src/app/about/page.tsx
 import Header from '@/app/components/Header';
+import Footer from "@/app/components/Footer";
 
 export default function About() {
   return (
@@ -41,9 +42,7 @@ export default function About() {
       </div>
 
       {/* Footer */}
-      <footer className="py-6 text-center text-sm text-zinc-500 dark:text-zinc-400">
-        Made with ❤️ using Next.js & Tailwind CSS
-      </footer>
+      <Footer />
     </div>
   );
 }

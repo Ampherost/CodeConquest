@@ -1,4 +1,5 @@
 import Header from "@/app/components/Header";
+import Footer from "@/app/components/Footer";
 
 export default function Home() {
   return (
@@ -19,9 +20,7 @@ export default function Home() {
       </main>
 
       {/* Footer */}
-      <footer className="text-sm text-zinc-500 dark:text-zinc-400 text-center mb-8">
-        <p>Made with ❤️ using Next.js & Tailwind CSS</p>
-      </footer>
+      <Footer />
     </div>
   );
 }

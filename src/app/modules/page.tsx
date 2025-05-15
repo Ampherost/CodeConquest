@@ -1,5 +1,6 @@
 import Link from "next/link";
 import Header from "@/app/components/Header";
+import Footer from "@/app/components/Footer";
 
 const modules = [
   {
@@ -21,12 +22,12 @@ const modules = [
 
 export default function ModulesPage() {
   return (
-    <div className="min-h-screen bg-white dark:bg-zinc-900 text-zinc-900 dark:text-zinc-100">
+    <div className="flex flex-col min-h-screen bg-white dark:bg-zinc-900 text-zinc-900 dark:text-zinc-100">
       {/* Header */}
       <Header />
 
       {/* Page Content */}
-      <main className="p-6 sm:p-10">
+      <main className="flex-grow p-6 sm:p-10">
         <h1 className="text-3xl sm:text-4xl font-bold mb-8">📚 Learning Modules</h1>
 
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
@@ -42,7 +43,11 @@ export default function ModulesPage() {
           ))}
         </div>
       </main>
+
+      {/* Footer */}
+      <Footer />
     </div>
   );
 }
+
 
