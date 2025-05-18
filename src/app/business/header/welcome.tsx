@@ -1,8 +1,8 @@
 const welcome = () => {
   return (
     <div>
-      <h1 className="font-light text-light ">Welcome to</h1>
-      <h3 className="font-light ">DashBoard</h3>
+      <h1 className="  text-gray ">Welcome to</h1>
+      <h3 className="text-lg font-bold  ">DashBoard</h3>
     </div>
   );
 };
