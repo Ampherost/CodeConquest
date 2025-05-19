@@ -1,13 +1,8 @@
-// /api/invitation/accept?code=1234
-
-
 import { createClient } from '@/utils/supabase/server'
-
 import { NextRequest, NextResponse } from 'next/server'
 
-export async function GET(request: NextRequest) {
-  const { searchParams } = new URL(request.url)
-  const code = searchParams.get('code')
+export async function POST(request: NextRequest) {
+  const { code } = await request.json()
 
   if (!code) {
     return NextResponse.json({ error: 'Code parameter is required.' }, { status: 400 })
@@ -48,15 +43,15 @@ export async function GET(request: NextRequest) {
   const { error: insertError } = await supabase.from('invitations').insert([
     {
       business_user_id: inviteData.business_user_id,
-      candidate_user_id: inviteData.user,
-      notes: inviteData.notes,
+      candidate_user_id: user.id, 
       position: inviteData.position,
     },
   ])
 
   if (insertError) {
+    console.error('Insert error:', insertError)
     return NextResponse.json({ error: 'Failed to create invitation.' }, { status: 500 })
   }
 
-  return NextResponse.json({ user_id: inviteData.user_id })
+  return NextResponse.json({ user_id: user.id })
 }
