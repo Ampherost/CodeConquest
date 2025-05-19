@@ -4,10 +4,12 @@ import LogoComponent from "./header/logoComponent";
 import Notifications from "./header/notification";
 import Signout from "./header/signOut";
 import Profile from "./header/userProfile";
+import CurrentApplicants from "./applicantsSection/currentApplicants";
+import PendingApplicants from "./applicantsSection/pendingApplicants";
 const Component = () => {
   return (
     //main page
-    <div className="bg-black">
+    <div className="bg-zinc-900 min-h-screen">
       <div
         id="header"
         className="flex flex-row justify-between items-start w-full
@@ -22,6 +24,15 @@ const Component = () => {
           <Notifications />
           <Invitation />
           <Signout />
+        </div>
+      </div>
+
+      <div id="main" className="space-y-5">
+        <div id="Current Applicants" className="flex flex-row p-7">
+          <CurrentApplicants />
+        </div>
+        <div id="Pending Applicatns" className="flex flex-row p-7">
+          <PendingApplicants />
         </div>
       </div>
     </div>
