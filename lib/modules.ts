@@ -1,25 +1,42 @@
 // lib/modules.ts
+export interface ChapterMeta { id: string; title: string }
+
+// This contains all the variables defining a module
 export interface Module {
   id: string
   title: string
   description: string
+  chapters: ChapterMeta[]
 }
 
+// This is essemtially an array of modules filled with our information
 export const modules: Module[] = [
   {
     id: "software-engineering",
     title: "Software Engineering",
     description: "An intro to software engineering",
+    chapters: [
+      { id: "design-principles", title: "Design Principles" },
+      { id: "testing-strategies", title: "Testing Strategies" },
+    ],
   },
   {
     id: "compilers",
     title: "Compilers",
     description: "An intro to compilers",
+    chapters: [
+      { id: "lexical-analyzers", title: "Lexical Analysis" },
+      { id: "parsing-segments", title: "Parsing Analysis" },
+    ],
   },
   {
     id: "web-development",
     title: "Web Development",
     description: "An intro to web development",
+    chapters: [
+      { id: "html-basics", title: "HTML basics" },
+      { id: "css-basics", title: "CSS basics" },
+    ],
   },
 ]
 
