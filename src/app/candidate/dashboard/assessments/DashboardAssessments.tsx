@@ -51,7 +51,7 @@ const DashboardAssessments: React.FC<Props> = ({ userEmail }) => {
 
             {/* Tabs */}
             <nav className="flex gap-12 items-end pb-1">
-              <TabLink href="/candidate/dashboard/current" label="Current" pathname={pathname} />
+              <TabLink href="/candidate/dashboard" label="Current" pathname={pathname} />
               <TabLink href="/candidate/dashboard/learning" label="Learning" pathname={pathname} />
               <TabLink href="/candidate/dashboard/assessments" label="Assessments" pathname={pathname} />
             </nav>

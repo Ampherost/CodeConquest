@@ -1,5 +1,5 @@
 import { createClient } from '@/utils/supabase/server';
-import DashboardCurrent from '../current/DashboardCurrent';
+import DashboardCurrent from './DashboardCurrent';
 
 export default async function Page() {
   const supabase = await createClient(); // ← await NOT needed if this isn't async
