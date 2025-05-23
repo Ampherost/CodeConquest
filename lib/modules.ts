@@ -9,7 +9,7 @@ export interface Module {
   chapters: ChapterMeta[]
 }
 
-// This is essemtially an array of modules filled with our information
+// This is essentially an array of modules filled with our information
 export const modules: Module[] = [
   {
     id: "software-engineering",

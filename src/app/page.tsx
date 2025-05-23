@@ -13,7 +13,7 @@ export default function Home() {
           <h1 className="text-4xl font-bold sm:text-5xl tracking-tight">
             Welcome to{" "}
             <span className="bg-gradient-to-r from-blue-400 to-pink-400 bg-clip-text text-transparent">
-              CodeConquest!
+              CodeConquest
             </span>
           </h1>
           <p className="text-lg sm:text-xl text-zinc-600 dark:text-zinc-300">
