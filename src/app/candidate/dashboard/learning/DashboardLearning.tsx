@@ -21,9 +21,9 @@ import { useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import ProfilePanel from './profilePanel/ProfilePanel';
-import NotificationPanel from './notificationPanel/NotificationPanel';
-import ModuleCard from '../../components/ModuleCard'; 
+import ProfilePanel from '../profilePanel/ProfilePanel';
+import InvitationPanel from '../notificationPanel/InvitationPanel';
+import ModuleCard from '../../../components/ModuleCard'; 
 
 const modules = [
   {
@@ -32,6 +32,7 @@ const modules = [
     courses: 6,
     practices: 192,
     image: '/assets/software-engineer.png',
+    slug: 'software-engineering'
   },
   {
     title: 'Compilers',
@@ -39,13 +40,7 @@ const modules = [
     courses: 5,
     practices: 87,
     image: '/assets/compiler.png',
-  },
-  {
-    title: 'Web Development',
-    level: 'Intermediate',
-    courses: 3,
-    practices: 63,
-    image: '/assets/web-dev.png',
+    slug: 'compilers'
   },
 ];
 
@@ -53,11 +48,10 @@ interface Props {
   userEmail: string | null;
 }
 
-const DashboardUI: React.FC<Props> = ({ userEmail }) => {
+const DashboardLearning: React.FC<Props> = ({ userEmail }) => {
   const pathname = usePathname();
   const [isProfileOpen, setProfileOpen] = useState(false);
-  const [isNotificationsOpen, setNotificationsOpen] = useState(false);
-  const notificationCount = 2; // SOON TO EDIT FOR PRATICAL USE
+  const [isInviteOpen, setInviteOpen] = useState(false);
 
   return (
     <div className="min-h-screen bg-white dark:bg-zinc-900 text-zinc-900 dark:text-zinc-100">
@@ -74,7 +68,7 @@ const DashboardUI: React.FC<Props> = ({ userEmail }) => {
 
             {/* Tabs */}
             <nav className="flex gap-12 items-end pb-1">
-              <TabLink href="/candidate/dashboard" label="Current" pathname={pathname} />
+              <TabLink href="/candidate/dashboard/current" label="Current" pathname={pathname} />
               <TabLink href="/candidate/dashboard/learning" label="Learning" pathname={pathname} />
               <TabLink href="/candidate/dashboard/assessments" label="Assessments" pathname={pathname} />
             </nav>
@@ -103,8 +97,8 @@ const DashboardUI: React.FC<Props> = ({ userEmail }) => {
               <span>Profile</span>
             </div>
 
-            {/* Bell */}
-            <button onClick={() => setNotificationsOpen(true)} className="relative hover:opacity-80 cursor-pointer">
+            {/* Mail Icon */}
+            <button onClick={() => setInviteOpen(true)} className="relative hover:opacity-80 cursor-pointer">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 className="h-5 w-5"
@@ -116,15 +110,9 @@ const DashboardUI: React.FC<Props> = ({ userEmail }) => {
                 <path
                   strokeLinecap="round"
                   strokeLinejoin="round"
-                  d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"
+                  d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
                 />
               </svg>
-              {/* 🔴 Badge */}
-              {notificationCount > 0 && (
-                <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs font-bold rounded-full h-4 w-4 flex items-center justify-center">
-                  {notificationCount}
-                </span>
-              )}
             </button>
 
             {/* Sign Out */}
@@ -139,17 +127,19 @@ const DashboardUI: React.FC<Props> = ({ userEmail }) => {
         <h1 className="text-xl text-white">Welcome to your dashboard!</h1>
         {/* Your dashboard cards and components go here */}
         <section className="mt-8">
-          <h2 className="text-lg font-semibold text-white mb-2">Your Learning Modules</h2>
+          <h2 className="text-lg font-semibold text-white mb-2">Suggested learning Modules</h2>
           <div className="overflow-x-auto">
             <div className="flex gap-6 px-1 py-3 w-max">
               {modules.map((mod, i) => (
-                <ModuleCard key={i} {...mod} />
+                <Link href={`/modules/${mod.slug}`} key={i}>
+                  <ModuleCard {...mod} />
+                </Link>
               ))}
             </div>
           </div>
         </section>
       </main>
-      <NotificationPanel open={isNotificationsOpen} onClose={() => setNotificationsOpen(false)} />
+      <InvitationPanel open={isInviteOpen} onClose={() => setInviteOpen(false)} />
       <ProfilePanel open={isProfileOpen} onClose={() => setProfileOpen(false)} userEmail={userEmail} />
     </div>
   );
@@ -171,4 +161,4 @@ const TabLink: React.FC<{ href: string; label: string; pathname: string }> = ({ 
   );
 };
 
-export default DashboardUI; 
+export default DashboardLearning; 

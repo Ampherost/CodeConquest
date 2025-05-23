@@ -1,5 +1,5 @@
 import { createClient } from '@/utils/supabase/server';
-import DashboardUI from './DashboardUI';
+import DashboardAssessments from '../assessments/DashboardAssessments';
 
 export default async function Page() {
   const supabase = await createClient(); // ← await NOT needed if this isn't async
@@ -10,5 +10,5 @@ export default async function Page() {
   // Ensure we pass null (not undefined)
   const email = user?.email ?? null;
 
-  return <DashboardUI userEmail={email} />;
+  return <DashboardAssessments userEmail={email} />;
 }
