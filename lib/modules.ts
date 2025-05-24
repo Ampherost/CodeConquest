@@ -14,7 +14,7 @@ export const modules: Module[] = [
   {
     id: "software-engineering",
     title: "Software Engineering",
-    description: "An intro to software engineering ptinciples and practices",
+    description: "An intro to software engineering principles and practices",
     chapters: [
       { id: "design-principles", title: "Design Principles" },
       { id: "testing-strategies", title: "Testing Strategies" },
