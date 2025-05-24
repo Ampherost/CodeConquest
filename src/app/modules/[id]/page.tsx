@@ -19,31 +19,29 @@ export default async function ModulePage({
   if (!mod) notFound()
 
   return (
-    <div className="flex h-screen bg-white dark:bg-zinc-900 text-zinc-900 dark:text-zinc-100">
-      {/* Sidebar */}
-      <aside className="w-64 p-4 border-r border-zinc-200 dark:border-zinc-700">
-        <ChapterList
-          basePath={`/modules/${mod.id}/chapter`}
-          chapters={mod.chapters}
-        />
-      </aside>
+    <div className="flex flex-col min-h-screen bg-white dark:bg-zinc-900 text-zinc-900 dark:text-zinc-100">
+      <Header />
 
-      {/* Main content */}
-      <main className="flex-1 flex flex-col">
-        <Header />
+      <main className="flex-1 p-6 sm:p-10">
+        <h1 className="text-3xl sm:text-4xl font-bold mb-4">
+          Welcome to {mod.title}!
+        </h1>
+        <p className="mb-8 text-zinc-700 dark:text-zinc-300">
+          {mod.description}
+        </p>
+        <p className="mb-4">Select a chapter from the list below to get started.</p>
 
-        <section className="flex-grow p-6 sm:p-10">
-          <h1 className="text-3xl sm:text-4xl font-bold mb-4">
-            Welcome to {mod.title}!
-          </h1>
-          <p className="mb-8 text-zinc-700 dark:text-zinc-300">
-            {mod.description}
-          </p>
-          <p>Select a chapter from the list on the left to get started.</p>
+        {/* ← ChapterList moved in here */}
+        <section className="mt-6">
+          <h2 className="text-2xl font-semibold mb-4">Chapters</h2>
+          <ChapterList
+            basePath={`/modules/${mod.id}/chapter`}
+            chapters={mod.chapters}
+          />
         </section>
-
-        <Footer />
       </main>
+
+      <Footer />
     </div>
   )
 }
