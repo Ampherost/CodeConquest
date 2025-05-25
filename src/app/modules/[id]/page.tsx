@@ -35,7 +35,7 @@ export default async function ModulePage({
         <section className="mt-6">
           <h2 className="text-2xl font-semibold mb-4">Chapters</h2>
           <ChapterList
-            basePath={`/modules/${mod.id}/chapter`}
+            basePath={`/modules/${mod.id}`}
             chapters={mod.chapters}
           />
         </section>
