@@ -16,9 +16,13 @@ export const modules: Module[] = [
     title: "Software Engineering",
     description: "An intro to software engineering principles and practices",
     chapters: [
-      { id: "design-principles", title: "Design Principles" },
-      { id: "testing-strategies", title: "Testing Strategies" },
-    ],
+   { id: "intro-principles-process", title: "Introduction, Principles & Process" },
+   { id: "architecture-tools-testing", title: "Architecture, Tools & Testing" },
+   { id: "design-notations-patterns", title: "Notations & Patterns" },
+   { id: "testing-fundamentals", title: "Testing & Quality Assurance" },
+   { id: "testability-debugging", title: "Testability & Debugging" },
+   { id: "design-management", title: "Design Fundamentals & Management" },
+]
   },
   {
     id: "compilers",

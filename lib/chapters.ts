@@ -31,7 +31,7 @@ export const chaptersByModule: Record<string, ChapterContent[]> = {
   "software-engineering": [
     {
       moduleId: "software-engineering",
-      slug: "design-principles",
+      slug: "intro-principles-process",
       title: "Design Principles",
       guide: `
 # SOLID Principles
@@ -59,7 +59,7 @@ Each principle helps keep your code maintainable, testable, and flexible.
     },
     {
       moduleId: "software-engineering",
-      slug: "testing-strategies",
+      slug: "architecture-tools-testing",
       title: "Testing Strategies",
       guide: `
 # Testing Strategies
