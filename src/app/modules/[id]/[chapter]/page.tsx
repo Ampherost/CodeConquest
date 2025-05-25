@@ -45,6 +45,10 @@ export default async function ChapterPage({
       <article className="prose dark:prose-invert mx-auto flex-grow p-6 sm:p-10">
         <h1>{content.title}</h1>
 
+        <p className="mt-6 whitespace-pre-wrap">
+        {content.guide}
+       </p>
+
         {content.quiz.length > 0 && (
           <section className="mt-12">
             <h2>Quiz</h2>

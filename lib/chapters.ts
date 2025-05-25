@@ -76,6 +76,38 @@ Unit tests, integration tests, end-to-end tests—each covers a different slice 
     },
   ],
 
+  // 👇 Added the missing "compilers" entries
+  "compilers": [
+    {
+      moduleId: "compilers",
+      slug: "lexical-analyzers",
+      title: "Lexical Analysis",
+      guide: `
+# Lexical Analysis
+
+How source code is broken into tokens by the lexer.
+      `.trim(),
+      quiz: [
+        {
+          question: "Which component breaks input text into tokens?",
+          options: ["Parser", "Lexer", "Optimizer"],
+          answer: "Lexer",
+        },
+      ],
+    },
+    {
+      moduleId: "compilers",
+      slug: "parsing-segments",
+      title: "Parsing Analysis",
+      guide: `
+# Parsing
+
+Building parse trees and abstract syntax trees (ASTs).
+      `.trim(),
+      quiz: [],
+    },
+  ],
+
   "web-development": [
     {
       moduleId: "web-development",
@@ -96,7 +128,7 @@ Learn how to structure a webpage with headings, paragraphs, links, images, and l
     },
     {
       moduleId: "web-development",
-      slug: "css-fundamentals",
+      slug: "css-basics",
       title: "CSS Fundamentals",
       guide: `
 # CSS Fundamentals
