@@ -76,7 +76,7 @@ Unit tests, integration tests, end-to-end tests—each covers a different slice 
     },
   ],
 
-  // 👇 Added the missing "compilers" entries
+  // Added the missing "compilers" entries
   "compilers": [
     {
       moduleId: "compilers",

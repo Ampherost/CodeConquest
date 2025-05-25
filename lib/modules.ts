@@ -31,6 +31,9 @@ export const modules: Module[] = [
     chapters: [
       { id: "lexical-analyzers", title: "Lexical Analysis" },
       { id: "parsing-segments", title: "Parsing Analysis" },
+      { id: "code-generation", title: "Code Generation" },
+      { id: "code-optimization", title: "Code Optimization" },
+
     ],
   },
   {
@@ -40,6 +43,10 @@ export const modules: Module[] = [
     chapters: [
       { id: "html-basics", title: "HTML basics" },
       { id: "css-basics", title: "CSS basics" },
+      { id: "javascript-basics", title: "JavaScript Basics" },
+      { id: "react-intro", title: "React" },
+      { id: "nextjs-intro", title: "Next.js" },
+      { id: "tailwindcss-intro", title: "Tailwind CSS" }
     ],
   },
 ]
