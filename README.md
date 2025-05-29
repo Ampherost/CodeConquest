@@ -31,7 +31,7 @@ Built using [Next.js](https://nextjs.org), [Tailwind CSS](https://tailwindcss.co
 
 ```bash
 git clone https://github.com/Ampherost/CodeConquest.git
-cd codeboost
+cd codeconquest
 
 2. Using the Git Fork Client
 
@@ -50,6 +50,7 @@ run these commands to run the website locally
 
 npm install     # Install all dependencies
 npm run dev     # Start the local dev server
+nom run build   # Compiles the project
 
 then click on localhost:3000 to see the website
 

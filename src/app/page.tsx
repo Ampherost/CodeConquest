@@ -1,4 +1,5 @@
 import Header from "@/app/components/Header";
+import Footer from "@/app/components/Footer";
 
 export default function Home() {
   return (
@@ -10,7 +11,10 @@ export default function Home() {
       <main className="flex flex-col items-center justify-center flex-1 p-8 sm:p-32 text-center">
         <div className="flex flex-col gap-6 max-w-2xl">
           <h1 className="text-4xl font-bold sm:text-5xl tracking-tight">
-            Welcome to CodeConquest 🚀
+            Welcome to{" "}
+            <span className="bg-gradient-to-r from-blue-400 to-pink-400 bg-clip-text text-transparent">
+              CodeConquest
+            </span>
           </h1>
           <p className="text-lg sm:text-xl text-zinc-600 dark:text-zinc-300">
             A simple platform to help you improve your coding fundamentals through interactive learning and practice.
@@ -19,9 +23,7 @@ export default function Home() {
       </main>
 
       {/* Footer */}
-      <footer className="text-sm text-zinc-500 dark:text-zinc-400 text-center mb-8">
-        <p>Made with ❤️ using Next.js & Tailwind CSS</p>
-      </footer>
+      <Footer />
     </div>
   );
 }

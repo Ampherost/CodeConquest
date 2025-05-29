@@ -1,5 +1,6 @@
 // src/app/about/page.tsx
 import Header from '@/app/components/Header';
+import Footer from "@/app/components/Footer";
 
 export default function About() {
   return (
@@ -10,7 +11,11 @@ export default function About() {
       <div className="container mx-auto px-6 py-16 flex-1">
         {/* Hero section */}
         <section className="text-center max-w-3xl mx-auto mb-16">
-          <h1 className="text-5xl font-extrabold mb-4">About CodeConquest</h1>
+          <h1 className="text-5xl font-bold mb-4">About {" "}
+             <span className="bg-gradient-to-r from-blue-400 to-pink-400 bg-clip-text text-transparent">
+              CodeConquest
+            </span>
+          </h1>
           <p className="text-lg text-zinc-600 dark:text-zinc-300">
             CodeConquest is an interactive platform designed to strengthen
             your coding fundamentals through in‑depth guides, hands‑on exercises,
@@ -34,16 +39,14 @@ export default function About() {
               <li>Comprehensive, modular guides</li>
               <li>Interactive coding quizzes</li>
               <li>Instant, contextual feedback</li>
-              <li>Progress tracking and badges</li>
+              <li>Progress tracking, badges, and rankings (coming soon)</li>
             </ul>
           </div>
         </section>
       </div>
 
       {/* Footer */}
-      <footer className="py-6 text-center text-sm text-zinc-500 dark:text-zinc-400">
-        Made with ❤️ using Next.js & Tailwind CSS
-      </footer>
+      <Footer />
     </div>
   );
 }
