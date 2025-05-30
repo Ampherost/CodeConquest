@@ -144,10 +144,13 @@ Unit tests, integration tests, end-to-end tests—each covers a different slice 
     },
   ],
 
-  // Added the missing "compilers" entries
+
+
+
+  // Compilers Module
   "compilers": [
     {
-      moduleId: "compilers",
+      moduleId: "compilers",  // Chapter One
       slug: "lexical-analyzers",
       title: "Lexical Analysis",
       guide: `
@@ -164,7 +167,7 @@ How source code is broken into tokens by the lexer.
       ],
     },
     {
-      moduleId: "compilers",
+      moduleId: "compilers",  // Chapter Two
       slug: "parsing-segments",
       title: "Parsing Analysis",
       guide: `
@@ -174,8 +177,33 @@ Building parse trees and abstract syntax trees (ASTs).
       `.trim(),
       quiz: [],
     },
+      {
+      moduleId: "compilers",  // Chapter Three
+      slug: "code-generation",
+      title: "Cool Code Generation",
+      guide: `
+# Parsing
+
+Building parse trees and abstract syntax trees (ASTs).
+      `.trim(),
+      quiz: [],
+    },
+      {
+      moduleId: "compilers",  // Chapter Four
+      slug: "code-optimization",
+      title: "Cool Code Optimization",
+      guide: `
+# Parsing
+
+Building parse trees and abstract syntax trees (ASTs).
+      `.trim(),
+      quiz: [],
+    },
   ],
 
+
+
+  // Web dev module
   "web-development": [
     {
       moduleId: "web-development",
