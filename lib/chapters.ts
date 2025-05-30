@@ -28,9 +28,9 @@ export interface ChapterContent {
  * Keys here should match your modules[].id values.
  */
 export const chaptersByModule: Record<string, ChapterContent[]> = {
-  "software-engineering": [
+  "software-engineering": [ // Software engineering module
     {
-      moduleId: "software-engineering",
+      moduleId: "software-engineering",  // Chapter One
       slug: "intro-principles-process",
       title: "Design Principles",
       guide: `
@@ -58,9 +58,77 @@ Each principle helps keep your code maintainable, testable, and flexible.
       ],
     },
     {
-      moduleId: "software-engineering",
+      moduleId: "software-engineering",  // Chapter Two
       slug: "architecture-tools-testing",
       title: "Testing Strategies",
+      guide: `
+# Testing Strategies
+
+Unit tests, integration tests, end-to-end tests—each covers a different slice of your application.
+      `.trim(),
+      quiz: [
+        {
+          question: "What type of test covers the flow of your entire app in a browser?",
+          options: ["Unit Test", "Integration Test", "End-to-End Test"],
+          answer: "End-to-End Test",
+        },
+      ],
+    },
+     {
+      moduleId: "software-engineering",  // Chapter Three
+      slug: "design-notations-patterns",
+      title: "Notations & Patterns",
+      guide: `
+# Testing Strategies
+
+Unit tests, integration tests, end-to-end tests—each covers a different slice of your application.
+      `.trim(),
+      quiz: [
+        {
+          question: "What type of test covers the flow of your entire app in a browser?",
+          options: ["Unit Test", "Integration Test", "End-to-End Test"],
+          answer: "End-to-End Test",
+        },
+      ],
+    },
+     {
+      moduleId: "software-engineering", // Chapter Four
+      slug: "testing-fundamentals",
+      title: "Testing & Quality Assurance",
+      guide: `
+# Testing Strategies
+
+Unit tests, integration tests, end-to-end tests—each covers a different slice of your application.
+      `.trim(),
+      quiz: [
+        {
+          question: "What type of test covers the flow of your entire app in a browser?",
+          options: ["Unit Test", "Integration Test", "End-to-End Test"],
+          answer: "End-to-End Test",
+        },
+      ],
+    },
+     {
+      moduleId: "software-engineering",  // Chapter Five
+      slug: "testability-debugging",
+      title: "Testing & Debugging",
+      guide: `
+# Testing Strategies
+
+Unit tests, integration tests, end-to-end tests—each covers a different slice of your application.
+      `.trim(),
+      quiz: [
+        {
+          question: "What type of test covers the flow of your entire app in a browser?",
+          options: ["Unit Test", "Integration Test", "End-to-End Test"],
+          answer: "End-to-End Test",
+        },
+      ],
+    },
+     {
+      moduleId: "software-engineering",  // Chapter Six
+      slug: "design-management",
+      title: "Design Fundamentals & Management",
       guide: `
 # Testing Strategies
 
