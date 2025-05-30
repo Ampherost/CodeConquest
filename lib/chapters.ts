@@ -206,7 +206,7 @@ Building parse trees and abstract syntax trees (ASTs).
   // Web dev module
   "web-development": [
     {
-      moduleId: "web-development",
+      moduleId: "web-development",  // Chapter One
       slug: "html-basics",
       title: "HTML Basics",
       guide: `
@@ -223,9 +223,53 @@ Learn how to structure a webpage with headings, paragraphs, links, images, and l
       ],
     },
     {
-      moduleId: "web-development",
+      moduleId: "web-development",  // Chapter Two
       slug: "css-basics",
       title: "CSS Fundamentals",
+      guide: `
+# CSS Fundamentals
+
+Selectors, properties, values, the box model, and how to lay out elements with Flexbox and Grid.
+      `.trim(),
+      quiz: [],
+    },
+     {
+      moduleId: "web-development",  // Chapter Three
+      slug: "javascript-basics",
+      title: "Javascript Basics",
+      guide: `
+# CSS Fundamentals
+
+Selectors, properties, values, the box model, and how to lay out elements with Flexbox and Grid.
+      `.trim(),
+      quiz: [],
+    },
+     {
+      moduleId: "web-development",  // Chapter Four
+      slug: "react-intro",
+      title: "React",
+      guide: `
+# CSS Fundamentals
+
+Selectors, properties, values, the box model, and how to lay out elements with Flexbox and Grid.
+      `.trim(),
+      quiz: [],
+    },
+     {
+      moduleId: "web-development",  // Chapter Five
+      slug: "nextjs-intro",
+      title: "Next.js",
+      guide: `
+# CSS Fundamentals
+
+Selectors, properties, values, the box model, and how to lay out elements with Flexbox and Grid.
+      `.trim(),
+      quiz: [],
+    },
+     {
+      moduleId: "web-development",  // Chapter Six
+      slug: "tailwindcss-intro",
+      title: "Tailwind CSS",
       guide: `
 # CSS Fundamentals
 
