@@ -6,7 +6,7 @@ const Header: React.FC = () => {
     { href: "/", label: "Home" },
     { href: "/about", label: "About" },
     { href: "/modules", label: "Modules" },
-    { href: "/sign-in", label: "Sign in" },
+    { href: "/login", label: "Sign in" },
   ];
 
   // The sign in page does not exist yet
