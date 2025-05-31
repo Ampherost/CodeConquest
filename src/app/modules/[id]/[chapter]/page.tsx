@@ -5,6 +5,7 @@ import Footer from "@/app/components/Footer";
 import Container from "@/app/components/Container";
 import { modules, Module } from "../../../../../lib/modules";
 import { chaptersByModule, ChapterContent } from "../../../../../lib/chapters";
+import { markdownToHtml } from "../../../../../lib/markdown";
 
 type Params = { id: string; chapter: string };
 
@@ -35,6 +36,8 @@ export default async function ChapterPage({
     notFound();
   }
 
+   const html = await markdownToHtml(content.guide);
+
   return (
     <div className="flex flex-col min-h-screen bg-white dark:bg-zinc-900 text-zinc-900 dark:text-zinc-100">
       <Header />
@@ -43,9 +46,10 @@ export default async function ChapterPage({
       <div className="mx-auto flex-grow px-6 sm:px-10">
         <Container title={content.title}>
           {/* Guide text */}
-          <div className="prose dark:prose-invert">
-            <p className="whitespace-pre-wrap">{content.guide}</p>
-          </div>
+          <div
+            className="prose dark:prose-invert"
+            dangerouslySetInnerHTML={{ __html: html }}
+          />
 
           {/* Quiz, if any */}
           {content.quiz.length > 0 && (

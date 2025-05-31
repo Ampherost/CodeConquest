@@ -44,6 +44,8 @@ export const chaptersByModule: Record<string, ChapterContent[]> = {
 - **Shipping high-quality software**  
   Catch issues early through reviews, testing, and good engineering practices.
 
+
+
 ## What Is Software Engineering?
 > “Application of a systematic, disciplined, quantifiable approach to the development, operation, and maintenance of software.”  
 > — IEEE 1990 Standard
