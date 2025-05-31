@@ -6,7 +6,8 @@ import Timer from "../Timer";
 import confetti from "canvas-confetti";
 import ConfirmModal from "../ConfirmModal";
 
-async function submitQuiz({ assessmentID, quizID, answers }) {
+async function submitQuiz({ assessmentID, quizID, answers }) 
+{
   try {
     const response = await fetch("/api/submit-quiz", {
       method: "POST",

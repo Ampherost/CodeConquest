@@ -7,4 +7,6 @@ export default async function getAssignedQuizes(assessmentID)
     .from('assessment_quizzes')
     .select('quizzes(*),status') 
     .eq('assessment_id', assessmentID);
+
+    return { quizzes, error };
 }

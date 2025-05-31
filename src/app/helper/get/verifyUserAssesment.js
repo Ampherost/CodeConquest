@@ -9,7 +9,11 @@ export default async function verifyUserAssesment(userID, assessmentID)
         .eq('candidate_user_id', userID)
         .eq('assessment_id', assessmentID)
 
-    
+    if(error) 
+    {
+        console.error('Error fetching user assessment:', error);
+        return false;
+    }
 
     if(data === null) 
     {

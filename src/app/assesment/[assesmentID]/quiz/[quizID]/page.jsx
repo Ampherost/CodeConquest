@@ -17,17 +17,19 @@ export default async function functionQuizPage({ params })
   const supabase = await createClient();
   const { data, error } = await supabase.auth.getUser();
 
-  if (error || !data?.user) {
+  if (error || !data?.user) 
+  {
     console.error('Error fetching user:', error);
     redirect('/unauthorized');
   }
 
   const role = await getUserRolebyEmail(data.user.email);
   const userID = await getUserID(data.user.email);
-  const verifyUsertype = await isAssessmentLinked(userID, assesmentID);
+  const verifyUsertype = await isAssessmentLinked(userID, assesmentID, quizID);
   const isQuizCompleted = await verifyCompletion(assesmentID, quizID);
 
-  if (role !== 'candidate' || !verifyUsertype || isQuizCompleted) {
+  if (role !== 'candidate' || !verifyUsertype || isQuizCompleted) 
+  {
     console.error('Unauthorized access or user not linked to assessment');
     redirect('/unauthorized');
   }
