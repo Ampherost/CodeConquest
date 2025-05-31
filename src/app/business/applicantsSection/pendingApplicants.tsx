@@ -11,12 +11,12 @@ interface Candidate {
   last_name: string;
 }
 
-interface CurrentApplicantsProps {
+interface pendingApplicantsProps {
   businessUserId: string;
   onSelect?: (candidate: Candidate) => void;
 }
 
-const CurrentApplicants: React.FC<CurrentApplicantsProps> = ({
+const PendingApplicants: React.FC<pendingApplicantsProps> = ({
   businessUserId,
   onSelect,
 }) => {
@@ -95,4 +95,4 @@ const CurrentApplicants: React.FC<CurrentApplicantsProps> = ({
   );
 };
 
-export default CurrentApplicants;
+export default PendingApplicants;
