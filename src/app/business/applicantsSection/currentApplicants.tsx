@@ -33,7 +33,8 @@ const CurrentApplicants: React.FC<CurrentApplicantsProps> = ({
       const { data: invites, error: invitesError } = await supabase
         .from("invitations")
         .select("candidate_user_id")
-        .eq("business_user_id", businessUserId);
+        .eq("business_user_id", businessUserId)
+        .eq("status", "completed");
 
       if (invitesError) {
         console.error("Error fetching invitations:", invitesError);
