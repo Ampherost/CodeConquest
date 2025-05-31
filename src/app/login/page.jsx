@@ -1,13 +1,21 @@
 'use client';
-import { ToastContainer, toast } from 'react-toastify';
+
 import { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { ToastContainer, toast } from 'react-toastify';
 import { HandleSignIn } from '@/app/login/loginActions';
 import { useActionState } from 'react';
 
 export default function SignIn() {
-  const [isBusiness, setIsBusiness] = useState(false);
-  const [justReset, setJustReset] = useState(false);
+  const router = useRouter();
   const [state, formAction, isPending] = useActionState(HandleSignIn, null);
+
+  // Client-side redirect on success
+  useEffect(() => {
+    if (state?.success && state?.redirectTo) {
+      router.push(state.redirectTo);
+    }
+  }, [state, router]);
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-black-100 p-6">
@@ -40,7 +48,6 @@ export default function SignIn() {
           )}
         </div>
 
-        {/* Password Input */}
         <div className="flex flex-col space-y-1">
           <input
             type="password"
@@ -70,6 +77,7 @@ export default function SignIn() {
           {isPending ? 'Signing in...' : 'Sign In'}
         </button>
       </form>
+      <ToastContainer />
     </div>
   );
 }

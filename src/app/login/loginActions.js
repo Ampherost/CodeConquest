@@ -2,10 +2,8 @@
 
 import { createClient } from '@/utils/supabase/server';
 import { handleError } from '@/app/signup/lib/utility';
-import { redirect } from 'next/navigation';
 
-export async function HandleSignIn(state, formData) 
-{
+export async function HandleSignIn(state, formData) {
   const payload = {
     email: formData.get('email') || '',
     password: formData.get('password') || '',
@@ -46,14 +44,12 @@ export async function HandleSignIn(state, formData)
       .single();
 
     if (roleError || !userData?.role) {
-      return redirect('/unauthorized');
+      return { success: true, redirectTo: '/unauthorized' };
     }
 
-    //Redirect to role-specific dashboard
-    return redirect(`/${userData.role}/dashboard`);
-  } 
-  catch (err) 
-  {
+    return { success: true, redirectTo: `/${userData.role}/dashboard` };
+
+  } catch (err) {
     return {
       success: false,
       error: {
