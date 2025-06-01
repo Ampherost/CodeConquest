@@ -1,55 +1,52 @@
-'use client'
-import { useState } from 'react'
-import generateCode from '@/app/helper/generateCode'
+"use client";
+import { useState } from "react";
+import generateCode from "@/app/helper/generateCode";
 
 export default function InvitationForm({ employeerId }) {
   const [formData, setFormData] = useState({
-    email: '',
-    fullName: '',
-    position: '',
-    notes: '',
-  })
+    email: "",
+    fullName: "",
+    position: "",
+    notes: "",
+  });
 
-  const [submitted, setSubmitted] = useState(false)
+  const [submitted, setSubmitted] = useState(false);
 
-  const handleChange = (e) => 
-  {
-    const { name, value } = e.target
-    setFormData((prev) => ({ ...prev, [name]: value }))
-  }
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
 
-  const onSubmit = async (e) => 
-  {
-    e.preventDefault()
-    setSubmitted(true)
-    const inviteCode = generateCode()
+  const onSubmit = async (e) => {
+    e.preventDefault();
+    setSubmitted(true);
+    const inviteCode = generateCode();
 
     const payload = {
       invite_code: inviteCode,
       business_user_id: employeerId,
-      candidate_user_id: null,
       notes: formData.notes,
       position: formData.position,
-    }
+      email: formData.email,
+      full_name: formData.fullName,
+    };
 
-    const res = await fetch(`${process.env.NEXT_PUBLIC_SITE_URL}/api/invitation`, 
-    {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+    const res = await fetch("/api/invitation", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload),
-    })
+    });
 
-    if (!res.ok) 
-    {
-      const { error } = await res.json()
-      alert('Error creating invitation: ' + error)
-      setSubmitted(false)
-      return
+    if (!res.ok) {
+      const { error } = await res.json();
+      alert("Error creating invitation: " + error);
+      setSubmitted(false);
+      return;
     }
 
-    alert('Invitation created successfully!')
-    setSubmitted(false)
-  }
+    alert("Invitation created successfully!");
+    setSubmitted(false);
+  };
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-300 text-black">
@@ -102,19 +99,23 @@ export default function InvitationForm({ employeerId }) {
           </div>
 
           <div className="flex justify-between pt-2">
-            <button type="button" className="text-sm text-black">Cancel</button>
+            <button type="button" className="text-sm text-black">
+              Cancel
+            </button>
             <button
               type="submit"
               disabled={submitted}
               className={`px-4 py-2 rounded text-sm transition duration-200 ${
-                submitted ? 'bg-gray-500 text-white cursor-not-allowed' : 'bg-black text-white'
+                submitted
+                  ? "bg-gray-500 text-white cursor-not-allowed"
+                  : "bg-black text-white"
               }`}
             >
-              {submitted ? 'Sending...' : 'Send Invitation'}
+              {submitted ? "Sending..." : "Send Invitation"}
             </button>
           </div>
         </form>
       </div>
     </div>
-  )
+  );
 }
