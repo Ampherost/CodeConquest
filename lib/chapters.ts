@@ -166,11 +166,11 @@ A linear, document-driven approach with well-defined stages:
     {
       moduleId: "software-engineering",  // Chapter Two
       slug: "architecture-tools-testing",
-      title: "Testing Strategies",
+      title: "Architecture, Tools, and Testing",
       guide: `
-# Testing Strategies
+# Architecture, Tools, and Testing
 
-Cool stuff for testing strategies.
+Cool stuff for Architecture, Tools, and Testing.
       `.trim(),
       quiz: [
         {
@@ -288,7 +288,7 @@ Building parse trees and abstract syntax trees (ASTs).
       slug: "code-generation",
       title: "Cool Code Generation",
       guide: `
-# Parsing
+# Code Generation
 
 Building parse trees and abstract syntax trees (ASTs).
       `.trim(),
@@ -299,7 +299,7 @@ Building parse trees and abstract syntax trees (ASTs).
       slug: "code-optimization",
       title: "Cool Code Optimization",
       guide: `
-# Parsing
+# Code Optimization
 
 Building parse trees and abstract syntax trees (ASTs).
       `.trim(),
@@ -344,7 +344,7 @@ Selectors, properties, values, the box model, and how to lay out elements with F
       slug: "javascript-basics",
       title: "Javascript Basics",
       guide: `
-# CSS Fundamentals
+# Javascript Stuff
 
 Selectors, properties, values, the box model, and how to lay out elements with Flexbox and Grid.
       `.trim(),
@@ -355,7 +355,7 @@ Selectors, properties, values, the box model, and how to lay out elements with F
       slug: "react-intro",
       title: "React",
       guide: `
-# CSS Fundamentals
+# React Stuff
 
 Selectors, properties, values, the box model, and how to lay out elements with Flexbox and Grid.
       `.trim(),
@@ -366,7 +366,7 @@ Selectors, properties, values, the box model, and how to lay out elements with F
       slug: "nextjs-intro",
       title: "Next.js",
       guide: `
-# CSS Fundamentals
+# Next.js stuff
 
 Selectors, properties, values, the box model, and how to lay out elements with Flexbox and Grid.
       `.trim(),
@@ -377,7 +377,7 @@ Selectors, properties, values, the box model, and how to lay out elements with F
       slug: "tailwindcss-intro",
       title: "Tailwind CSS",
       guide: `
-# CSS Fundamentals
+# Tailwindcss stuff
 
 Selectors, properties, values, the box model, and how to lay out elements with Flexbox and Grid.
       `.trim(),
