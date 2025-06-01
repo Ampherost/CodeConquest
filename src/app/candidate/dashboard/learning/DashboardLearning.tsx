@@ -1,29 +1,15 @@
-// import { redirect } from 'next/navigation'
-// import { createClient } from '@/utils/supabase/server'
-
-// export default async function PrivatePage() 
-// {
-//   const supabase = await createClient()
-
-//   const { data, error } = await supabase.auth.getUser()
-
-//   if (error || !data?.user) 
-//   {
-//     redirect('/login')
-//   }
-
-//   return (<p>Candidate Profile: {data.user.email}</p>)
-// }
-
 'use client';
 
 import { useState } from 'react';
+import { useCallback } from 'react';
+import { createClient } from '@/utils/supabase/client'
 import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import ProfilePanel from '../profilePanel/ProfilePanel';
 import InvitationPanel from '../notificationPanel/InvitationPanel';
 import ModuleCard from '../../../components/ModuleCard'; 
+
 
 const modules = [
   {
@@ -42,16 +28,44 @@ const modules = [
     image: '/assets/compiler.png',
     slug: 'compilers'
   },
+  {
+    title: 'Web Development',
+    level: 'Intermediate',
+    courses: 3,
+    practices: 63,
+    image: '/assets/web-dev.png',
+    slug: 'web-development'
+  },
 ];
 
 interface Props {
   userEmail: string | null;
 }
 
+
+
+
 const DashboardLearning: React.FC<Props> = ({ userEmail }) => {
   const pathname = usePathname();
   const [isProfileOpen, setProfileOpen] = useState(false);
   const [isInviteOpen, setInviteOpen] = useState(false);
+  // const [pendingAssessments, setPendingAssessments] = useState<AssessmentInvite[]>([]);
+  // const [completedAssessments, setCompletedAssessments] = useState<AssessmentInvite[]>([]);
+
+  const fetchInvites = useCallback(async () => {
+      const supabase = createClient();
+      const { data: { user } } = await supabase.auth.getUser();
+  
+      if (!user) return;
+  
+      await supabase
+        .from('invitations')
+        .select('invitation_id, position, status, assessment_id')
+        .eq('candidate_user_id', user.id);
+  
+      // No state setting required here if you don't need the data
+    }, []);
+  
 
   return (
     <div className="min-h-screen bg-white dark:bg-zinc-900 text-zinc-900 dark:text-zinc-100">
@@ -139,7 +153,7 @@ const DashboardLearning: React.FC<Props> = ({ userEmail }) => {
           </div>
         </section>
       </main>
-      <InvitationPanel open={isInviteOpen} onClose={() => setInviteOpen(false)} />
+      <InvitationPanel open={isInviteOpen} onClose={() => setInviteOpen(false)} onAccepted={fetchInvites} />
       <ProfilePanel open={isProfileOpen} onClose={() => setProfileOpen(false)} userEmail={userEmail} />
     </div>
   );
