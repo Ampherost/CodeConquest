@@ -6,7 +6,7 @@ const Header: React.FC = () => {
     { href: "/", label: "Home" },
     { href: "/about", label: "About" },
     { href: "/modules", label: "Modules" },
-    { href: "/contact", label: "Sign in" },
+    { href: "/login", label: "Sign in" },
   ];
 
   // The sign in page does not exist yet
@@ -17,11 +17,11 @@ const Header: React.FC = () => {
         {/* Logo */}
         <Link href="/" className="flex items-center">
           <Image
-            src="/assets/CodeConquestLogo.png"
+            src="/assets/CCLogoTransparent.png"
             alt="Logo"
             width={60}
             height={60}
-            className="mr-2"
+            className=""
           />
           <span className="text-2xl text-white font-semibold">CodeConquest</span>
         </Link>
@@ -32,7 +32,7 @@ const Header: React.FC = () => {
             <Link
               key={link.href}
               href={link.href}
-              className="text-white hover:text-blue-600 transition"
+              className="text-white hover:text-blue-500 transition"
             >
               {link.label}
             </Link>
