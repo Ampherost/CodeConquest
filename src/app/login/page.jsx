@@ -1,13 +1,21 @@
-'use client';
-import { ToastContainer, toast } from 'react-toastify';
-import { useEffect, useState } from 'react';
-import { HandleSignIn } from '@/app/login/loginActions';
-import { useActionState } from 'react';
+"use client";
+
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { ToastContainer, toast } from "react-toastify";
+import { HandleSignIn } from "@/app/login/loginActions";
+import { useActionState } from "react";
 
 export default function SignIn() {
-  const [isBusiness, setIsBusiness] = useState(false);
-  const [justReset, setJustReset] = useState(false);
+  const router = useRouter();
   const [state, formAction, isPending] = useActionState(HandleSignIn, null);
+
+  // Client-side redirect on success
+  useEffect(() => {
+    if (state?.success && state?.redirectTo) {
+      router.push(state.redirectTo);
+    }
+  }, [state, router]);
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-black-100 p-6">
@@ -40,7 +48,6 @@ export default function SignIn() {
           )}
         </div>
 
-        {/* Password Input */}
         <div className="flex flex-col space-y-1">
           <input
             type="password"
@@ -67,9 +74,10 @@ export default function SignIn() {
           disabled={isPending}
           className="w-full py-3 bg-blue-600 text-white rounded-lg font-semibold disabled:bg-blue-300 transition-colors hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
         >
-          {isPending ? 'Signing in...' : 'Sign In'}
+          {isPending ? "Signing in..." : "Sign In"}
         </button>
       </form>
+      <ToastContainer />
     </div>
   );
 }
