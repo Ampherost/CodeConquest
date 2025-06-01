@@ -25,6 +25,16 @@ Built using [Next.js](https://nextjs.org), [Tailwind CSS](https://tailwindcss.co
 
 ---
 
+## 🧪 Testing
+
+Our Testing Methodology will consist of manual testing, unit testing, and integration testing, our
+Technology framework will consist of the following:
+
+- [Jest](https://jestjs.io/) — JavaScript testing framework used for running and organizing tests
+- [React Testing Library](https://testing-library.com/docs/react-testing-library/intro/) — Tests UI components based on how users interact with them
+
+---
+
 ## 🧰 Getting Started
 
 ### 1. Clone the Repository
