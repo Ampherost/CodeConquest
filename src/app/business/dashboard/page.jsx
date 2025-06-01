@@ -54,11 +54,12 @@ const Page = () => {
       </div>
 
       <div id="main" className="space-y-5">
-        <div id="Current Applicants" className="flex flex-row p-7">
-          <CurrentApplicants />
+         <div id="Current Applicants" className="flex flex-row p-7">
+          <CurrentApplicants businessUserId={user.id} />
         </div>
         <div id="Pending Applicatns" className="flex flex-row p-7">
-          <PendingApplicants />
+          <PendingApplicants businessUserId={user.id} />
+        </div>
         </div>
       </div>
     </div>
