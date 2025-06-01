@@ -28,6 +28,14 @@ const modules = [
     image: '/assets/compiler.png',
     slug: 'compilers'
   },
+  {
+    title: 'Web Development',
+    level: 'Intermediate',
+    courses: 3,
+    practices: 63,
+    image: '/assets/web-dev.png',
+    slug: 'web-development'
+  },
 ];
 
 interface Props {
