@@ -3,7 +3,6 @@ import { useRouter } from "next/navigation";
 
 import { createClient } from "@/utils/supabase/client";
 
-
 import { useState, useEffect } from "react";
 
 import Welcome from "../header/welcome";
@@ -48,17 +47,17 @@ const Page = () => {
         <div className="flex flex-row items-center space-x-4">
           <Profile />
           <Notifications />
-          <Invitation />
+          <Invitation business_user_id={user.id} />
           <Signout />
         </div>
       </div>
 
       <div id="main" className="space-y-5">
         <div id="Current Applicants" className="flex flex-row p-7">
-          <CurrentApplicants />
+          <CurrentApplicants businessUserId={user.id} />
         </div>
         <div id="Pending Applicatns" className="flex flex-row p-7">
-          <PendingApplicants />
+          <PendingApplicants businessUserId={user.id} />
         </div>
       </div>
     </div>
@@ -66,5 +65,3 @@ const Page = () => {
 };
 
 export default Page;
-
-  

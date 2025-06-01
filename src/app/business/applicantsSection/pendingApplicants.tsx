@@ -7,8 +7,11 @@ const supabase = createClient();
 
 interface Candidate {
   user_id: string;
-  first_name: string;
-  last_name: string;
+  full_name: string;
+  email: string;
+  position?: string;
+  notes?: string;
+  invite_code?: string;
 }
 
 interface pendingApplicantsProps {
@@ -31,10 +34,11 @@ const PendingApplicants: React.FC<pendingApplicantsProps> = ({
 
       // 1. All invitations for this business user
       const { data: invites, error: invitesError } = await supabase
-        .from("invitations")
-        .select("candidate_user_id")
+        .from("invitation_codes")
+        .select("full_name")
         .eq("business_user_id", businessUserId)
         .eq("status", "pending");
+
       if (invitesError) {
         console.error(
           "Error fetching invitations:",
@@ -44,10 +48,10 @@ const PendingApplicants: React.FC<pendingApplicantsProps> = ({
         return;
       }
 
-      const candidateIds =
-        (invites?.map((row) => row.candidate_user_id) as string[]) || [];
+      const candidateName =
+        (invites?.map((row) => row.full_name) as string[]) || [];
 
-      if (candidateIds.length === 0) {
+      if (candidateName.length === 0) {
         setCandidates([]);
         setLoading(false);
         return;
@@ -55,9 +59,8 @@ const PendingApplicants: React.FC<pendingApplicantsProps> = ({
 
       // 2. Fetch candidate names
       const { data: candRows, error: candError } = await supabase
-        .from("candidate_users")
-        .select("user_id, first_name, last_name")
-        .in("user_id", candidateIds);
+        .from("invitation_codes")
+        .select("invite_code, full_name, email, position, notes");
 
       if (candError) {
         console.error("Error fetching candidate users:", candError);
@@ -83,12 +86,12 @@ const PendingApplicants: React.FC<pendingApplicantsProps> = ({
 
       <ul id="applicants" className="space-y-2">
         {candidates.map((c) => (
-          <li key={c.user_id}>
+          <li key={c.invite_code}>
             <button
               className="w-full text-left hover:text-blue-400 transition-colors"
               onClick={() => onSelect?.(c)}
             >
-              {c.first_name} {c.last_name}
+              {c.full_name}
             </button>
           </li>
         ))}
