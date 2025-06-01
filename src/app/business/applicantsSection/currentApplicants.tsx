@@ -1,9 +1,9 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { createClient } from "@/utils/supabase/server";
+import { createClient } from "@/utils/supabase/client";
 
-const supabase = await createClient();
+const supabase = createClient();
 
 interface Candidate {
   user_id: string;
@@ -37,7 +37,10 @@ const CurrentApplicants: React.FC<CurrentApplicantsProps> = ({
         .eq("status", "completed");
 
       if (invitesError) {
-        console.error("Error fetching invitations:", invitesError);
+        console.error(
+          "Error fetching invitations:",
+          JSON.stringify(invitesError, null, 2)
+        );
         setLoading(false);
         return;
       }

@@ -1,9 +1,9 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { createClient } from "@/utils/supabase/server";
+import { createClient } from "@/utils/supabase/client";
 
-const supabase = await createClient();
+const supabase = createClient();
 
 interface Candidate {
   user_id: string;
@@ -35,9 +35,11 @@ const PendingApplicants: React.FC<pendingApplicantsProps> = ({
         .select("candidate_user_id")
         .eq("business_user_id", businessUserId)
         .eq("status", "pending");
-
       if (invitesError) {
-        console.error("Error fetching invitations:", invitesError);
+        console.error(
+          "Error fetching invitations:",
+          JSON.stringify(invitesError, null, 2)
+        );
         setLoading(false);
         return;
       }
@@ -71,7 +73,7 @@ const PendingApplicants: React.FC<pendingApplicantsProps> = ({
 
   return (
     <div className="min-w-[1000px] min-h-[300px] flex-grow rounded-r-sm p-4 bg-zinc-800 border border-zinc-700 shadow-sm">
-      <h1 className="font-bold text-2xl mb-4">Current Applicants</h1>
+      <h1 className="font-bold text-2xl mb-4">Pending Applicants</h1>
 
       {loading && <p className="text-sm text-zinc-400">Loading…</p>}
 
