@@ -1,4 +1,4 @@
-# 🧠 CodeConquest — Practice Coding Smarter
+# CodeConquest — Practice Coding Smarter
 
 CodeConquest is a web app designed to help developers improve their coding fundamentals through interactive learning and practice problems.
 
@@ -6,17 +6,17 @@ Built using [Next.js](https://nextjs.org), [Tailwind CSS](https://tailwindcss.co
 
 ---
 
-## 🚀 Features
+## Features
 
-- 📝 Learn about various cs subjects
-- 💻 Test and master your knowledge
-- ✅ Get instant feedback with your solutions
-- 🔐 User login (Supabase Auth)
-- 📈 Track your progress (Supabase)
+- Learn about various cs subjects
+- Test and master your knowledge
+- Get instant feedback with your solutions
+- User login (Supabase Auth)
+- Track your progress (Supabase)
 
 ---
 
-## 🛠️ Tech Stack
+## Tech Stack
 
 - [Next.js](https://nextjs.org) — React framework
 - [Tailwind CSS](https://tailwindcss.com) — utility-first styling
@@ -25,7 +25,7 @@ Built using [Next.js](https://nextjs.org), [Tailwind CSS](https://tailwindcss.co
 
 ---
 
-## 🧪 Testing
+## Testing
 
 Our Testing Methodology will consist of manual testing, unit testing, and integration testing, our
 Technology framework will consist of the following:
@@ -35,7 +35,7 @@ Technology framework will consist of the following:
 
 ---
 
-## 🧰 Getting Started
+## Getting Started
 
 ### 1. Clone the Repository
 
