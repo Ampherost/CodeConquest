@@ -3,12 +3,14 @@
 import React from 'react'
 import AcceptInvitationForm from '../notificationPanel/AcceptInvitationForm'
 
+
 interface Props {
   open: boolean
-  onClose: () => void
+  onClose: () => void;
+  onAccepted: () => void;
 }
 
-const InvitationPanel: React.FC<Props> = ({ open, onClose }) => {
+const InvitationPanel: React.FC<Props> = ({ open, onClose, onAccepted }) => {
   return (
     <div
       className={`fixed top-0 right-0 h-full w-full max-w-sm bg-white dark:bg-zinc-900 shadow-lg z-50 transform transition-transform duration-300 ease-in-out ${
@@ -31,7 +33,7 @@ const InvitationPanel: React.FC<Props> = ({ open, onClose }) => {
         <p className="text-sm text-zinc-400 mb-2">
           Enter a valid invitation code from your company.
         </p>
-        <AcceptInvitationForm />
+        <AcceptInvitationForm onAccepted={onAccepted} />
       </div>
     </div>
   )

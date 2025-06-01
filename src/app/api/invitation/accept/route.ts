@@ -40,6 +40,19 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'Invalid or expired invitation code.' }, { status: 404 })
   }
 
+  // If you already accepted an invitation
+  const { data: existingList } = await supabase
+    .from('invitations')
+    .select('*')
+    .eq('business_user_id', inviteData.business_user_id)
+    .eq('candidate_user_id', user.id)
+    .eq('position', inviteData.position)
+    .limit(1)
+
+if (existingList && existingList.length > 0) {
+  return NextResponse.json({ error: 'You’ve already accepted this invitation.' }, { status: 400 });
+}
+
   const { error: insertError } = await supabase.from('invitations').insert([
     {
       business_user_id: inviteData.business_user_id,

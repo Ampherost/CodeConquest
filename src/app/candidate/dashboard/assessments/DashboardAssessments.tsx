@@ -5,6 +5,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { createClient } from '@/utils/supabase/client'
 import { useEffect } from 'react';
+import { useCallback } from 'react'
 import { usePathname } from 'next/navigation';
 import ProfilePanel from '../profilePanel/ProfilePanel';
 import InvitationPanel from '../notificationPanel/InvitationPanel';
@@ -17,6 +18,7 @@ type AssessmentInvite = {
   invitation_id: string;
   position: string;
   assessment_id: string;
+  quiz_id: string | null;
   status: string;
 };
 
@@ -29,29 +31,51 @@ const DashboardAssessments: React.FC<Props> = ({ userEmail }) => {
   const [pendingAssessments, setPendingAssessments] = useState<AssessmentInvite[]>([]);
   const [completedAssessments, setCompletedAssessments] = useState<AssessmentInvite[]>([]);
 
-    useEffect(() => {
-    async function fetchInvites() {
-      const supabase = createClient();
-      const { data: { user } } = await supabase.auth.getUser();
+  const fetchInvites = useCallback(async () => {
+  const supabase = createClient();
+  const { data: { user } } = await supabase.auth.getUser();
 
-      if (!user) return;
+  if (!user) return;
 
-      const { data, error } = await supabase
-        .from('invitations')
-        .select('invitation_id, position, status, assessment_id')
-        .eq('candidate_user_id', user.id);
+  const { data, error } = await supabase
+    .from('invitations')
+    .select(`
+      invitation_id,
+      position,
+      status,
+      assessment_id,
+      assessment_quizzes:assessment_id (
+      quiz_id,
+      status
+    )
+  `)
+    .eq('candidate_user_id', user.id);
 
-      if (!error && data) {
-        const pending = data.filter(d => d.status === 'pending');
-        const completed = data.filter(d => d.status === 'completed');
-        setPendingAssessments(pending);
-        setCompletedAssessments(completed);
-      }
-    }
+  if (!error && data) {
+    const pending = data
+    .filter(d => d.assessment_quizzes?.[0]?.status === 'pending')
+    .map(d => ({
+      ...d,
+      quiz_id: d.assessment_quizzes?.[0]?.quiz_id ?? null,
+    }));
 
-    fetchInvites();
-  }, []);
+  const completed = data
+    .filter(d => d.assessment_quizzes?.[0]?.status === 'completed')
+    .map(d => ({
+      ...d,
+      quiz_id: d.assessment_quizzes?.[0]?.quiz_id ?? null,
+    }));
 
+    setPendingAssessments(pending);
+    setCompletedAssessments(completed);
+  }
+}, []);
+
+
+  useEffect(() => {
+    fetchInvites()
+  }, [fetchInvites])
+  
   return (
     <div className="min-h-screen bg-white dark:bg-zinc-900 text-zinc-900 dark:text-zinc-100">
       {/* Header */}
@@ -148,16 +172,15 @@ const DashboardAssessments: React.FC<Props> = ({ userEmail }) => {
               </button>
             </div>
             {/* Content Swap */}
-            {activeTab === 'pending' ? (
-              <div className="text-center mt-12">
-                {pendingAssessments.length === 0 ? (
-                  <>
-                    <p className="text-lg font-semibold">You have no pending assessments</p>
-                    <p className="text-sm text-zinc-400">Check back later or explore more modules.</p>
-                  </>
-                ) : (
-                  <ul className="space-y-4">
-                    {/* map quizzes */}
+              {activeTab === 'pending' ? (
+                <div className="text-center mt-12">
+                  {pendingAssessments.length === 0 ? (
+                    <>
+                      <p className="text-lg font-semibold">You have no pending assessments</p>
+                      <p className="text-sm text-zinc-400">Check back later or explore more modules.</p>
+                    </>
+                  ) : (
+                    <ul className="space-y-4">
                       {pendingAssessments.map((assessment) => (
                         <li key={assessment.invitation_id} className="bg-zinc-800 p-4 rounded-lg">
                           <div className="flex justify-between items-center">
@@ -165,38 +188,64 @@ const DashboardAssessments: React.FC<Props> = ({ userEmail }) => {
                               <h3 className="font-semibold text-white">Pending Invite</h3>
                               <p className="text-sm text-zinc-400">From: {assessment.position}</p>
                             </div>
-                            <button className="bg-blue-600 text-white px-4 py-1 rounded hover:bg-blue-700">
-                              Start Quiz
-                            </button>
-                          </div>
-                        </li>
-                      ))}
-                  </ul>
+                            {assessment.quiz_id ? (
+                              <Link
+                                // href={`/assessments/${assessment.assessment_id}/quiz/${assessment.quiz_id}`}
+                                href={`/assesment/${assessment.assessment_id}/quiz/${assessment.quiz_id}`}
+                                className="bg-blue-600 text-white px-4 py-1 rounded hover:bg-blue-700"
+                              >
+                                Start Quiz
+                              </Link>
+                            ) : (
+                              <span className="text-sm text-red-500">Quiz not linked</span>
+                            )}
+                                  </div>
+                                </li>
+                              ))}
+                            </ul>
+                          )}
+                        </div>
+                      ) : (
+                      <div className="text-center mt-12">
+                        {completedAssessments.length === 0 ? (
+                          <>
+                            <p className="text-lg font-semibold">No completed assessments yet</p>
+                            <p className="text-sm text-zinc-400">They’ll appear here when finished.</p>
+                          </>
+                        ) : (
+                          <ul className="space-y-4">
+                            {completedAssessments.map((assessment) => (
+                              <li key={assessment.invitation_id} className="bg-zinc-800 p-4 rounded-lg">
+                                <div className="flex justify-between items-center">
+                                  <div>
+                                    <h3 className="font-semibold text-white">Completed Assessment</h3>
+                                    <p className="text-sm text-zinc-400">Position: {assessment.position}</p>
+                                  </div>
+                                  <Link
+                                    // href={`/assessments/${assessment.assessment_id}/quiz/${assessment.quiz_id}`}
+                                    href={`/assesment/${assessment.assessment_id}/quiz/${assessment.quiz_id}`}
+                                    className="bg-green-600 text-white px-4 py-1 rounded hover:bg-green-700"
+                                  >
+                                  Review Quiz
+                                </Link>
+                              </div>
+                            </li>
+                          ))}
+                        </ul>
+                      )}
+                  </div>
                 )}
-              </div>
-            ) : (
-              <div className="text-center mt-12">
-                {completedAssessments.length === 0 ? (
-                  <>
-                    <p className="text-lg font-semibold">No completed assessments yet</p>
-                    <p className="text-sm text-zinc-400">They’ll appear here when finished.</p>
-                  </>
-                ) : (
-                  <ul className="space-y-4">
-                    {/* map completed quizzes */}
-                  </ul>
-                )}
-              </div>
-            )}
             </div>
-          </div>
+        </div>
         </section>
       </main>
-      <InvitationPanel open={isInviteOpen} onClose={() => setInviteOpen(false)} />
+      <InvitationPanel open={isInviteOpen} onClose={() => setInviteOpen(false)} onAccepted={fetchInvites} />
       <ProfilePanel open={isProfileOpen} onClose={() => setProfileOpen(false)} userEmail={userEmail} />
     </div>
   );
 };
+
+
 
 const TabLink: React.FC<{ href: string; label: string; pathname: string }> = ({ href, label, pathname }) => {
   const isActive = pathname === href;
