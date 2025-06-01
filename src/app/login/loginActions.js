@@ -3,6 +3,7 @@
 import { createClient } from "@/utils/supabase/server";
 import { handleError } from "@/app/signup/lib/utility";
 
+
 export async function HandleSignIn(state, formData) {
   const payload = {
     email: formData.get("email") || "",
@@ -49,6 +50,7 @@ export async function HandleSignIn(state, formData) {
     }
 
     return { success: true, redirectTo: `/${userData.role}/dashboard` };
+
   } catch (err) {
     return {
       success: false,

@@ -1,4 +1,4 @@
-# 🧠 CodeConquest — Practice Coding Smarter
+# CodeConquest — Practice Coding Smarter
 
 CodeConquest is a web app designed to help developers improve their coding fundamentals through interactive learning and practice problems.
 
@@ -6,17 +6,17 @@ Built using [Next.js](https://nextjs.org), [Tailwind CSS](https://tailwindcss.co
 
 ---
 
-## 🚀 Features
+## Features
 
-- 📝 Learn about various cs subjects
-- 💻 Test and master your knowledge
-- ✅ Get instant feedback with your solutions
-- 🔐 User login (Supabase Auth)
-- 📈 Track your progress (Supabase)
+- Learn about various cs subjects
+- Test and master your knowledge
+- Get instant feedback with your solutions
+- User login (Supabase Auth)
+- Track your progress (Supabase)
 
 ---
 
-## 🛠️ Tech Stack
+## Tech Stack
 
 - [Next.js](https://nextjs.org) — React framework
 - [Tailwind CSS](https://tailwindcss.com) — utility-first styling
@@ -25,13 +25,23 @@ Built using [Next.js](https://nextjs.org), [Tailwind CSS](https://tailwindcss.co
 
 ---
 
-## 🧰 Getting Started
+## Testing
+
+Our Testing Methodology will consist of manual testing, unit testing, and integration testing, our
+Technology framework will consist of the following:
+
+- [Jest](https://jestjs.io/) — JavaScript testing framework used for running and organizing tests
+- [React Testing Library](https://testing-library.com/docs/react-testing-library/intro/) — Tests UI components based on how users interact with them
+
+---
+
+## Getting Started
 
 ### 1. Clone the Repository
 
 ```bash
 git clone https://github.com/Ampherost/CodeConquest.git
-cd codeboost
+cd codeconquest
 
 2. Using the Git Fork Client
 
@@ -50,6 +60,7 @@ run these commands to run the website locally
 
 npm install     # Install all dependencies
 npm run dev     # Start the local dev server
+nom run build   # Compiles the project
 
 then click on localhost:3000 to see the website
 

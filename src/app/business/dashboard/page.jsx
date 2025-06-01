@@ -3,6 +3,7 @@ import { useRouter } from "next/navigation";
 
 import { createClient } from "@/utils/supabase/client";
 
+
 import { useState, useEffect } from "react";
 
 import Welcome from "../header/welcome";
@@ -65,3 +66,5 @@ const Page = () => {
 };
 
 export default Page;
+
+  
