@@ -2,7 +2,11 @@
 
 import { useState } from 'react'
 
-export default function AcceptInvitationForm() {
+interface Props {
+  onAccepted: () => void;  
+}
+
+export default function AcceptInvitationForm({ onAccepted }: Props) {
   const [code, setCode] = useState('')
   const [submitted, setSubmitted] = useState(false)
   const [message, setMessage] = useState('')
@@ -22,6 +26,7 @@ export default function AcceptInvitationForm() {
       const result = await res.json()
       if (res.ok) {
         setMessage('Invitation accepted successfully!')
+        onAccepted()
       } else {
         setMessage(result.error || 'Failed to accept invitation.')
       }

@@ -5,6 +5,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { createClient } from '@/utils/supabase/client'
 import { useEffect } from 'react';
+import { useCallback } from 'react'
 import { usePathname } from 'next/navigation';
 import ProfilePanel from '../profilePanel/ProfilePanel';
 import InvitationPanel from '../notificationPanel/InvitationPanel';
@@ -29,29 +30,30 @@ const DashboardAssessments: React.FC<Props> = ({ userEmail }) => {
   const [pendingAssessments, setPendingAssessments] = useState<AssessmentInvite[]>([]);
   const [completedAssessments, setCompletedAssessments] = useState<AssessmentInvite[]>([]);
 
-    useEffect(() => {
-    async function fetchInvites() {
-      const supabase = createClient();
-      const { data: { user } } = await supabase.auth.getUser();
+  const fetchInvites = useCallback(async () => {
+  const supabase = createClient();
+  const { data: { user } } = await supabase.auth.getUser();
 
-      if (!user) return;
+  if (!user) return;
 
-      const { data, error } = await supabase
-        .from('invitations')
-        .select('invitation_id, position, status, assessment_id')
-        .eq('candidate_user_id', user.id);
+  const { data, error } = await supabase
+    .from('invitations')
+    .select('invitation_id, position, status, assessment_id')
+    .eq('candidate_user_id', user.id);
 
-      if (!error && data) {
-        const pending = data.filter(d => d.status === 'pending');
-        const completed = data.filter(d => d.status === 'completed');
-        setPendingAssessments(pending);
-        setCompletedAssessments(completed);
-      }
-    }
+  if (!error && data) {
+    const pending = data.filter(d => d.status === 'pending');
+    const completed = data.filter(d => d.status === 'completed');
+    setPendingAssessments(pending);
+    setCompletedAssessments(completed);
+  }
+}, []); // ✅ Empty dependency array, memoizes the function
 
-    fetchInvites();
-  }, []);
 
+  useEffect(() => {
+    fetchInvites()
+  }, [fetchInvites])
+  
   return (
     <div className="min-h-screen bg-white dark:bg-zinc-900 text-zinc-900 dark:text-zinc-100">
       {/* Header */}
@@ -165,9 +167,12 @@ const DashboardAssessments: React.FC<Props> = ({ userEmail }) => {
                               <h3 className="font-semibold text-white">Pending Invite</h3>
                               <p className="text-sm text-zinc-400">From: {assessment.position}</p>
                             </div>
-                            <button className="bg-blue-600 text-white px-4 py-1 rounded hover:bg-blue-700">
-                              Start Quiz
-                            </button>
+                            <Link
+                            href={`/candidate/quiz/${assessment.assessment_id}`}
+                            className="bg-blue-600 text-white px-4 py-1 rounded hover:bg-blue-700"
+                          >
+                            Start Quiz
+                          </Link>
                           </div>
                         </li>
                       ))}
@@ -192,11 +197,13 @@ const DashboardAssessments: React.FC<Props> = ({ userEmail }) => {
           </div>
         </section>
       </main>
-      <InvitationPanel open={isInviteOpen} onClose={() => setInviteOpen(false)} />
+      <InvitationPanel open={isInviteOpen} onClose={() => setInviteOpen(false)} onAccepted={fetchInvites} />
       <ProfilePanel open={isProfileOpen} onClose={() => setProfileOpen(false)} userEmail={userEmail} />
     </div>
   );
 };
+
+
 
 const TabLink: React.FC<{ href: string; label: string; pathname: string }> = ({ href, label, pathname }) => {
   const isActive = pathname === href;
