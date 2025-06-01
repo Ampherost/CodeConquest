@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useEffect } from 'react';
@@ -53,7 +54,7 @@ export default function SignIn() {
           disabled={isPending}
           className="w-full py-3 bg-blue-600 text-white rounded-lg font-semibold disabled:bg-blue-300 transition-colors hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
         >
-          {isPending ? 'Signing in...' : 'Sign In'}
+          {isPending ? "Signing in..." : "Sign In"}
         </button>
 
         {/* Combined error‐display block below the button */}
