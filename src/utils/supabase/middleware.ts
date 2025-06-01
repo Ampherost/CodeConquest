@@ -50,7 +50,7 @@ export async function updateSession(request: NextRequest) {
 
   // If user is logged in, check role
   if (user) 
-    {
+  {
     const { data: userData, error } = await supabase
       .from('users')
       .select('role')
@@ -83,6 +83,10 @@ export async function updateSession(request: NextRequest) {
       url.pathname = '/unauthorized';
       return NextResponse.redirect(url);
     }
+
+     
+
+
   }
 
   return supabaseResponse;

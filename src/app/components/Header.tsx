@@ -6,7 +6,7 @@ const Header: React.FC = () => {
     { href: "/", label: "Home" },
     { href: "/about", label: "About" },
     { href: "/modules", label: "Modules" },
-    { href: "/sign-in", label: "Sign in" },
+    { href: "/login", label: "Sign in" },
   ];
 
   // The sign in page does not exist yet
@@ -32,7 +32,7 @@ const Header: React.FC = () => {
             <Link
               key={link.href}
               href={link.href}
-              className="text-white hover:text-blue-600 transition"
+              className="text-white hover:text-blue-500 transition"
             >
               {link.label}
             </Link>

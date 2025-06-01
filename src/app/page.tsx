@@ -17,7 +17,7 @@ export default function Home() {
             </span>
           </h1>
           <p className="text-lg sm:text-xl text-zinc-600 dark:text-zinc-300">
-            A simple platform to help you improve your coding fundamentals through interactive learning and practice.
+            A simple platform to help you improve your coding fundamentals through interactive learning and practice
           </p>
         </div>
       </main>
