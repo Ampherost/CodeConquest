@@ -170,7 +170,7 @@ A linear, document-driven approach with well-defined stages:
       guide: `
 # Testing Strategies
 
-Unit tests, integration tests, end-to-end tests—each covers a different slice of your application.
+Cool stuff for testing strategies.
       `.trim(),
       quiz: [
         {
@@ -185,9 +185,9 @@ Unit tests, integration tests, end-to-end tests—each covers a different slice 
       slug: "design-notations-patterns",
       title: "Notations & Patterns",
       guide: `
-# Testing Strategies
+# Notations & Patterns
 
-Unit tests, integration tests, end-to-end tests—each covers a different slice of your application.
+Cool Stuff for Notations and Patterns.
       `.trim(),
       quiz: [
         {
@@ -202,7 +202,7 @@ Unit tests, integration tests, end-to-end tests—each covers a different slice 
       slug: "testing-fundamentals",
       title: "Testing & Quality Assurance",
       guide: `
-# Testing Strategies
+# Testing & Quality Assurance
 
 Unit tests, integration tests, end-to-end tests—each covers a different slice of your application.
       `.trim(),
@@ -219,7 +219,7 @@ Unit tests, integration tests, end-to-end tests—each covers a different slice 
       slug: "testability-debugging",
       title: "Testing & Debugging",
       guide: `
-# Testing Strategies
+# Testing & Debugging
 
 Unit tests, integration tests, end-to-end tests—each covers a different slice of your application.
       `.trim(),
@@ -236,7 +236,7 @@ Unit tests, integration tests, end-to-end tests—each covers a different slice 
       slug: "design-management",
       title: "Design Fundamentals & Management",
       guide: `
-# Testing Strategies
+# Design Fundamentals & Management
 
 Unit tests, integration tests, end-to-end tests—each covers a different slice of your application.
       `.trim(),
