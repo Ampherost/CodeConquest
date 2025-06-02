@@ -164,91 +164,139 @@ A linear, document-driven approach with well-defined stages:
       ],
     },
     {
-      moduleId: "software-engineering",  // Chapter Two
-      slug: "architecture-tools-testing",
-      title: "Architecture, Tools, and Testing",
-      guide: `
+       moduleId: "software-engineering",  // Chapter Two
+    slug: "architecture-tools-testing",
+    title: "Architecture, Tools, and Testing",
+    guide: `
 # Architecture, Tools, and Testing
 
-Cool stuff for Architecture, Tools, and Testing.
-      `.trim(),
-      quiz: [
-        {
-          question: "What type of test covers the flow of your entire app in a browser?",
-          options: ["Unit Test", "Integration Test", "End-to-End Test"],
-          answer: "End-to-End Test",
-        },
-      ],
-    },
-     {
-      moduleId: "software-engineering",  // Chapter Three
-      slug: "design-notations-patterns",
-      title: "Notations & Patterns",
-      guide: `
+- **Software Architecture**:
+  - **Styles**: Monolithic, Layered, Client–Server, Microservices, Event-Driven.
+  - **Tradeoffs**: Scalability vs. complexity, coupling vs. cohesion, latency vs. maintainability.
+  - **Documentation**: Use diagrams (UML component, sequence) to communicate structure.
+- **Development Tools**:
+  - **Version Control**: Git workflows (feature branches, pull requests).
+  - **CI/CD Pipelines**: Automate builds, tests, and deployments (e.g., Jenkins, GitHub Actions).
+  - **Collaboration**: Issue tracking (Jira), code reviews, shared wikis.
+- **Testing Fundamentals**:
+  - **Unit Testing**: Verify individual components (mocking, stubs).
+  - **Integration Testing**: Test combined modules and data flow.
+  - **End-to-End (E2E) Testing**: Simulate user workflows in a real environment.
+  - **Test Automation**: Use frameworks (JUnit, PyTest, Selenium) to automate test suites.
+- **Quality Metrics**:
+  - Code coverage, cyclomatic complexity, static analysis (linter, SonarQube).
+    `.trim(),
+    quiz: [],
+  },
+  {
+    moduleId: "software-engineering",  // Chapter Three
+    slug: "design-notations-patterns",
+    title: "Notations & Patterns",
+    guide: `
 # Notations & Patterns
 
-Cool Stuff for Notations and Patterns.
-      `.trim(),
-      quiz: [
-        {
-          question: "What type of test covers the flow of your entire app in a browser?",
-          options: ["Unit Test", "Integration Test", "End-to-End Test"],
-          answer: "End-to-End Test",
-        },
-      ],
-    },
-     {
-      moduleId: "software-engineering", // Chapter Four
-      slug: "testing-fundamentals",
-      title: "Testing & Quality Assurance",
-      guide: `
+- **Design Notations**:
+  - **UML Diagrams**:  
+    - **Class Diagram**: Classes, attributes, methods, relationships.  
+    - **Sequence Diagram**: Object interactions over time.  
+    - **Use Case Diagram**: Actor–system interactions.
+  - **ER Diagrams**: Entity–relationship for database design.
+  - **Flowcharts and State Diagrams**: Control and state transitions.
+- **Design Patterns**:
+  - **Creational**: Singleton, Factory Method, Abstract Factory, Builder, Prototype.
+  - **Structural**: Adapter, Decorator, Composite, Facade, Proxy.
+  - **Behavioral**: Observer, Strategy, Command, Iterator, State.
+  - **Anti-Patterns**: God Object, Spaghetti Code, Golden Hammer.
+- **Applying Patterns**:
+  - Identify recurring problems (e.g., object creation, coupling reduction).
+  - Choose pattern by intent: flexibility, reuse, separation of concerns.
+  - Document pattern use with UML and code examples.
+    `.trim(),
+    quiz: [],
+  },
+  {
+    moduleId: "software-engineering", // Chapter Four
+    slug: "testing-fundamentals",
+    title: "Testing & Quality Assurance",
+    guide: `
 # Testing & Quality Assurance
 
-Unit tests, integration tests, end-to-end tests—each covers a different slice of your application.
-      `.trim(),
-      quiz: [
-        {
-          question: "What type of test covers the flow of your entire app in a browser?",
-          options: ["Unit Test", "Integration Test", "End-to-End Test"],
-          answer: "End-to-End Test",
-        },
-      ],
-    },
-     {
-      moduleId: "software-engineering",  // Chapter Five
-      slug: "testability-debugging",
-      title: "Testing & Debugging",
-      guide: `
-# Testing & Debugging
+- **Testing Levels**:
+  - **Unit Tests**: Fast, isolated, developer-written tests for functions/classes.
+  - **Integration Tests**: Verify interactions between components or services.
+  - **System Tests**: End-to-end scenarios in production-like environment.
+  - **Acceptance Tests**: Validate requirements; often automated (Cucumber, FitNesse).
+- **QA Practices**:
+  - **Test-Driven Development (TDD)**: Write tests before production code; ensures coverage.
+  - **Behavior-Driven Development (BDD)**: Express tests in business-readable language.
+  - **Continuous Testing**: Integrate tests into CI pipeline; fail fast on regressions.
+- **Test Automation Tools**:
+  - **Unit**: JUnit, NUnit, pytest.  
+  - **Integration/E2E**: Selenium, Cypress, Playwright.  
+  - **API**: Postman, REST-assured.
+- **Quality Metrics & Reporting**:
+  - Code coverage (line, branch), defect density, test pass/fail rates.
+  - Static analysis: linters, security scanners (OWASP, SAST).
+    `.trim(),
+    quiz: [],
+  },
+  {
+    moduleId: "software-engineering",  // Chapter Five
+    slug: "testability-debugging",
+    title: "Testability & Debugging",
+    guide: `
+# Testability & Debugging
 
-Unit tests, integration tests, end-to-end tests—each covers a different slice of your application.
-      `.trim(),
-      quiz: [
-        {
-          question: "What type of test covers the flow of your entire app in a browser?",
-          options: ["Unit Test", "Integration Test", "End-to-End Test"],
-          answer: "End-to-End Test",
-        },
-      ],
-    },
-     {
-      moduleId: "software-engineering",  // Chapter Six
-      slug: "design-management",
-      title: "Design Fundamentals & Management",
-      guide: `
+- **Testability Principles**:
+  - **Modular Design**: Low coupling, high cohesion → simpler unit tests.
+  - **Dependency Injection**: Pass dependencies to enable mocking and isolation.
+  - **Interface Contracts**: Define clear preconditions/postconditions for easier assertions.
+  - **Logging & Monitoring**: Instrument code to capture execution paths and metrics.
+- **Debugging Techniques**:
+  - **Breakpoints & Step Debugging**: Inspect state in IDE (VS Code, IntelliJ, GDB).
+  - **Logging Strategies**: Use log levels (INFO, WARN, ERROR) and structured logs.
+  - **Profiling & Tracing**: Identify performance bottlenecks (CPU, memory, I/O).
+  - **Heap Dumps & Memory Analysis**: Diagnose leaks, excessive allocations.
+- **Error Handling Best Practices**:
+  - **Exceptions vs. Return Codes**: Use exceptions for unexpected failures.
+  - **Graceful Degradation**: Fallback behaviors to maintain availability.
+  - **Fail-Fast Principle**: Detect and report errors early in execution.
+    `.trim(),
+    quiz: [],
+  },
+  {
+    moduleId: "software-engineering",  // Chapter Six
+    slug: "design-management",
+    title: "Design Fundamentals & Management",
+    guide: `
 # Design Fundamentals & Management
 
-Unit tests, integration tests, end-to-end tests—each covers a different slice of your application.
-      `.trim(),
-      quiz: [
-        {
-          question: "What type of test covers the flow of your entire app in a browser?",
-          options: ["Unit Test", "Integration Test", "End-to-End Test"],
-          answer: "End-to-End Test",
-        },
-      ],
-    },
-  ],
+- **Software Process & Project Management**:
+  - **Process Models**: Waterfall vs. Agile (Scrum, Kanban); choose based on project needs.
+  - **Requirements Engineering**: Elicit, analyze, and document functional/non-functional requirements.
+  - **Estimation Techniques**:  
+    - **Planning Poker & Story Points**: Relative sizing in Agile.  
+    - **COCOMO Model**: Algorithmic cost estimation for large systems.
+- **Risk Management**:
+  - Identify risks (technical, schedule, budget); assess probability and impact.
+  - Mitigation plans: prototypes, spike solutions, schedule buffers.
+- **Configuration & Release Management**:
+  - **Versioning**: Semantic versioning (MAJOR.MINOR.PATCH).
+  - **Release Pipelines**: Build, test, and deploy automation; blue/green or canary deployments.
+- **Team Roles & Communication**:
+  - **Roles**: Product Owner, Scrum Master, Developers, QA, DevOps.
+  - **Ceremonies**: Stand-ups, sprint planning, retrospectives, demos.
+  - **Documentation**: Lightweight artifacts—user stories, acceptance criteria, design docs.
+    `.trim(),
+    quiz: [
+      {
+        question: "Which estimation method uses relative sizing cards in Agile?",
+        options: ["COCOMO", "Planning Poker", "PERT"],
+        answer: "Planning Poker",
+      },
+    ],
+  },
+],
 
 
 
@@ -369,78 +417,218 @@ Unit tests, integration tests, end-to-end tests—each covers a different slice 
 
 
   // Web dev module
-  "web-development": [
-    {
-      moduleId: "web-development",  // Chapter One
-      slug: "html-basics",
-      title: "HTML Basics",
-      guide: `
+"web-development": [
+  {
+    moduleId: "web-development",  // Chapter One
+    slug: "html-basics",
+    title: "HTML Basics",
+    guide: `
 # HTML Basics
 
-Learn how to structure a webpage with headings, paragraphs, links, images, and lists.
-      `.trim(),
-      quiz: [
-        {
-          question: "Which tag creates a hyperlink?",
-          options: ["<link>", "<a>", "<href>"],
-          answer: "<a>",
-        },
-      ],
-    },
-    {
-      moduleId: "web-development",  // Chapter Two
-      slug: "css-basics",
-      title: "CSS Fundamentals",
-      guide: `
+- **Purpose**: Structure webpage content using semantic tags.
+- **Basic Elements**:
+  - **Headings**: \`<h1>\`–\`<h6>\`
+  - **Paragraphs**: \`<p>\`
+  - **Links**: \`<a href="URL">text</a>\`
+  - **Images**: \`<img src="path" alt="description">\`
+  - **Lists**: \`<ul>\` (unordered), \`<ol>\` (ordered), with \`<li>\` items
+- **Semantic Sections**: \`<header>\`, \`<nav>\`, \`<main>\`, \`<section>\`, \`<footer>\`
+- **Attributes**: \`id\`, \`class\`, \`src\`, \`alt\`, \`href\`
+- **Document Skeleton**:
+  \`\`\`html
+  <!DOCTYPE html>
+  <html lang="en">
+    <head>
+      <meta charset="UTF-8">
+      <title>My Page</title>
+    </head>
+    <body>
+      <header><h1>Welcome</h1></header>
+      <nav><ul><li><a href="#home">Home</a></li></ul></nav>
+      <main>
+        <p>Hello, world!</p>
+        <img src="image.jpg" alt="Example">
+      </main>
+      <footer><p>&copy; 2025</p></footer>
+    </body>
+  </html>
+  \`\`\`
+    `.trim(),
+    quiz: [],
+  },
+  {
+    moduleId: "web-development",  // Chapter Two
+    slug: "css-basics",
+    title: "CSS Fundamentals",
+    guide: `
 # CSS Fundamentals
 
-Selectors, properties, values, the box model, and how to lay out elements with Flexbox and Grid.
-      `.trim(),
-      quiz: [],
-    },
-     {
-      moduleId: "web-development",  // Chapter Three
-      slug: "javascript-basics",
-      title: "Javascript Basics",
-      guide: `
-# Javascript Stuff
+- **Role**: Style HTML elements (colors, layout, typography).
+- **Syntax**:  
+  \`\`\`css
+  selector {
+    property: value;
+  }
+  \`\`\`
+- **Selectors**:
+  - Element: \`p { ... }\`
+  - Class: \`.btn { ... }\`
+  - ID: \`#header { ... }\`
+  - Descendant: \`nav ul li { ... }\`
+- **Box Model**:  
+  - **Content** → **Padding** → **Border** → **Margin**
+  - Use \`box-sizing: border-box;\` to include padding/border in width.
+- **Display & Positioning**:
+  - \`display\`: block, inline, inline-block
+  - \`position\`: static, relative, absolute, fixed
+- **Flexbox Layout**:
+  - Container: \`display: flex;\`
+  - Alignment: \`justify-content\`, \`align-items\`
+  - Example:
+    \`\`\`css
+    .container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    \`\`\`
+- **Grid Layout**:
+  - Container: \`display: grid;\`
+  - Define tracks: \`grid-template-columns\`, \`grid-template-rows\`
+  - Place items: \`grid-column\`, \`grid-row\`
+    `.trim(),
+    quiz: [],
+  },
+  {
+    moduleId: "web-development",  // Chapter Three
+    slug: "javascript-basics",
+    title: "Javascript Basics",
+    guide: `
+# Javascript Basics
 
-Selectors, properties, values, the box model, and how to lay out elements with Flexbox and Grid.
-      `.trim(),
-      quiz: [],
-    },
-     {
-      moduleId: "web-development",  // Chapter Four
-      slug: "react-intro",
-      title: "React",
-      guide: `
-# React Stuff
+- **Purpose**: Add interactivity to webpages (DOM manipulation, events).
+- **Variables & Types**:
+  - Declarations: \`let\`, \`const\`, (avoid \`var\`)
+  - Primitives: string, number, boolean, null, undefined, symbol
+  - Compound: object, array, function
+- **Functions**:
+  - Declaration: \`function greet(name) { ... }\`
+  - Arrow: \`const add = (a, b) => a + b;\`
+- **DOM Manipulation**:
+  - Select: \`document.querySelector(".class")\`
+  - Modify: \`element.textContent = "New";\`
+  - Create: \`document.createElement("div")\`
+- **Events**:
+  - \`element.addEventListener("click", handler)\`
+  - Common events: click, input, submit
+- **Example**: Change text on button click
+  \`\`\`html
+  <button id="btn">Click me</button>
+  <p id="msg">Hello</p>
+  <script>
+    document.getElementById("btn").addEventListener("click", () => {
+      document.getElementById("msg").textContent = "Clicked!";
+    });
+  </script>
+  \`\`\`
+    `.trim(),
+    quiz: [],
+  },
+  {
+    moduleId: "web-development",  // Chapter Four
+    slug: "react-intro",
+    title: "React",
+    guide: `
+# React
 
-Selectors, properties, values, the box model, and how to lay out elements with Flexbox and Grid.
-      `.trim(),
-      quiz: [],
-    },
-     {
-      moduleId: "web-development",  // Chapter Five
-      slug: "nextjs-intro",
-      title: "Next.js",
-      guide: `
-# Next.js stuff
+- **Library**: Build UIs with composable components and a virtual DOM.
+- **JSX**: Write HTML-like code in JS files:
+  \`\`\`jsx
+  const Welcome = () => <h1>Hello, React!</h1>;
+  \`\`\`
+- **Components**:
+  - Functional: \`function Component(props) { return <div />; }\`
+  - Props: Read-only inputs passed from parent
+  - State: Manage local data with \`useState\` hook
+- **Hooks**:
+  - \`useState\`: \`const [count, setCount] = useState(0);\`
+  - \`useEffect\`: Run side effects (fetch data, subscriptions)
+- **Virtual DOM**: React diffs JSX to update the real DOM efficiently.
+- **Example**: Counter component
+  \`\`\`jsx
+  import { useState } from "react";
+  const Counter = () => {
+    const [count, setCount] = useState(0);
+    return (
+      <div>
+        <p>{count}</p>
+        <button onClick={() => setCount(count + 1)}>Increment</button>
+      </div>
+    );
+  };
+  \`\`\`
+    `.trim(),
+    quiz: [],
+  },
+  {
+    moduleId: "web-development",  // Chapter Five
+    slug: "nextjs-intro",
+    title: "Next.js",
+    guide: `
+# Next.js
 
-Selectors, properties, values, the box model, and how to lay out elements with Flexbox and Grid.
-      `.trim(),
-      quiz: [],
-    },
-     {
-      moduleId: "web-development",  // Chapter Six
-      slug: "tailwindcss-intro",
-      title: "Tailwind CSS",
-      guide: `
-# Tailwindcss stuff
+- **Framework**: React-based with built-in routing and SSR/SSG.
+- **File-Based Routing**:
+  - Pages live in \`/pages\`; filename → route (e.g., \`pages/about.js\` → \`/about\`).
+- **Data Fetching**:
+  - **Static Generation**: \`export async function getStaticProps() { ... }\`
+  - **Server-Side Rendering**: \`export async function getServerSideProps() { ... }\`
+- **API Routes**:
+  - Create backend endpoints in \`/pages/api/hello.js\`
+  - Example:
+    \`\`\`js
+    export default function handler(req, res) {
+      res.status(200).json({ message: "Hello from API" });
+    }
+    \`\`\`
+- **Built-In Features**:
+  - Image optimization: \`next/image\`
+  - CSS/SASS support: Import CSS modules directly
+  - Automatic code splitting and fast refresh
+- **Example**: Simple page component
+  \`\`\`jsx
+  export default function Home() {
+    return <h1>Welcome to Next.js!</h1>;
+  }
+  \`\`\`
+    `.trim(),
+    quiz: [],
+  },
+  {
+    moduleId: "web-development",  // Chapter Six
+    slug: "tailwindcss-intro",
+    title: "Tailwind CSS",
+    guide: `
+# Tailwind CSS
 
-Selectors, properties, values, the box model, and how to lay out elements with Flexbox and Grid.
-      `.trim(),
-      quiz: [],
-    },
-  ],
+- **Utility-First**: Compose styles using predefined classes (no custom CSS by default).
+- **Installation**: Add via npm and configure \`tailwind.config.js\`.
+- **Core Concepts**:
+  - **Classes**: \`p-4\` (padding), \`m-2\` (margin), \`bg-blue-500\`, \`text-center\`
+  - **Responsive Prefixes**: \`sm:\`, \`md:\`, \`lg:\` (e.g., \`md:text-lg\`)
+  - **State Variants**: \`hover:\`, \`focus:\` (e.g., \`hover:bg-red-600\`)
+- **Customization**:
+  - Extend theme: colors, spacing, fonts in \`tailwind.config.js\`
+  - Add plugins: forms, typography, aspect-ratio
+- **Example**: Button with Tailwind classes
+  \`\`\`html
+  <button class="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600">
+    Click Me
+  </button>
+  \`\`\`
+    `.trim(),
+    quiz: [],
+  },
+],
+
 }
