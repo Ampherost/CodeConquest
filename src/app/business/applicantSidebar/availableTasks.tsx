@@ -1,4 +1,7 @@
-const AvailableTask = () => {
+interface AvailableTaskProps {
+  business_user_id: string;
+}
+const AvailableTask = ({ business_user_id }: AvailableTaskProps) => {
   return (
     <div>
       <div>

@@ -15,11 +15,13 @@ interface CurrentApplicantsProps {
   businessUserId: string;
   invitationStatus?: "pending" | "completed";
   onSelect?: (candidate: Candidate) => void;
+  setSidebarOpen?: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const CurrentApplicants: React.FC<CurrentApplicantsProps> = ({
   businessUserId,
   onSelect,
+  setSidebarOpen,
 }) => {
   const [candidates, setCandidates] = useState<Candidate[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
@@ -88,7 +90,10 @@ const CurrentApplicants: React.FC<CurrentApplicantsProps> = ({
           <li key={c.user_id}>
             <button
               className="w-full text-left hover:text-blue-400 transition-colors"
-              onClick={() => onSelect?.(c)}
+              onClick={() => {
+                onSelect?.(c);
+                setSidebarOpen?.((prev) => !prev); // Toggle sidebar open state
+              }}
             >
               {c.first_name} {c.last_name}
             </button>

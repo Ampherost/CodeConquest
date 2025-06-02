@@ -13,12 +13,15 @@ import Signout from "../header/signOut";
 import Profile from "../header/userProfile";
 import CurrentApplicants from "../applicantsSection/currentApplicants";
 import PendingApplicants from "../applicantsSection/pendingApplicants";
+import ApplicantSidebar from "../applicantSidebar/applicantSidebar";
 
 const supabase = createClient();
 
 const Page = () => {
   const router = useRouter();
   const [user, setUser] = useState(null);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [sidebarCollapse, setSidebarExpand] = useState(true);
 
   useEffect(() => {
     supabase.auth.getUser().then(({ data }) => {
@@ -49,17 +52,37 @@ const Page = () => {
           <Notifications />
           <Invitation business_user_id={user.id} />
           <Signout />
-          {/* <Signout /> */}
         </div>
       </div>
-
-      <div id="main" className="space-y-5">
-        <div id="Current Applicants" className="flex flex-row p-7">
-          <CurrentApplicants businessUserId={user.id} />
-        </div>
-        <div id="Pending Applicatns" className="flex flex-row p-7">
-          <PendingApplicants businessUserId={user.id} />
-        </div>
+      <div className="flex flex-row">
+        {sidebarCollapse && (
+          <div id="main" className="space-y-5 flex-[3] ">
+            <div id="Current Applicants" className="flex flex-row p-7">
+              <CurrentApplicants
+                businessUserId={user.id}
+                setSidebarOpen={setSidebarOpen}
+              />
+            </div>
+            <div id="Pending Applicatns" className="flex flex-row p-7">
+              <PendingApplicants
+                businessUserId={user.id}
+                setSidebarOpen={setSidebarOpen}
+              />
+            </div>
+          </div>
+        )}
+        {sidebarOpen && (
+          <div
+            id="sidebar"
+            className={`${sidebarOpen ? "block w-64" : "hidden"} flex-[1]`}
+          >
+            <ApplicantSidebar
+              businessUserId={user.id}
+              setSidebarOpen={setSidebarOpen}
+              sidebarCollapse={setSidebarExpand}
+            />
+          </div>
+        )}
       </div>
     </div>
   );

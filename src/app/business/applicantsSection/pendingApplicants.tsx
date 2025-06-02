@@ -17,11 +17,13 @@ interface Candidate {
 interface pendingApplicantsProps {
   businessUserId: string;
   onSelect?: (candidate: Candidate) => void;
+  setSidebarOpen?: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const PendingApplicants: React.FC<pendingApplicantsProps> = ({
   businessUserId,
   onSelect,
+  setSidebarOpen,
 }) => {
   const [candidates, setCandidates] = useState<Candidate[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
@@ -68,7 +70,10 @@ const PendingApplicants: React.FC<pendingApplicantsProps> = ({
           <li key={c.invite_code}>
             <button
               className="w-full text-left hover:text-blue-400 transition-colors"
-              onClick={() => onSelect?.(c)}
+              onClick={() => {
+                onSelect?.(c);
+                setSidebarOpen?.((prev) => !prev); // Toggle sidebar open state
+              }}
             >
               {c.full_name}
             </button>

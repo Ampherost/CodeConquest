@@ -1,4 +1,7 @@
-const SideBarHeader = () => {
+interface SideBarHeaderProps {
+  business_user_id: string;
+}
+const SideBarHeader = ({ business_user_id }: SideBarHeaderProps) => {
   return (
     <div className="flex flex-row item-start justify-between p-2">
       <div>

@@ -1,4 +1,8 @@
-const AssignedTask = () => {
+interface AssignedTaskProps {
+  business_user_id: string;
+}
+
+const AssignedTask = ({ business_user_id }: AssignedTaskProps) => {
   return (
     <div>
       <div>

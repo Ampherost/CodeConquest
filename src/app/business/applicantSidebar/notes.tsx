@@ -1,4 +1,7 @@
-const Notes = () => {
+interface NotesProps {
+  business_user_id: string;
+}
+const Notes = ({ business_user_id }: NotesProps) => {
   return (
     <div className="flex flex-col">
       <h1>Notes</h1>
