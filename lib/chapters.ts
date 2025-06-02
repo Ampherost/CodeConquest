@@ -254,58 +254,117 @@ Unit tests, integration tests, end-to-end tests—each covers a different slice 
 
 
   // Compilers Module
-  "compilers": [
-    {
-      moduleId: "compilers",  // Chapter One
-      slug: "lexical-analyzers",
-      title: "Lexical Analysis",
-      guide: `
+"compilers": [
+  {
+    moduleId: "compilers",  // Chapter One
+    slug: "lexical-analyzers",
+    title: "Lexical Analysis",
+    guide: `
 # Lexical Analysis
 
-How source code is broken into tokens by the lexer.
-      `.trim(),
-      quiz: [
-        {
-          question: "Which component breaks input text into tokens?",
-          options: ["Parser", "Lexer", "Optimizer"],
-          answer: "Lexer",
-        },
-      ],
-    },
-    {
-      moduleId: "compilers",  // Chapter Two
-      slug: "parsing-segments",
-      title: "Parsing Analysis",
-      guide: `
-# Parsing
-
-Building parse trees and abstract syntax trees (ASTs).
-      `.trim(),
-      quiz: [],
-    },
+- **Tokens & Lexemes**: Convert source characters into tokens (IDENTIFIER, NUMBER, KEYWORD, etc.) using patterns.
+- **Regular Expressions → DFA**: Define token patterns with regex, build DFA for efficient scanning (“maximal munch”).
+- **Symbol Table Check**: After matching an identifier, check if it’s a keyword or user-defined symbol.
+- **Skip Whitespace/Comments**: Discard spaces, tabs, newlines, and comments; track line numbers for errors.
+- **Error Handling**: Report unrecognized sequences and attempt to recover by skipping to the next valid token.
+- **Example**:  
+  Input: \`while (count < 10) { count = count + 1; }\`  
+  Tokens: KEYWORD(while), LPAREN, IDENTIFIER(count), LESS_THAN, INT(10), RPAREN, LBRACE, IDENTIFIER(count), ASSIGN, IDENTIFIER(count), PLUS, INT(1), SEMICOLON, RBRACE
+    `.trim(),
+    quiz: [
       {
-      moduleId: "compilers",  // Chapter Three
-      slug: "code-generation",
-      title: "Cool Code Generation",
-      guide: `
+        question: "Which component breaks input text into tokens?",
+        options: ["Parser", "Lexer", "Optimizer"],
+        answer: "Lexer",
+      },
+    ],
+  },
+  {
+    moduleId: "compilers",  // Chapter Two
+    slug: "parsing-segments",
+    title: "Parsing Analysis",
+    guide: `
+# Parsing Analysis
+
+- **Grammar & CFG**: Use a context-free grammar (CFG) to define valid program structure (nonterminals, terminals, productions).
+- **Parse Trees vs. ASTs**: Build a full parse tree or directly create a simpler AST that omits unnecessary nodes.
+- **Top-Down Parsing (LL)**:  
+  • Recursive descent or predictive parsing with FIRST/FOLLOW tables for LL(1) grammars.  
+  • Requires eliminating left recursion and left-factoring.
+- **Bottom-Up Parsing (LR)**:  
+  • Shift-reduce parsers build states (SLR(1), LALR(1), or canonical LR(1)).  
+  • Use parsing tables to decide shifts/reductions and construct the AST.
+- **Error Recovery**: Panic mode (skip to sync tokens like “;” or “}”), phrase-level, or error productions.
+- **Example**:  
+  Tokens: \`while ( count < 10 ) { count = count + 1 ; }\` → AST for a while-loop with relational and assignment nodes.
+    `.trim(),
+    quiz: [],
+  },
+  {
+    moduleId: "compilers",  // Chapter Three
+    slug: "code-generation",
+    title: "Cool Code Generation",
+    guide: `
 # Code Generation
 
-Building parse trees and abstract syntax trees (ASTs).
-      `.trim(),
-      quiz: [],
-    },
-      {
-      moduleId: "compilers",  // Chapter Four
-      slug: "code-optimization",
-      title: "Cool Code Optimization",
-      guide: `
+- **Intermediate Representation (IR)**:  
+  • Three-Address Code (TAC): Instructions like \`t1 = t2 + t3\`.  
+  • Control Flow Graph (CFG): Basic blocks linked by jumps/branches.  
+  • SSA Form: Each variable assigned once; insert φ-functions at joins.
+- **Emit TAC from AST**: Perform a post-order traversal to generate instructions for expressions and statements.
+- **Basic Blocks & CFG Construction**: Identify blocks (single entry/exit) and connect them based on control flow.
+- **Instruction Selection**:  
+  • Use tree-pattern matching or BURM to map IR to machine-specific instructions.  
+  • Respect calling conventions (prologue/epilogue, register usage).
+- **Register Allocation**:  
+  • Build an interference graph of temporaries.  
+  • Apply graph coloring or linear scan; spill to memory if needed.
+- **Example** (\`int add(int a,int b){return a+b;}\`):  
+  TAC: \`t1 = a + b\`, \`return t1\` → x86-64: \`movl %edi, %eax; addl %esi, %eax; ret\`
+    `.trim(),
+    quiz: [],
+  },
+  {
+    moduleId: "compilers",  // Chapter Four
+    slug: "code-optimization",
+    title: "Cool Code Optimization",
+    guide: `
 # Code Optimization
 
-Building parse trees and abstract syntax trees (ASTs).
-      `.trim(),
-      quiz: [],
-    },
-  ],
+- **Levels of Optimization**:  
+  • Local (peephole): Simplify instruction sequences within a block (e.g., eliminate \`add x,0\`).  
+  • Global (intra-procedural): Perform data-flow analyses on CFG (constant propagation, CSE, dead code elimination).  
+  • Interprocedural: Across function boundaries (inlining, interprocedural constant propagation).
+- **Data-Flow Analysis**:  
+  • Compute IN/OUT sets for each basic block (live variables, reaching definitions, available expressions).  
+  • Iterate to a fixed point for global optimizations.
+- **Common Techniques**:  
+  • Constant Folding/Propagation: Evaluate and propagate constants at compile time.  
+  • Dead Code Elimination: Remove code whose results are unused.  
+  • Strength Reduction: Replace \`x*2\` with \`x<<1\`.  
+  • Loop-Invariant Code Motion: Hoist loop-invariant computations outside loops.  
+  • Loop Unrolling: Duplicate loop body to reduce branch overhead.
+- **Control-Flow Optimizations**: Reorder basic blocks, insert branch hints to reduce mispredictions.
+- **Example**:  
+  Original:  
+  \`\`\`
+  for(i=0;i<100;i++){
+    x = a*2 + 0;
+    y = b + 3;
+  }
+  \`\`\`
+  After strength reduction and hoisting:  
+  \`\`\`
+  temp = b + 3;
+  for(i=0;i<100;i++){
+    y = temp;
+  }
+  \`\`\`
+    `.trim(),
+    quiz: [],
+  },
+],
+
 
 
 
