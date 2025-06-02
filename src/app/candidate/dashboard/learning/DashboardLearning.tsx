@@ -15,26 +15,42 @@ const modules = [
   {
     title: 'Software Engineering',
     level: 'Intermediate',
-    courses: 6,
-    practices: 192,
+    chapters: 6,
+    quizzes: 6,
     image: '/assets/software-engineer.png',
     slug: 'software-engineering'
   },
   {
     title: 'Compilers',
     level: 'Advanced',
-    courses: 5,
-    practices: 87,
+    chapters: 4,
+    quizzes: 3,
     image: '/assets/compiler.png',
     slug: 'compilers'
   },
   {
     title: 'Web Development',
     level: 'Intermediate',
-    courses: 3,
-    practices: 63,
+    chapters: 6,
+    quizzes: 5,
     image: '/assets/web-dev.png',
     slug: 'web-development'
+  },
+  {
+    title: 'Databases & SQL',
+    level: 'W.I.P.',
+    chapters: 0,
+    quizzes: 0,
+    image: '/assets/Databases & SQL.png',
+    slug: 'DNE'
+  },
+  {
+    title: 'Data Structures & Algorithms',
+    level: 'W.I.P.',
+    chapters: 0,
+    quizzes: 0,
+    image: '/assets/Data Structures & Algorithms.png',
+    slug: 'DNE'
   },
 ];
 
@@ -139,7 +155,7 @@ const DashboardLearning: React.FC<Props> = ({ userEmail }) => {
       {/* Page Content */}
       <main className="p-6">
         <h1 className="text-xl text-white">Welcome to your dashboard!</h1>
-        {/* Your dashboard cards and components go here */}
+        {/* Dashboard cards and components*/}
         <section className="mt-8">
           <h2 className="text-lg font-semibold text-white mb-2">Suggested learning Modules</h2>
           <div className="overflow-x-auto">

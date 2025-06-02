@@ -3,16 +3,16 @@ import Image from 'next/image';
 interface ModuleCardProps {
   title: string;
   level: string;
-  courses: number;
-  practices: number;
+  chapters: number;
+  quizzes: number;
   image: string;
 }
 
 const ModuleCard: React.FC<ModuleCardProps> = ({
   title,
   level,
-  courses,
-  practices,
+  chapters,
+  quizzes,
   image,
 }) => {
   return (
@@ -25,8 +25,8 @@ const ModuleCard: React.FC<ModuleCardProps> = ({
       <h3 className="font-bold text-lg mb-2">{title}</h3>
 
       <div className="flex text-xs text-zinc-400 gap-4">
-        <span>📚 {courses} courses</span>
-        <span>🧠 {practices} practices</span>
+        <span>📚 {chapters} courses</span>
+        <span>🧠 {quizzes} quizzes</span>
       </div>
     </div>
   );
