@@ -1,14 +1,28 @@
-import { createClient } from '@/utils/supabase/server';
-import DashboardCurrent from './DashboardCurrent';
+"use client";
+import { useRouter } from "next/navigation";
+import { createClient } from "@/utils/supabase/client";
+import DashboardCurrent from "./DashboardCurrent";
+import { useState, useEffect } from "react";
 
-export default async function Page() {
-  const supabase = await createClient(); // ← await NOT needed if this isn't async
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+const Page = () => {
+  const router = useRouter();
+  const [user, setUser] = useState(null);
 
-  // Ensure we pass null (not undefined)
-  const email = user?.email ?? null;
+  useEffect(() => {
+    const supabase = createClient();
+    supabase.auth.getUser().then(({ data }) => {
+      if (!data.user) {
+        router.replace("/login");
+      } else {
+        setUser(data.user);
+      }
+    });
+  }, [router]);
 
+  if (!user) return null;
+
+  const email = user.email ?? null;
   return <DashboardCurrent userEmail={email} />;
-}
+};
+
+export default Page;
