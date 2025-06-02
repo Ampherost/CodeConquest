@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+
 import Image from 'next/image';
 import Link from 'next/link';
 import { useCallback } from 'react';
@@ -10,28 +10,38 @@ import ProfilePanel from './profilePanel/ProfilePanel';
 import InvitationPanel from './notificationPanel/InvitationPanel';
 import ModuleCard from '../../components/ModuleCard'; 
 
+import { useEffect, useState } from 'react';
+
+type LastModule = {
+  moduleId: string;
+  title: string;
+  chapterSlug: string;
+  timestamp: number;
+};
+
+
 const modules = [
   {
     title: 'Software Engineering',
     level: 'Intermediate',
-    courses: 6,
-    practices: 192,
+    chapters: 6,
+    quizzes: 6,
     image: '/assets/software-engineer.png',
     slug: 'software-engineering'
   },
   {
     title: 'Compilers',
     level: 'Advanced',
-    courses: 5,
-    practices: 87,
+    chapters: 4,
+    quizzes: 3,
     image: '/assets/compiler.png',
     slug: 'compilers'
   },
   {
     title: 'Web Development',
     level: 'Intermediate',
-    courses: 3,
-    practices: 63,
+    chapters: 6,
+    quizzes: 5,
     image: '/assets/web-dev.png',
     slug: 'web-development'
   },
@@ -48,8 +58,19 @@ const DashboardCurrent: React.FC<Props> = ({ userEmail }) => {
   const [isInviteOpen, setInviteOpen] = useState(false);
   // const [pendingAssessments, setPendingAssessments] = useState<AssessmentInvite[]>([]);
   // const [completedAssessments, setCompletedAssessments] = useState<AssessmentInvite[]>([]);
+  const [lastModule, setLastModule] = useState<LastModule | null>(null);
 
-
+  useEffect(() => {
+    const stored = localStorage.getItem('lastViewedModule');
+    if (stored) {
+      try {
+        const parsed = JSON.parse(stored);
+        setLastModule(parsed);
+      } catch (e) {
+        console.error('Failed to parse lastViewedModule:', e);
+      }
+    }
+  }, []);
   
   const fetchInvites = useCallback(async () => {
     const supabase = createClient();
@@ -62,7 +83,7 @@ const DashboardCurrent: React.FC<Props> = ({ userEmail }) => {
       .select('invitation_id, position, status, assessment_id')
       .eq('candidate_user_id', user.id);
 
-    // No state setting required here if you don't need the data
+    // No state setting required here
   }, []);
 
   return (
@@ -136,7 +157,25 @@ const DashboardCurrent: React.FC<Props> = ({ userEmail }) => {
       {/* Page Content */}
       <main className="p-6">
         <h1 className="text-xl text-white">Welcome to your dashboard!</h1>
-        {/* Your dashboard cards and components go here */}
+        {/* Dashboard cards and components*/}
+        {lastModule && (
+          <section className="mt-6 mb-10">
+            <h2 className="text-lg font-semibold text-white mb-2">Resume Module</h2>
+            <div className="bg-zinc-800 p-4 rounded-lg shadow-md">
+              <p className="text-white font-medium">
+                Last visited: <span className="text-zinc-300">{lastModule.title}</span>
+              </p>
+              <p className="text-sm text-zinc-400 mt-1">Module ID: {lastModule.moduleId}</p>
+              <p className="text-sm text-zinc-400">Chapter: {lastModule.chapterSlug}</p>
+              <Link
+                href={`/modules/${lastModule.moduleId}/${lastModule.chapterSlug}`}
+                className="inline-block mt-3 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+              >
+                Continue Learning
+            </Link>
+          </div>
+        </section>
+      )}
         <section className="mt-8">
           <h2 className="text-lg font-semibold text-white mb-2">Your current leanring Models</h2>
           <div className="overflow-x-auto">
@@ -171,5 +210,7 @@ const TabLink: React.FC<{ href: string; label: string; pathname: string }> = ({ 
     </Link>
   );
 };
+
+
 
 export default DashboardCurrent; 
