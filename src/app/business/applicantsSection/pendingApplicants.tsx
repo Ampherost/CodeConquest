@@ -33,42 +33,21 @@ const PendingApplicants: React.FC<pendingApplicantsProps> = ({
       setLoading(true);
 
       // 1. All invitations for this business user
-      const { data: invites, error: invitesError } = await supabase
+      const { data: candRows, error: candError } = await supabase
         .from("invitation_codes")
-        .select("full_name")
+        .select("invite_code, full_name, email, position, notes")
         .eq("business_user_id", businessUserId)
         .eq("status", "pending");
 
-      if (invitesError) {
-        console.error(
-          "Error fetching invitations:",
-          JSON.stringify(invitesError, null, 2)
-        );
-        setLoading(false);
-        return;
-      }
-
-      const candidateName =
-        (invites?.map((row) => row.full_name) as string[]) || [];
-
-      if (candidateName.length === 0) {
-        setCandidates([]);
-        setLoading(false);
-        return;
-      }
-
-      // 2. Fetch candidate names
-      const { data: candRows, error: candError } = await supabase
-        .from("invitation_codes")
-        .select("invite_code, full_name, email, position, notes");
-
       if (candError) {
         console.error("Error fetching candidate users:", candError);
+        setCandidates([]);
       } else {
-        setCandidates((candRows ?? []) as Candidate[]);
+        setCandidates(candRows as Candidate[]);
       }
 
       setLoading(false);
+      return;
     };
 
     fetchCandidates();
