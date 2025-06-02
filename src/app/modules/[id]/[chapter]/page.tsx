@@ -6,6 +6,7 @@ import Container from "@/app/components/Container";
 import { modules, Module } from "../../../../../lib/modules";
 import { chaptersByModule, ChapterContent } from "../../../../../lib/chapters";
 import { markdownToHtml } from "../../../../../lib/markdown";
+import ClientTracker from "@/app/components/ClientTracker";
 
 type Params = { id: string; chapter: string };
 
@@ -71,7 +72,12 @@ export default async function ChapterPage({
           )}
         </Container>
       </div>
-
+        {/* ✅ Place this at the bottom so it triggers on page load */}
+      <ClientTracker
+        moduleId={id}
+        title={mod.title}
+        chapterSlug={chapter}
+      />
       <Footer />
     </div>
   );

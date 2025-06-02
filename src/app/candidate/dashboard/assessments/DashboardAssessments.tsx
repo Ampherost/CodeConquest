@@ -179,7 +179,7 @@ const DashboardAssessments: React.FC<Props> = ({ userEmail }) => {
       {/* Page Content */}
       <main className="p-6">
         <h1 className="text-xl text-white">Welcome to your dashboard!</h1>
-        {/* Your dashboard cards and components go here */}
+        {/* Dashboard cards and components */}
         <section className="mt-8">
           <h2 className="text-lg font-semibold text-white mb-2">
             Your Assessments
