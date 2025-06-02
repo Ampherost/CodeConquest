@@ -17,7 +17,9 @@ const InvitationButton = ({ business_user_id }: InvitationButtonProps) => {
       </button>
 
       {open && (
-        <div className="fixed inset-0 z-100 flex items-center justify-center bg-zinc-900/70 ">
+        <div
+          className={`fixed inset-0 z-100 flex items-center justify-center bg-zinc-900/70 transition-all duration-300 ease-in-out  ${open ? "opacity-100 scale-100" : "opacity-0 scale-90"}`}
+        >
           <div className="bg-white dark:bg-zinc-900 rounded-lg shadow-xl p-6 min-w-[350px]">
             <InvitationForm
               employeerId={business_user_id}
