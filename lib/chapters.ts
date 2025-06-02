@@ -288,13 +288,7 @@ A linear, document-driven approach with well-defined stages:
   - **Ceremonies**: Stand-ups, sprint planning, retrospectives, demos.
   - **Documentation**: Lightweight artifacts—user stories, acceptance criteria, design docs.
     `.trim(),
-    quiz: [
-      {
-        question: "Which estimation method uses relative sizing cards in Agile?",
-        options: ["COCOMO", "Planning Poker", "PERT"],
-        answer: "Planning Poker",
-      },
-    ],
+    quiz: [],
   },
 ],
 
@@ -319,13 +313,7 @@ A linear, document-driven approach with well-defined stages:
   Input: \`while (count < 10) { count = count + 1; }\`  
   Tokens: KEYWORD(while), LPAREN, IDENTIFIER(count), LESS_THAN, INT(10), RPAREN, LBRACE, IDENTIFIER(count), ASSIGN, IDENTIFIER(count), PLUS, INT(1), SEMICOLON, RBRACE
     `.trim(),
-    quiz: [
-      {
-        question: "Which component breaks input text into tokens?",
-        options: ["Parser", "Lexer", "Optimizer"],
-        answer: "Lexer",
-      },
-    ],
+    quiz: [],
   },
   {
     moduleId: "compilers",  // Chapter Two
