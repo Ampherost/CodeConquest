@@ -1,46 +1,46 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import Image from 'next/image';
-import Link from 'next/link';
-import { useCallback } from 'react';
-import { createClient } from '@/utils/supabase/client'
-import { usePathname } from 'next/navigation';
-import ProfilePanel from './profilePanel/ProfilePanel';
-import InvitationPanel from './notificationPanel/InvitationPanel';
-import ModuleCard from '../../components/ModuleCard'; 
+import { useState } from "react";
+import Image from "next/image";
+import Link from "next/link";
+import { useCallback } from "react";
+import { createClient } from "@/utils/supabase/client";
+import { usePathname } from "next/navigation";
+import ProfilePanel from "./profilePanel/ProfilePanel";
+import InvitationPanel from "./notificationPanel/InvitationPanel";
+import ModuleCard from "../../components/ModuleCard";
+import Signout from "../../business/header/signOut";
 
 const modules = [
   {
-    title: 'Software Engineering',
-    level: 'Intermediate',
+    title: "Software Engineering",
+    level: "Intermediate",
     courses: 6,
     practices: 192,
-    image: '/assets/software-engineer.png',
-    slug: 'software-engineering'
+    image: "/assets/software-engineer.png",
+    slug: "software-engineering",
   },
   {
-    title: 'Compilers',
-    level: 'Advanced',
+    title: "Compilers",
+    level: "Advanced",
     courses: 5,
     practices: 87,
-    image: '/assets/compiler.png',
-    slug: 'compilers'
+    image: "/assets/compiler.png",
+    slug: "compilers",
   },
   {
-    title: 'Web Development',
-    level: 'Intermediate',
+    title: "Web Development",
+    level: "Intermediate",
     courses: 3,
     practices: 63,
-    image: '/assets/web-dev.png',
-    slug: 'web-development'
+    image: "/assets/web-dev.png",
+    slug: "web-development",
   },
 ];
 
 interface Props {
   userEmail: string | null;
 }
-
 
 const DashboardCurrent: React.FC<Props> = ({ userEmail }) => {
   const pathname = usePathname();
@@ -49,18 +49,18 @@ const DashboardCurrent: React.FC<Props> = ({ userEmail }) => {
   // const [pendingAssessments, setPendingAssessments] = useState<AssessmentInvite[]>([]);
   // const [completedAssessments, setCompletedAssessments] = useState<AssessmentInvite[]>([]);
 
-
-  
   const fetchInvites = useCallback(async () => {
     const supabase = createClient();
-    const { data: { user } } = await supabase.auth.getUser();
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
 
     if (!user) return;
 
     await supabase
-      .from('invitations')
-      .select('invitation_id, position, status, assessment_id')
-      .eq('candidate_user_id', user.id);
+      .from("invitations")
+      .select("invitation_id, position, status, assessment_id")
+      .eq("candidate_user_id", user.id);
 
     // No state setting required here if you don't need the data
   }, []);
@@ -74,15 +74,34 @@ const DashboardCurrent: React.FC<Props> = ({ userEmail }) => {
           <div className="flex items-center gap-16">
             {/* Logo + Title */}
             <div className="flex items-center gap-5">
-              <Image src="/assets/CodeConquestLogo.png" alt="Logo" width={60} height={60} />
-              <span className="text-2xl text-white font-semibold">CodeConquest</span>
+              <Image
+                src="/assets/CodeConquestLogo.png"
+                alt="Logo"
+                width={60}
+                height={60}
+              />
+              <span className="text-2xl text-white font-semibold">
+                CodeConquest
+              </span>
             </div>
 
             {/* Tabs */}
             <nav className="flex gap-12 items-end pb-1">
-              <TabLink href="/candidate/dashboard" label="Current" pathname={pathname} />
-              <TabLink href="/candidate/dashboard/learning" label="Learning" pathname={pathname} />
-              <TabLink href="/candidate/dashboard/assessments" label="Assessments" pathname={pathname} />
+              <TabLink
+                href="/candidate/dashboard"
+                label="Current"
+                pathname={pathname}
+              />
+              <TabLink
+                href="/candidate/dashboard/learning"
+                label="Learning"
+                pathname={pathname}
+              />
+              <TabLink
+                href="/candidate/dashboard/assessments"
+                label="Assessments"
+                pathname={pathname}
+              />
             </nav>
           </div>
 
@@ -109,7 +128,10 @@ const DashboardCurrent: React.FC<Props> = ({ userEmail }) => {
               <span>Profile</span>
             </div>
 
-            <button onClick={() => setInviteOpen(true)} className="relative hover:opacity-80 cursor-pointer">
+            <button
+              onClick={() => setInviteOpen(true)}
+              className="relative hover:opacity-80 cursor-pointer"
+            >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 className="h-5 w-5"
@@ -127,8 +149,9 @@ const DashboardCurrent: React.FC<Props> = ({ userEmail }) => {
             </button>
 
             {/* Sign Out */}
-            <button className="hover:opacity-80">Sign Out</button>
-            
+            {/* <button className="hover:opacity-80">Sign Out</button>
+             */}
+            <Signout />
           </div>
         </div>
       </header>
@@ -138,7 +161,9 @@ const DashboardCurrent: React.FC<Props> = ({ userEmail }) => {
         <h1 className="text-xl text-white">Welcome to your dashboard!</h1>
         {/* Your dashboard cards and components go here */}
         <section className="mt-8">
-          <h2 className="text-lg font-semibold text-white mb-2">Your current leanring Models</h2>
+          <h2 className="text-lg font-semibold text-white mb-2">
+            Your current leanring Models
+          </h2>
           <div className="overflow-x-auto">
             <div className="flex gap-6 px-1 py-3 w-max">
               {modules.map((mod, i) => (
@@ -150,21 +175,33 @@ const DashboardCurrent: React.FC<Props> = ({ userEmail }) => {
           </div>
         </section>
       </main>
-      <InvitationPanel open={isInviteOpen} onClose={() => setInviteOpen(false)} onAccepted={fetchInvites}/>
-      <ProfilePanel open={isProfileOpen} onClose={() => setProfileOpen(false)} userEmail={userEmail} />
+      <InvitationPanel
+        open={isInviteOpen}
+        onClose={() => setInviteOpen(false)}
+        onAccepted={fetchInvites}
+      />
+      <ProfilePanel
+        open={isProfileOpen}
+        onClose={() => setProfileOpen(false)}
+        userEmail={userEmail}
+      />
     </div>
   );
 };
 
-const TabLink: React.FC<{ href: string; label: string; pathname: string }> = ({ href, label, pathname }) => {
+const TabLink: React.FC<{ href: string; label: string; pathname: string }> = ({
+  href,
+  label,
+  pathname,
+}) => {
   const isActive = pathname === href;
   return (
     <Link
       href={href}
       className={`flex flex-col items-center justify-end h-12 px-6 text-base tracking-wide transition-all duration-200 ${
         isActive
-          ? 'text-white font-semibold border-b-2 border-blue-500'
-          : 'text-zinc-400 border-b-2 border-transparent hover:text-white hover:border-blue-500'
+          ? "text-white font-semibold border-b-2 border-blue-500"
+          : "text-zinc-400 border-b-2 border-transparent hover:text-white hover:border-blue-500"
       }`}
     >
       <span className="mt-auto mb-1">{label}</span>
@@ -172,4 +209,4 @@ const TabLink: React.FC<{ href: string; label: string; pathname: string }> = ({ 
   );
 };
 
-export default DashboardCurrent; 
+export default DashboardCurrent;

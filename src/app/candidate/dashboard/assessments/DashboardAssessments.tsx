@@ -1,14 +1,15 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import Image from 'next/image';
-import Link from 'next/link';
-import { createClient } from '@/utils/supabase/client'
-import { useEffect } from 'react';
-import { useCallback } from 'react'
-import { usePathname } from 'next/navigation';
-import ProfilePanel from '../profilePanel/ProfilePanel';
-import InvitationPanel from '../notificationPanel/InvitationPanel';
+import { useState } from "react";
+import Image from "next/image";
+import Link from "next/link";
+import { createClient } from "@/utils/supabase/client";
+import { useEffect } from "react";
+import { useCallback } from "react";
+import { usePathname } from "next/navigation";
+import ProfilePanel from "../profilePanel/ProfilePanel";
+import InvitationPanel from "../notificationPanel/InvitationPanel";
+import Signout from "../../../business/header/signOut";
 
 interface Props {
   userEmail: string | null;
@@ -22,24 +23,32 @@ type AssessmentInvite = {
   status: string;
 };
 
-
 const DashboardAssessments: React.FC<Props> = ({ userEmail }) => {
   const pathname = usePathname();
   const [isProfileOpen, setProfileOpen] = useState(false);
   const [isInviteOpen, setInviteOpen] = useState(false);
-  const [activeTab, setActiveTab] = useState<'pending' | 'completed'>('pending');
-  const [pendingAssessments, setPendingAssessments] = useState<AssessmentInvite[]>([]);
-  const [completedAssessments, setCompletedAssessments] = useState<AssessmentInvite[]>([]);
+  const [activeTab, setActiveTab] = useState<"pending" | "completed">(
+    "pending"
+  );
+  const [pendingAssessments, setPendingAssessments] = useState<
+    AssessmentInvite[]
+  >([]);
+  const [completedAssessments, setCompletedAssessments] = useState<
+    AssessmentInvite[]
+  >([]);
 
   const fetchInvites = useCallback(async () => {
-  const supabase = createClient();
-  const { data: { user } } = await supabase.auth.getUser();
+    const supabase = createClient();
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
 
-  if (!user) return;
+    if (!user) return;
 
-  const { data, error } = await supabase
-    .from('invitations')
-    .select(`
+    const { data, error } = await supabase
+      .from("invitations")
+      .select(
+        `
       invitation_id,
       position,
       status,
@@ -48,34 +57,34 @@ const DashboardAssessments: React.FC<Props> = ({ userEmail }) => {
       quiz_id,
       status
     )
-  `)
-    .eq('candidate_user_id', user.id);
+  `
+      )
+      .eq("candidate_user_id", user.id);
 
-  if (!error && data) {
-    const pending = data
-    .filter(d => d.assessment_quizzes?.[0]?.status === 'pending')
-    .map(d => ({
-      ...d,
-      quiz_id: d.assessment_quizzes?.[0]?.quiz_id ?? null,
-    }));
+    if (!error && data) {
+      const pending = data
+        .filter((d) => d.assessment_quizzes?.[0]?.status === "pending")
+        .map((d) => ({
+          ...d,
+          quiz_id: d.assessment_quizzes?.[0]?.quiz_id ?? null,
+        }));
 
-  const completed = data
-    .filter(d => d.assessment_quizzes?.[0]?.status === 'completed')
-    .map(d => ({
-      ...d,
-      quiz_id: d.assessment_quizzes?.[0]?.quiz_id ?? null,
-    }));
+      const completed = data
+        .filter((d) => d.assessment_quizzes?.[0]?.status === "completed")
+        .map((d) => ({
+          ...d,
+          quiz_id: d.assessment_quizzes?.[0]?.quiz_id ?? null,
+        }));
 
-    setPendingAssessments(pending);
-    setCompletedAssessments(completed);
-  }
-}, []);
-
+      setPendingAssessments(pending);
+      setCompletedAssessments(completed);
+    }
+  }, []);
 
   useEffect(() => {
-    fetchInvites()
-  }, [fetchInvites])
-  
+    fetchInvites();
+  }, [fetchInvites]);
+
   return (
     <div className="min-h-screen bg-white dark:bg-zinc-900 text-zinc-900 dark:text-zinc-100">
       {/* Header */}
@@ -85,15 +94,34 @@ const DashboardAssessments: React.FC<Props> = ({ userEmail }) => {
           <div className="flex items-center gap-16">
             {/* Logo + Title */}
             <div className="flex items-center gap-5">
-              <Image src="/assets/CodeConquestLogo.png" alt="Logo" width={60} height={60} />
-              <span className="text-2xl text-white font-semibold">CodeConquest</span>
+              <Image
+                src="/assets/CodeConquestLogo.png"
+                alt="Logo"
+                width={60}
+                height={60}
+              />
+              <span className="text-2xl text-white font-semibold">
+                CodeConquest
+              </span>
             </div>
 
             {/* Tabs */}
             <nav className="flex gap-12 items-end pb-1">
-              <TabLink href="/candidate/dashboard" label="Current" pathname={pathname} />
-              <TabLink href="/candidate/dashboard/learning" label="Learning" pathname={pathname} />
-              <TabLink href="/candidate/dashboard/assessments" label="Assessments" pathname={pathname} />
+              <TabLink
+                href="/candidate/dashboard"
+                label="Current"
+                pathname={pathname}
+              />
+              <TabLink
+                href="/candidate/dashboard/learning"
+                label="Learning"
+                pathname={pathname}
+              />
+              <TabLink
+                href="/candidate/dashboard/assessments"
+                label="Assessments"
+                pathname={pathname}
+              />
             </nav>
           </div>
 
@@ -120,7 +148,10 @@ const DashboardAssessments: React.FC<Props> = ({ userEmail }) => {
               <span>Profile</span>
             </div>
             {/* Mail Icon */}
-            <button onClick={() => setInviteOpen(true)} className="relative hover:opacity-80 cursor-pointer">
+            <button
+              onClick={() => setInviteOpen(true)}
+              className="relative hover:opacity-80 cursor-pointer"
+            >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 className="h-5 w-5"
@@ -138,8 +169,9 @@ const DashboardAssessments: React.FC<Props> = ({ userEmail }) => {
             </button>
 
             {/* Sign Out */}
-            <button className="hover:opacity-80">Sign Out</button>
-            
+            {/* <button className="hover:opacity-80">Sign Out</button>
+             */}
+            <Signout />
           </div>
         </div>
       </header>
@@ -149,44 +181,67 @@ const DashboardAssessments: React.FC<Props> = ({ userEmail }) => {
         <h1 className="text-xl text-white">Welcome to your dashboard!</h1>
         {/* Your dashboard cards and components go here */}
         <section className="mt-8">
-          <h2 className="text-lg font-semibold text-white mb-2">Your Assessments</h2>
+          <h2 className="text-lg font-semibold text-white mb-2">
+            Your Assessments
+          </h2>
           <div className="overflow-x-auto">
             <div className="flex gap-6 py-1 w-max">
               {/* Tab Switcher */}
-            <div className="flex gap-6 border-b border-zinc-600 mb-4">
-              <button
-                onClick={() => setActiveTab('pending')}
-                className={`pb-2 text-lg font-medium ${
-                  activeTab === 'pending' ? 'border-b-2 border-blue-500 text-white' : 'text-zinc-400'
-                }`}
-              >
-                Pending <span className="ml-1 text-sm bg-zinc-700 px-2 py-0.5 rounded-full">{pendingAssessments.length}</span>
-              </button>
-              <button
-                onClick={() => setActiveTab('completed')}
-                className={`pb-2 text-lg font-medium ${
-                  activeTab === 'completed' ? 'border-b-2 border-blue-500 text-white' : 'text-zinc-400'
-                }`}
-              >
-                Completed <span className="ml-1 text-sm bg-zinc-700 px-2 py-0.5 rounded-full">{completedAssessments.length}</span>
-              </button>
-            </div>
-            {/* Content Swap */}
-              {activeTab === 'pending' ? (
+              <div className="flex gap-6 border-b border-zinc-600 mb-4">
+                <button
+                  onClick={() => setActiveTab("pending")}
+                  className={`pb-2 text-lg font-medium ${
+                    activeTab === "pending"
+                      ? "border-b-2 border-blue-500 text-white"
+                      : "text-zinc-400"
+                  }`}
+                >
+                  Pending{" "}
+                  <span className="ml-1 text-sm bg-zinc-700 px-2 py-0.5 rounded-full">
+                    {pendingAssessments.length}
+                  </span>
+                </button>
+                <button
+                  onClick={() => setActiveTab("completed")}
+                  className={`pb-2 text-lg font-medium ${
+                    activeTab === "completed"
+                      ? "border-b-2 border-blue-500 text-white"
+                      : "text-zinc-400"
+                  }`}
+                >
+                  Completed{" "}
+                  <span className="ml-1 text-sm bg-zinc-700 px-2 py-0.5 rounded-full">
+                    {completedAssessments.length}
+                  </span>
+                </button>
+              </div>
+              {/* Content Swap */}
+              {activeTab === "pending" ? (
                 <div className="text-center mt-12">
                   {pendingAssessments.length === 0 ? (
                     <>
-                      <p className="text-lg font-semibold">You have no pending assessments</p>
-                      <p className="text-sm text-zinc-400">Check back later or explore more modules.</p>
+                      <p className="text-lg font-semibold">
+                        You have no pending assessments
+                      </p>
+                      <p className="text-sm text-zinc-400">
+                        Check back later or explore more modules.
+                      </p>
                     </>
                   ) : (
                     <ul className="space-y-4">
                       {pendingAssessments.map((assessment) => (
-                        <li key={assessment.invitation_id} className="bg-zinc-800 p-4 rounded-lg">
+                        <li
+                          key={assessment.invitation_id}
+                          className="bg-zinc-800 p-4 rounded-lg"
+                        >
                           <div className="flex justify-between items-center">
                             <div>
-                              <h3 className="font-semibold text-white">Pending Invite</h3>
-                              <p className="text-sm text-zinc-400">From: {assessment.position}</p>
+                              <h3 className="font-semibold text-white">
+                                Pending Invite
+                              </h3>
+                              <p className="text-sm text-zinc-400">
+                                From: {assessment.position}
+                              </p>
                             </div>
                             {assessment.quiz_id ? (
                               <Link
@@ -197,65 +252,88 @@ const DashboardAssessments: React.FC<Props> = ({ userEmail }) => {
                                 Start Quiz
                               </Link>
                             ) : (
-                              <span className="text-sm text-red-500">Quiz not linked</span>
+                              <span className="text-sm text-red-500">
+                                Quiz not linked
+                              </span>
                             )}
-                                  </div>
-                                </li>
-                              ))}
-                            </ul>
-                          )}
-                        </div>
-                      ) : (
-                      <div className="text-center mt-12">
-                        {completedAssessments.length === 0 ? (
-                          <>
-                            <p className="text-lg font-semibold">No completed assessments yet</p>
-                            <p className="text-sm text-zinc-400">They’ll appear here when finished.</p>
-                          </>
-                        ) : (
-                          <ul className="space-y-4">
-                            {completedAssessments.map((assessment) => (
-                              <li key={assessment.invitation_id} className="bg-zinc-800 p-4 rounded-lg">
-                                <div className="flex justify-between items-center">
-                                  <div>
-                                    <h3 className="font-semibold text-white">Completed Assessment</h3>
-                                    <p className="text-sm text-zinc-400">Position: {assessment.position}</p>
-                                  </div>
-                                  <Link
-                                    // href={`/assessments/${assessment.assessment_id}/quiz/${assessment.quiz_id}`}
-                                    href={`/assesment/${assessment.assessment_id}/quiz/${assessment.quiz_id}`}
-                                    className="bg-green-600 text-white px-4 py-1 rounded hover:bg-green-700"
-                                  >
-                                  Review Quiz
-                                </Link>
-                              </div>
-                            </li>
-                          ))}
-                        </ul>
-                      )}
-                  </div>
-                )}
+                          </div>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </div>
+              ) : (
+                <div className="text-center mt-12">
+                  {completedAssessments.length === 0 ? (
+                    <>
+                      <p className="text-lg font-semibold">
+                        No completed assessments yet
+                      </p>
+                      <p className="text-sm text-zinc-400">
+                        They’ll appear here when finished.
+                      </p>
+                    </>
+                  ) : (
+                    <ul className="space-y-4">
+                      {completedAssessments.map((assessment) => (
+                        <li
+                          key={assessment.invitation_id}
+                          className="bg-zinc-800 p-4 rounded-lg"
+                        >
+                          <div className="flex justify-between items-center">
+                            <div>
+                              <h3 className="font-semibold text-white">
+                                Completed Assessment
+                              </h3>
+                              <p className="text-sm text-zinc-400">
+                                Position: {assessment.position}
+                              </p>
+                            </div>
+                            <Link
+                              // href={`/assessments/${assessment.assessment_id}/quiz/${assessment.quiz_id}`}
+                              href={`/assesment/${assessment.assessment_id}/quiz/${assessment.quiz_id}`}
+                              className="bg-green-600 text-white px-4 py-1 rounded hover:bg-green-700"
+                            >
+                              Review Quiz
+                            </Link>
+                          </div>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </div>
+              )}
             </div>
-        </div>
+          </div>
         </section>
       </main>
-      <InvitationPanel open={isInviteOpen} onClose={() => setInviteOpen(false)} onAccepted={fetchInvites} />
-      <ProfilePanel open={isProfileOpen} onClose={() => setProfileOpen(false)} userEmail={userEmail} />
+      <InvitationPanel
+        open={isInviteOpen}
+        onClose={() => setInviteOpen(false)}
+        onAccepted={fetchInvites}
+      />
+      <ProfilePanel
+        open={isProfileOpen}
+        onClose={() => setProfileOpen(false)}
+        userEmail={userEmail}
+      />
     </div>
   );
 };
 
-
-
-const TabLink: React.FC<{ href: string; label: string; pathname: string }> = ({ href, label, pathname }) => {
+const TabLink: React.FC<{ href: string; label: string; pathname: string }> = ({
+  href,
+  label,
+  pathname,
+}) => {
   const isActive = pathname === href;
   return (
     <Link
       href={href}
       className={`flex flex-col items-center justify-end h-12 px-6 text-base tracking-wide transition-all duration-200 ${
         isActive
-          ? 'text-white font-semibold border-b-2 border-blue-500'
-          : 'text-zinc-400 border-b-2 border-transparent hover:text-white hover:border-blue-500'
+          ? "text-white font-semibold border-b-2 border-blue-500"
+          : "text-zinc-400 border-b-2 border-transparent hover:text-white hover:border-blue-500"
       }`}
     >
       <span className="mt-auto mb-1">{label}</span>
@@ -263,4 +341,4 @@ const TabLink: React.FC<{ href: string; label: string; pathname: string }> = ({ 
   );
 };
 
-export default DashboardAssessments; 
+export default DashboardAssessments;
