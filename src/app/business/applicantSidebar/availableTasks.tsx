@@ -25,53 +25,57 @@ const AvailableTask: React.FC<AvailableTaskProps> = ({
   const [quizzes, setQuizzes] = useState<Quiz[]>([]);
   const [error, setError] = useState<string | null>(null);
 
-  async function fetchData() {
-    try {
-      const supabase = createClient();
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const supabase = createClient();
 
-      // 1. Fetch the assessment_id from the invitation
-      const { data: invitation, error: invError } = await supabase
-        .from("invitations")
-        .select("assessment_id")
-        .eq("invitation_id", invitation_id)
-        .single();
+        // 1. Fetch the assessment_id from the invitation
+        const { data: invitation, error: invError } = await supabase
+          .from("invitations")
+          .select("assessment_id")
+          .eq("invitation_id", invitation_id)
+          .single();
 
-      if (invError || !invitation) {
-        throw new Error("Failed to fetch invitation");
-      }
-      const assessmentId = invitation.assessment_id;
+        if (invError || !invitation) {
+          throw new Error("Failed to fetch invitation");
+        }
+        const assessmentId = invitation.assessment_id;
 
-      // 2. Fetch all assigned quizzes for this assessment
-      const assignedResult = await getAssignedQuizes(assessmentId);
-      const assignedIds: number[] = Array.isArray(assignedResult.quizzes)
-        ? assignedResult.quizzes
-            .map((q): number | undefined => {
-              const idValue = q.quiz?.quiz_id;
-              return typeof idValue === "number" ? idValue : undefined;
-            })
-            .filter((idValue): idValue is number => idValue !== undefined)
-        : [];
+        // 2. Fetch all assigned quizzes for this assessment
+        const assignedResult = await getAssignedQuizes(assessmentId);
+        const assignedIds: number[] = Array.isArray(assignedResult.quizzes)
+          ? assignedResult.quizzes
+              .map((q): number | undefined => {
+                const idValue = q.quiz?.quiz_id;
+                return typeof idValue === "number" ? idValue : undefined;
+              })
+              .filter((idValue): idValue is number => idValue !== undefined)
+          : [];
 
-      // 3. Fetch all quizzes
-      const allQuizzes = await getQuizQuestions();
+        // 3. Fetch all quizzes
+        const allQuizzes = await getQuizQuestions();
 
-      // 4. Filter out quizzes that are already assigned
-      const available = allQuizzes.filter((quiz: Quiz) => {
-        const idToCheck = quiz.quiz_id ?? quiz.id;
-        return (
-          typeof idToCheck === "number" && !assignedIds.includes(idToCheck)
+        // 4. Filter out quizzes that are already assigned
+        const available = allQuizzes.filter((quiz: Quiz) => {
+          const idToCheck = quiz.quiz_id ?? quiz.id;
+          return (
+            typeof idToCheck === "number" && !assignedIds.includes(idToCheck)
+          );
+        });
+
+        setQuizzes(available);
+      } catch (err) {
+        console.error(
+          "Error fetching quizzes:",
+          err instanceof Error ? err.message : String(err)
         );
-      });
-
-      setQuizzes(available);
-    } catch (err) {
-      console.error(
-        "Error fetching quizzes:",
-        err instanceof Error ? err.message : String(err)
-      );
-      setError("Failed to load quizzes");
+        setError("Failed to load quizzes");
+      }
     }
-  }
+
+    fetchData();
+  }, [invitation_id, refreshToggle]);
 
   const handleAssignQuiz = async (quiz: Quiz) => {
     try {
@@ -86,11 +90,13 @@ const AvailableTask: React.FC<AvailableTaskProps> = ({
         throw new Error("Failed to fetch invitation");
       }
       const assessment_id = invitation.assessment_id;
+
       // 2. Prepare payload for assignment
       const quiz_id = quiz.quiz_id ?? quiz.id;
       if (typeof quiz_id !== "number") {
         throw new Error("Invalid quiz id");
       }
+
       // 3. Call the assign API route
       const response = await fetch("/api/assign", {
         method: "POST",
@@ -100,14 +106,14 @@ const AvailableTask: React.FC<AvailableTaskProps> = ({
         body: JSON.stringify({
           assessment_id,
           quiz_id,
-          // Optionally add more fields as needed
         }),
       });
       if (!response.ok) {
         const errorData = await response.json();
         throw new Error(errorData.error || "Failed to assign quiz");
       }
-      // Refresh the full available list after assignment
+
+      // Signal parent to refresh available list
       onAssigned();
     } catch (err) {
       console.error(
@@ -117,10 +123,6 @@ const AvailableTask: React.FC<AvailableTaskProps> = ({
       setError("Failed to assign quiz");
     }
   };
-
-  useEffect(() => {
-    fetchData();
-  }, [invitation_id, refreshToggle]);
 
   if (error) {
     return <div className="text-red-500">{error}</div>;
