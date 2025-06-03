@@ -2,8 +2,8 @@
 
 import React, { useState, useEffect } from "react";
 import { createClient } from "@/utils/supabase/client";
-import getQuizQuestions from "@/app/helper/get/getQuizQuestions";
 import { getAssignedQuizes } from "@/app/helper/get/getAssignedQuizes";
+import getQuizQuestionsEmployeer from "@/app/helper/get/getQuizQuestionsEmployeer";
 
 interface AvailableTaskProps {
   invitation_id: string;
@@ -54,7 +54,7 @@ const AvailableTask: React.FC<AvailableTaskProps> = ({
           : [];
 
         // 3. Fetch all quizzes
-        const allQuizzes = await getQuizQuestions();
+        const allQuizzes = await getQuizQuestionsEmployeer();
 
         // 4. Filter out quizzes that are already assigned
         const available = allQuizzes.filter((quiz: Quiz) => {

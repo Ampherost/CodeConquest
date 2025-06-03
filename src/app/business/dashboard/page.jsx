@@ -17,13 +17,15 @@ import ApplicantSidebar from "../applicantSidebar/applicantSidebar";
 
 const supabase = createClient();
 
-const Page = () => {
+const  Page = () => {
   const router = useRouter();
   const [user, setUser] = useState(null);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [sidebarCollapse, setSidebarCollapse] = useState(true);
   const [selectedCandidate, setSelectedCandidate] = useState(null);
+
   useEffect(() => {
+
     supabase.auth.getUser().then(({ data }) => {
       if (!data.user) {
         router.replace("/login");

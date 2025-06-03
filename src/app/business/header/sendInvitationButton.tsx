@@ -1,5 +1,6 @@
 import { useState } from "react";
-import InvitationForm from "../sendInvitation/invitationForm";
+import InvitationForm from "@/app/business/sendInvitation/InvitationForm";
+
 interface InvitationButtonProps {
   business_user_id: string;
 }

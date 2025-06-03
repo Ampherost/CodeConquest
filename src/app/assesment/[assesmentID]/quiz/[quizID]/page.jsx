@@ -13,6 +13,7 @@ import {
   updateStartTimertoNow,
 } from "../../../updateTimer";
 import verifyCompletion from "../../../verifyCompletion";
+import getBaseQuizzes from "@/app/helper/get/getBaseQuizzes";
 
 export default async function functionQuizPage({ params }) {
   const { assesmentID, quizID } = await params;
@@ -58,7 +59,7 @@ export default async function functionQuizPage({ params }) {
           assessmentID={assesmentID}
           quizID={quizID}
           reviewMode={false}
-          submission={submission?.submission ?? []}
+          submission={[]}
         />
       </main>
     </div>

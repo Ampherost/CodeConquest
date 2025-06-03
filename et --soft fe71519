@@ -1,0 +1,72 @@
+[33mf7a6fb4[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m HEAD@{0}: reset: moving to HEAD
+[33mf7a6fb4[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m HEAD@{1}: pull: Fast-forward
+[33mfe71519[m HEAD@{2}: reset: moving to HEAD
+[33mfe71519[m HEAD@{3}: commit: show multiple quizzes
+[33m5d5d451[m HEAD@{4}: pull: Fast-forward
+[33mc3009d7[m HEAD@{5}: pull: Fast-forward
+[33mf0d2ea8[m HEAD@{6}: pull: Fast-forward
+[33me524f40[m HEAD@{7}: pull: Fast-forward
+[33m2f95b5f[m HEAD@{8}: pull: Fast-forward
+[33mcf56652[m HEAD@{9}: reset: moving to HEAD
+[33mcf56652[m HEAD@{10}: pull: Fast-forward
+[33md60473f[m HEAD@{11}: checkout: moving from rmarq030/assignAssesments to main
+[33m2202adc[m[33m ([m[1;32mrmarq030/assignAssesments[m[33m)[m HEAD@{12}: reset: moving to HEAD
+[33m2202adc[m[33m ([m[1;32mrmarq030/assignAssesments[m[33m)[m HEAD@{13}: merge origin/rly014-dev: Fast-forward
+[33m337dfe8[m[33m ([m[1;31morigin/rmarq030/assignAssesments[m[33m)[m HEAD@{14}: reset: moving to HEAD
+[33m337dfe8[m[33m ([m[1;31morigin/rmarq030/assignAssesments[m[33m)[m HEAD@{15}: commit: fixed vercel build
+[33m5174363[m HEAD@{16}: commit: assesment taking
+[33m401ed28[m HEAD@{17}: pull: Fast-forward
+[33m36857b4[m HEAD@{18}: pull: Fast-forward
+[33m8517d7f[m[33m ([m[1;31morigin/rmarq030/candidate-business[m[33m, [m[1;32mrmarq030/candidate-business[m[33m)[m HEAD@{19}: checkout: moving from rmarq030/candidate-business to rmarq030/assignAssesments
+[33m8517d7f[m[33m ([m[1;31morigin/rmarq030/candidate-business[m[33m, [m[1;32mrmarq030/candidate-business[m[33m)[m HEAD@{20}: checkout: moving from main to rmarq030/candidate-business
+[33md60473f[m HEAD@{21}: checkout: moving from rmarq030/candidate-business to main
+[33m8517d7f[m[33m ([m[1;31morigin/rmarq030/candidate-business[m[33m, [m[1;32mrmarq030/candidate-business[m[33m)[m HEAD@{22}: reset: moving to HEAD
+[33m8517d7f[m[33m ([m[1;31morigin/rmarq030/candidate-business[m[33m, [m[1;32mrmarq030/candidate-business[m[33m)[m HEAD@{23}: commit: invitation system updated
+[33mb927eed[m HEAD@{24}: commit: invitation system
+[33md60473f[m HEAD@{25}: checkout: moving from main to rmarq030/candidate-business
+[33md60473f[m HEAD@{26}: reset: moving to HEAD
+[33md60473f[m HEAD@{27}: reset: moving to HEAD
+[33md60473f[m HEAD@{28}: reset: moving to HEAD
+[33md60473f[m HEAD@{29}: checkout: moving from rmarq030/invitations to main
+[33md527f50[m HEAD@{30}: reset: moving to d527f50768b87853bcb1924ed0fa7b459f6cdd17
+[33md60473f[m HEAD@{31}: checkout: moving from main to rmarq030/invitations
+[33md60473f[m HEAD@{32}: checkout: moving from rmarq030/supabase to main
+[33m7e98337[m[33m ([m[1;32mrmarq030/supabase[m[33m)[m HEAD@{33}: checkout: moving from main to rmarq030/supabase
+[33md60473f[m HEAD@{34}: pull: Fast-forward
+[33m7e98337[m[33m ([m[1;32mrmarq030/supabase[m[33m)[m HEAD@{35}: checkout: moving from main to main
+[33m7e98337[m[33m ([m[1;32mrmarq030/supabase[m[33m)[m HEAD@{36}: reset: moving to HEAD
+[33m7e98337[m[33m ([m[1;32mrmarq030/supabase[m[33m)[m HEAD@{37}: checkout: moving from main to main
+[33m7e98337[m[33m ([m[1;32mrmarq030/supabase[m[33m)[m HEAD@{38}: reset: moving to 7e98337
+[33md60473f[m HEAD@{39}: checkout: moving from rmarq030/invitations to main
+[33md60473f[m HEAD@{40}: reset: moving to d60473f
+[33m64f851a[m HEAD@{41}: reset: moving to 64f851a
+[33md60473f[m HEAD@{42}: checkout: moving from rmarq030/invitations to rmarq030/invitations
+[33md60473f[m HEAD@{43}: checkout: moving from main to rmarq030/invitations
+[33md60473f[m HEAD@{44}: reset: moving to origin/main
+[33m64f851a[m HEAD@{45}: reset: moving to HEAD
+[33m64f851a[m HEAD@{46}: reset: moving to 64f851a
+[33md60473f[m HEAD@{47}: checkout: moving from rmarq030/invitations to main
+[33md60473f[m HEAD@{48}: reset: moving to d60473f
+[33m7e98337[m[33m ([m[1;32mrmarq030/supabase[m[33m)[m HEAD@{49}: reset: moving to 7e98337
+[33md60473f[m HEAD@{50}: checkout: moving from main to rmarq030/invitations
+[33md60473f[m HEAD@{51}: reset: moving to origin/main
+[33md60473f[m HEAD@{52}: checkout: moving from rmarq030/invitations to main
+[33md60473f[m HEAD@{53}: checkout: moving from main to rmarq030/invitations
+[33md60473f[m HEAD@{54}: checkout: moving from rmarq030-SignUp to main
+[33m099ed54[m[33m ([m[1;31morigin/rmarq030-SignUp[m[33m, [m[1;32mrmarq030-SignUp[m[33m)[m HEAD@{55}: checkout: moving from main to rmarq030-SignUp
+[33md60473f[m HEAD@{56}: pull: Fast-forward
+[33m64f851a[m HEAD@{57}: checkout: moving from rmarq030-SignUp to main
+[33m099ed54[m[33m ([m[1;31morigin/rmarq030-SignUp[m[33m, [m[1;32mrmarq030-SignUp[m[33m)[m HEAD@{58}: commit: redundant dashboard route
+[33mc37b691[m HEAD@{59}: commit: proper routing for users
+[33m93f9159[m HEAD@{60}: commit: fixed unused headers
+[33m5542144[m HEAD@{61}: commit: supabase database
+[33m7e98337[m[33m ([m[1;32mrmarq030/supabase[m[33m)[m HEAD@{62}: checkout: moving from main to rmarq030-SignUp
+[33m64f851a[m HEAD@{63}: pull: Fast-forward
+[33mf59ddba[m HEAD@{64}: checkout: moving from rmarq030-SignUp to main
+[33m7e98337[m[33m ([m[1;32mrmarq030/supabase[m[33m)[m HEAD@{65}: reset: moving to HEAD
+[33m7e98337[m[33m ([m[1;32mrmarq030/supabase[m[33m)[m HEAD@{66}: reset: moving to 7e9833750f02c60cc4e9161b1287c8703054e27e
+[33mff91afe[m HEAD@{67}: reset: moving to ff91afeefd7dd443e442af83268ccee63c4270df
+[33m7e98337[m[33m ([m[1;32mrmarq030/supabase[m[33m)[m HEAD@{68}: reset: moving to 7e9833750f02c60cc4e9161b1287c8703054e27e
+[33me097b3a[m HEAD@{69}: commit: signup
+[33mf59ddba[m HEAD@{70}: checkout: moving from main to rmarq030-SignUp
+[33mf59ddba[m HEAD@{71}: clone: from https://github.com/Ampherost/Cs180-Project.git
