@@ -2,7 +2,6 @@
 
 import React, { useState, useEffect } from "react";
 import { createClient } from "@/utils/supabase/client";
-import getQuizQuestions from "@/app/helper/get/getQuizQuestions";
 import { getAssignedQuizes } from "@/app/helper/get/getAssignedQuizes";
 import getQuizQuestionsEmployeer from "@/app/helper/get/getQuizQuestionsEmployeer";
 
