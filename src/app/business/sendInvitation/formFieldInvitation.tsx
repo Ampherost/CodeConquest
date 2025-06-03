@@ -5,6 +5,7 @@ import generateCode from "@/app/helper/generateCode";
 interface InvitationFormProps {
   employeerId: string;
   onCancel?: () => void;
+  onSuccess: (inviteCode: string) => void;
 }
 
 interface FormData {
@@ -14,7 +15,11 @@ interface FormData {
   notes: string;
 }
 
-const InvitationForm = ({ employeerId, onCancel }: InvitationFormProps) => {
+const FormFieldInvitation = ({
+  employeerId,
+  onCancel,
+  onSuccess,
+}: InvitationFormProps) => {
   const [formData, setFormData] = useState<FormData>({
     email: "",
     fullName: "",
@@ -58,7 +63,8 @@ const InvitationForm = ({ employeerId, onCancel }: InvitationFormProps) => {
       return;
     }
 
-    alert("Your invitation code is: " + inviteCode);
+    onSuccess(inviteCode);
+    // alert("Your invitation code is: " + inviteCode);
     if (onCancel) onCancel();
     setSubmitted(false);
   };
@@ -139,4 +145,4 @@ const InvitationForm = ({ employeerId, onCancel }: InvitationFormProps) => {
   );
 };
 
-export default InvitationForm;
+export default FormFieldInvitation;
