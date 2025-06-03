@@ -24,7 +24,7 @@ const Signout = () => {
     <div className="flex flex-row space-x-2 font-light text-lg text-center ">
       <button
         onClick={() => setShowConfirm(true)}
-        className="hover:bg-black cursor-pointer rounded px-2 py-1 transition flex flex-row"
+        className="hover:bg-black cursor-pointer rounded px-2 py-1 transition duration-300 flex flex-row"
       >
         <Image src="/assets/exit.png" alt="Sign Out" width={24} height={20} />
         <h1>Sign Out</h1>

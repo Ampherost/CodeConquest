@@ -2,22 +2,36 @@
 import { useState } from "react";
 import generateCode from "@/app/helper/generateCode";
 
-export default function InvitationForm({ employeerId }) {
-  const [formData, setFormData] = useState({
+interface InvitationFormProps {
+  employeerId: string;
+  onCancel?: () => void;
+}
+
+interface FormData {
+  email: string;
+  fullName: string;
+  position: string;
+  notes: string;
+}
+
+const InvitationForm = ({ employeerId, onCancel }: InvitationFormProps) => {
+  const [formData, setFormData] = useState<FormData>({
     email: "",
     fullName: "",
     position: "",
     notes: "",
   });
 
-  const [submitted, setSubmitted] = useState(false);
+  const [submitted, setSubmitted] = useState<boolean>(false);
 
-  const handleChange = (e) => {
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const onSubmit = async (e) => {
+  const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setSubmitted(true);
     const inviteCode = generateCode();
@@ -45,11 +59,12 @@ export default function InvitationForm({ employeerId }) {
     }
 
     alert("Invitation created successfully!");
+    if (onCancel) onCancel();
     setSubmitted(false);
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-300 text-black">
+    <div className="flex items-center justify-center  text-black w-full">
       <div className="bg-white p-6 rounded-lg w-[300px] shadow-md">
         <form onSubmit={onSubmit} className="flex flex-col gap-3">
           <div>
@@ -99,13 +114,17 @@ export default function InvitationForm({ employeerId }) {
           </div>
 
           <div className="flex justify-between pt-2">
-            <button type="button" className="text-sm text-black">
+            <button
+              type="button"
+              className="text-sm text-black cursor-pointer hover:underline"
+              onClick={onCancel}
+            >
               Cancel
             </button>
             <button
               type="submit"
               disabled={submitted}
-              className={`px-4 py-2 rounded text-sm transition duration-200 ${
+              className={`px-4 py-2 rounded text-sm transition duration-200 hover hover:bg-zinc-900 ${
                 submitted
                   ? "bg-gray-500 text-white cursor-not-allowed"
                   : "bg-black text-white"
@@ -118,4 +137,6 @@ export default function InvitationForm({ employeerId }) {
       </div>
     </div>
   );
-}
+};
+
+export default InvitationForm;

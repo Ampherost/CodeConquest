@@ -5,25 +5,29 @@ import { createClient } from "@/utils/supabase/client";
 
 const supabase = createClient();
 
-interface Candidate {
+// Represents a pending applicant profile (not yet accepted or completed)
+interface PendingCandidate {
   user_id: string;
   full_name: string;
   email: string;
-  position?: string;
-  notes?: string;
+  position: string;
+  notes: string;
   invite_code?: string;
+  invitation_id?: string;
 }
 
 interface pendingApplicantsProps {
   businessUserId: string;
-  onSelect?: (candidate: Candidate) => void;
+  onSelect?: (candidate: PendingCandidate) => void;
+  setSidebarOpen?: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const PendingApplicants: React.FC<pendingApplicantsProps> = ({
   businessUserId,
   onSelect,
+  setSidebarOpen,
 }) => {
-  const [candidates, setCandidates] = useState<Candidate[]>([]);
+  const [candidates, setCandidates] = useState<PendingCandidate[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
@@ -33,42 +37,21 @@ const PendingApplicants: React.FC<pendingApplicantsProps> = ({
       setLoading(true);
 
       // 1. All invitations for this business user
-      const { data: invites, error: invitesError } = await supabase
+      const { data: candRows, error: candError } = await supabase
         .from("invitation_codes")
-        .select("full_name")
+        .select("invite_code, full_name, email, position, notes")
         .eq("business_user_id", businessUserId)
         .eq("status", "pending");
 
-      if (invitesError) {
-        console.error(
-          "Error fetching invitations:",
-          JSON.stringify(invitesError, null, 2)
-        );
-        setLoading(false);
-        return;
-      }
-
-      const candidateName =
-        (invites?.map((row) => row.full_name) as string[]) || [];
-
-      if (candidateName.length === 0) {
-        setCandidates([]);
-        setLoading(false);
-        return;
-      }
-
-      // 2. Fetch candidate names
-      const { data: candRows, error: candError } = await supabase
-        .from("invitation_codes")
-        .select("invite_code, full_name, email, position, notes");
-
       if (candError) {
         console.error("Error fetching candidate users:", candError);
+        setCandidates([]);
       } else {
-        setCandidates((candRows ?? []) as Candidate[]);
+        setCandidates(candRows as PendingCandidate[]);
       }
 
       setLoading(false);
+      return;
     };
 
     fetchCandidates();
@@ -88,8 +71,11 @@ const PendingApplicants: React.FC<pendingApplicantsProps> = ({
         {candidates.map((c) => (
           <li key={c.invite_code}>
             <button
-              className="w-full text-left hover:text-blue-400 transition-colors"
-              onClick={() => onSelect?.(c)}
+              className="cursor-pointer w-full text-left hover:text-blue-400 transition-colors"
+              onClick={() => {
+                onSelect?.({ ...c, invitation_id: "" });
+                setSidebarOpen?.((prev) => !prev); // Toggle sidebar open state
+              }}
             >
               {c.full_name}
             </button>

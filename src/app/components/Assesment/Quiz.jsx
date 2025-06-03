@@ -6,8 +6,7 @@ import Timer from "../Timer";
 import confetti from "canvas-confetti";
 import ConfirmModal from "../ConfirmModal";
 
-async function submitQuiz({ assessmentID, quizID, answers }) 
-{
+async function submitQuiz({ assessmentID, quizID, answers }) {
   try {
     const response = await fetch("/api/submit-quiz", {
       method: "POST",
@@ -23,7 +22,12 @@ async function submitQuiz({ assessmentID, quizID, answers })
   }
 }
 
-export default function Quiz({ quiz_questions, initialTimeLeft, assessmentID, quizID }) {
+export default function Quiz({
+  quiz_questions,
+  initialTimeLeft,
+  assessmentID,
+  quizID,
+}) {
   const [answers, setAnswers] = useState([]);
   const [hasSubmitted, setHasSubmitted] = useState(false);
   const [submissionError, setSubmissionError] = useState(null);
@@ -33,8 +37,8 @@ export default function Quiz({ quiz_questions, initialTimeLeft, assessmentID, qu
   const isSubmitting = isPending;
 
   const handleAnswer = (question_id, answer, type) => {
-    setAnswers(prev => {
-      const filtered = prev.filter(a => a.question_id !== question_id);
+    setAnswers((prev) => {
+      const filtered = prev.filter((a) => a.question_id !== question_id);
       return [...filtered, { question_id, answer, isCorrect: null, type }];
     });
   };
@@ -45,10 +49,16 @@ export default function Quiz({ quiz_questions, initialTimeLeft, assessmentID, qu
 
   const handleFinalSubmit = () => {
     setSubmissionError(null);
-    const filledAnswers = answers.filter(a => a.answer !== null && a.answer !== "");
+    const filledAnswers = answers.filter(
+      (a) => a.answer !== null && a.answer !== ""
+    );
 
     startTransition(async () => {
-      const result = await submitQuiz({ assessmentID, quizID, answers: filledAnswers });
+      const result = await submitQuiz({
+        assessmentID,
+        quizID,
+        answers: filledAnswers,
+      });
       if (result.success) {
         setHasSubmitted(true);
         triggerConfetti();
@@ -74,16 +84,24 @@ export default function Quiz({ quiz_questions, initialTimeLeft, assessmentID, qu
     <div className="min-h-screen bg-white dark:bg-zinc-900 text-zinc-900 dark:text-zinc-100 py-10 px-4 md:px-8">
       <div className="max-w-7xl mx-auto w-full">
         <div className="flex flex-col items-center justify-between px-4">
-          <h2 className="text-5xl font-extrabold text-center py-8">Assessment</h2>
-          <Timer initialTime={initialTimeLeft} onExpire={handleFinalSubmit} hasUserSubmitted = {hasSubmitted} />
+          <h2 className="text-5xl font-extrabold text-center py-8">
+            Assessment
+          </h2>
+          <Timer
+            initialTime={initialTimeLeft}
+            onExpire={handleFinalSubmit}
+            hasUserSubmitted={hasSubmitted}
+          />
         </div>
 
         <div className="space-y-10">
-          {quiz_questions.map((qs) => (
+          {quiz_questions.map((qs, idx) => (
             <Question
-              key={qs.question_id}
+              key={`${qs.question_id}-${idx}`}
               {...qs}
-              onAnswer={(answer) => handleAnswer(qs.question_id, answer, qs.type)}
+              onAnswer={(answer) =>
+                handleAnswer(qs.question_id, answer, qs.type)
+              }
             />
           ))}
         </div>
@@ -95,15 +113,15 @@ export default function Quiz({ quiz_questions, initialTimeLeft, assessmentID, qu
             hasSubmitted
               ? "bg-gray-400 cursor-not-allowed"
               : isSubmitting
-              ? "bg-gray-500 cursor-wait"
-              : "bg-gradient-to-r from-blue-600 to-indigo-500 hover:from-blue-700 hover:to-indigo-600"
+                ? "bg-gray-500 cursor-wait"
+                : "bg-gradient-to-r from-blue-600 to-indigo-500 hover:from-blue-700 hover:to-indigo-600"
           }`}
         >
           {isSubmitting
             ? "Submitting..."
             : hasSubmitted
-            ? "✅ Submitted Successfully"
-            : "🚀 Submit Answers"}
+              ? "✅ Submitted Successfully"
+              : "🚀 Submit Answers"}
         </button>
 
         {submissionError && (

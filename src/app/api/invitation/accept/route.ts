@@ -85,9 +85,39 @@ export async function POST(request: NextRequest) {
     .eq("invite_code", code);
 
   if (updateError) {
-    console.error("Insert error:", insertError);
+    console.error("Update error:", updateError);
     return NextResponse.json(
       { error: "Failed to update invitation code status." },
+      { status: 500 }
+    );
+  }
+
+  // Copy note from invitation_codes and update the corresponding invitation
+  const { data: noteData, error: noteFetchError } = await supabase
+    .from("invitation_codes")
+    .select("notes")
+    .eq("invite_code", code)
+    .single();
+
+  if (noteFetchError) {
+    console.error("Fetch note error:", noteFetchError);
+    return NextResponse.json(
+      { error: "Failed to fetch note from invitation code." },
+      { status: 500 }
+    );
+  }
+
+  const { error: noteUpdateError } = await supabase
+    .from("invitations")
+    .update({ notes: noteData.notes })
+    .eq("business_user_id", inviteData.business_user_id)
+    .eq("candidate_user_id", user.id)
+    .eq("position", inviteData.position);
+
+  if (noteUpdateError) {
+    console.error("Note update error:", noteUpdateError);
+    return NextResponse.json(
+      { error: "Failed to update note in invitation." },
       { status: 500 }
     );
   }

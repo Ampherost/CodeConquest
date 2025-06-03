@@ -1,12 +1,11 @@
+"use client";
 
-'use client';
-
-import { useEffect } from 'react';
-import { useRouter } from 'next/navigation';
-import Link from 'next/link';
-import { ToastContainer } from 'react-toastify';
-import { HandleSignIn } from '@/app/login/loginActions';
-import { useActionState } from 'react';
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
+import { ToastContainer } from "react-toastify";
+import { HandleSignIn } from "@/app/login/loginActions";
+import { useActionState } from "react";
 
 export default function SignIn() {
   const router = useRouter();
@@ -61,47 +60,53 @@ export default function SignIn() {
         {state?.error && (
           <div className="text-red-500 text-sm space-y-1 mt-2">
             {/* If there's a general “message” (e.g. email‐related) */}
-            {state.error.message && (
-              Array.isArray(state.error.message) ? (
+            {state.error.message &&
+              (Array.isArray(state.error.message) ? (
                 state.error.message.map((err, i) => (
                   <p key={`msg-${i}`}>{err}</p>
                 ))
               ) : (
                 <p>{state.error.message}</p>
-              )
-            )}
+              ))}
 
             {/* If there's a password‐specific error */}
-            {state.error.password && (
-              Array.isArray(state.error.password) ? (
+            {state.error.password &&
+              (Array.isArray(state.error.password) ? (
                 state.error.password.map((err, i) => (
                   <p key={`pwd-${i}`}>{err}</p>
                 ))
               ) : (
                 <p>{state.error.password}</p>
-              )
-            )}
+              ))}
 
             {/* If there are any other field‐specific errors (e.g. state.error.email) */}
-            {state.error.email && (
-              Array.isArray(state.error.email) ? (
+            {state.error.email &&
+              (Array.isArray(state.error.email) ? (
                 state.error.email.map((err, i) => (
                   <p key={`email-${i}`}>{err}</p>
                 ))
               ) : (
                 <p>{state.error.email}</p>
-              )
-            )}
+              ))}
           </div>
         )}
 
         <div className="text-center text-sm text-gray-600 dark:text-gray-400 mt-4">
-          Don’t have an account?{' '}
+          Don’t have an account?{" "}
           <Link
             href="/signup"
             className="text-blue-600 hover:underline dark:text-blue-400"
           >
             Sign Up
+          </Link>
+        </div>
+        <div className="text-center text-sm text-gray-600 dark:text-gray-400 mt-4">
+          Check us out{" "}
+          <Link
+            href="/"
+            className="text-blue-600 hover:underline dark:text-blue-400"
+          >
+            here
           </Link>
         </div>
       </form>
@@ -110,5 +115,3 @@ export default function SignIn() {
     </div>
   );
 }
-
-
