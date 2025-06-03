@@ -240,7 +240,8 @@ const DashboardAssessments: React.FC<Props> = ({ userEmail }) => {
                     </>
                   ) : (
                     <ul className="space-y-4">
-                      {pendingAssessments.map((assessment) => (
+                      {/*   key={assessment.invitation_id} */}
+                      {pendingAssessments.map((assessment, id) => (
                         <li
                           key={`${assessment.invitation_id}-${assessment.quiz_id}`}
                           className="bg-zinc-800 p-4 rounded-lg"
