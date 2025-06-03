@@ -120,7 +120,7 @@ const ApplicantSidebar = ({
         {!pendingData && (
           <>
             <AssignedTask invitation_id={invitationID} />
-            <AvailableTask />
+            <AvailableTask invitation_id={invitationID} />
           </>
         )}
         <Notes notes={notes} />
