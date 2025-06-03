@@ -1,23 +1,19 @@
 import MCQ, { FRQ } from "./Option";
 
-export default function Question({
-  type,
-  title,
-  options = [],
-  onAnswer,
-  description,
-  hints,
-}) {
+export default function Question({ type, title, options = [], onAnswer, description, hints, initialAnswer, disabled })
+ {
   let QuestionComponent;
-  const normalizedType = (type || "").toLowerCase().trim();
-  console.log("Raw type:", type);
-  console.log("Normalized type:", normalizedType);
-  console.log("Normalized type:", normalizedType);
 
-  switch (normalizedType) {
+  switch (type) {
     case "mcq":
       QuestionComponent = (
-        <MCQ title={title} options={options} onAnswer={onAnswer} />
+        <MCQ
+          title={title}
+          options={options}
+          onAnswer={onAnswer}
+          initialAnswer={initialAnswer}
+          reviewMode={disabled} 
+        />
       );
       break;
     case "frq":
@@ -27,13 +23,13 @@ export default function Question({
           onAnswer={onAnswer}
           description={description}
           hints={hints}
+          initialAnswer={initialAnswer}
+          reviewMode={disabled}  
         />
       );
       break;
     default:
-      QuestionComponent = (
-        <MCQ title={title} options={options} onAnswer={onAnswer} />
-      );
+      QuestionComponent = <div>Unsupported question type: {type}</div>;
   }
 
   return <div>{QuestionComponent}</div>;

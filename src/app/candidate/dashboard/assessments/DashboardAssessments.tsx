@@ -302,7 +302,7 @@ const DashboardAssessments: React.FC<Props> = ({ userEmail }) => {
                               </p>
                             </div>
                             <Link
-                              href={`/assesment/${assessment.assessment_id}/quiz/${assessment.quiz_id}`}
+                              href={`/assesment/${assessment.assessment_id}/quiz/${assessment.quiz_id}/review`}
                               className="bg-green-600 text-white px-4 py-1 rounded hover:bg-green-700"
                             >
                               Review Quiz

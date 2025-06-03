@@ -4,14 +4,17 @@ import { createClient } from "@/utils/supabase/server";
 import getQuizQuestions from "@/app/helper/get/getQuizQuestions";
 
 export default async function ReviewQuizPage({ params }) {
+  // params is already an object, no need to await
   const { assesmentID, quizID } = await params;
+
   const supabase = await createClient();
 
   // Fetch the stored submission for this assessment and quiz
   const { data: fetched, error } = await supabase
     .from("assessment_quizzes")
     .select("submission")
-    .match({ assessment_id: assesmentID, quiz_id: quizID })
+    .eq("assessment_id", assesmentID)
+    .eq("quiz_id", quizID)
     .single();
 
   if (error) {
@@ -22,16 +25,18 @@ export default async function ReviewQuizPage({ params }) {
     );
   }
 
+
   const quizQuestions = await getQuizQuestions(quizID);
+
+  // fetched.submission is jsonb, so it should be object/array already.
+  // But just in case it is a string, parse it safely:
   let submissionArray = fetched?.submission ?? [];
-  if (
-    typeof submissionArray === "string" &&
-    submissionArray.trim().startsWith("[")
-  ) {
+
+  if (typeof submissionArray === "string") {
     try {
       submissionArray = JSON.parse(submissionArray);
     } catch (err) {
-      console.error("Failed to parse submission:", err);
+      console.error("Failed to parse submission JSON:", err);
       submissionArray = [];
     }
   }
@@ -44,7 +49,7 @@ export default async function ReviewQuizPage({ params }) {
           assessmentID={assesmentID}
           quizID={quizID}
           reviewMode={true}
-          submission={submissionArray}
+          submission={submissionArray.submission}
         />
       </main>
     </div>

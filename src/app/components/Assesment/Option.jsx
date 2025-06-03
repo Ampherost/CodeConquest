@@ -1,10 +1,18 @@
-import { useState, useId } from "react";
+import { useState, useEffect, use } from "react";
 
-export default function MCQ({ options = [], onAnswer, title }) {
-  const [selected, setSelected] = useState(null);
-  const groupName = useId();
+export default function MCQ({ options = [], onAnswer, title, initialAnswer, reviewMode }) {
+  const [selected, setSelected] = useState(initialAnswer || "");
+
+  // Sync selected state when initialAnswer changes
+  useEffect(() => {
+    setSelected(initialAnswer || "");
+  }, [initialAnswer]);
+
+  // Use a stable group name
+  const groupName = "mcq-group";
 
   const handleSelect = (option) => {
+    if (reviewMode) return;
     setSelected(option);
     onAnswer(option);
   };
@@ -29,20 +37,27 @@ export default function MCQ({ options = [], onAnswer, title }) {
                 hover:border-[#58a6ff]`}
             >
               <span className="relative w-6 h-6 grid place-items-center shrink-0">
-                <input
-                  type="radio"
-                  name={groupName}
-                  value={option}
-                  checked={selected === option}
-                  onChange={() => handleSelect(option)}
-                  className="
-                    peer appearance-none w-6 h-6 rounded-full border-2 border-[#30363d]
-                    bg-transparent checked:border-[#58a6ff] focus:outline-none
-                    focus:ring-2 focus:ring-[#58a6ff80]"
-                />
-                <span className="absolute w-3 h-3 bg-[#58a6ff] rounded-full opacity-0 peer-checked:opacity-100" />
-              </span>
-
+  <input
+    type="radio"
+    name={groupName}
+    value={option}
+    checked={selected === option}
+    onChange={() => handleSelect(option)}
+    disabled={reviewMode}
+    className={`
+      appearance-none w-6 h-6 rounded-full border-2
+      ${selected === option ? "border-[#58a6ff]" : "border-[#30363d]"}
+      bg-transparent focus:outline-none
+      focus:ring-2 focus:ring-[#58a6ff80]
+      transition-colors duration-200
+    `}
+  />
+  <span
+    className={`absolute w-3 h-3 bg-[#58a6ff] rounded-full transition-opacity duration-200 ${
+      selected === option ? "opacity-100" : "opacity-0"
+    }`}
+  />
+</span>
               <p className="text-white text-base font-medium leading-normal">
                 {option}
               </p>
@@ -54,16 +69,23 @@ export default function MCQ({ options = [], onAnswer, title }) {
   );
 }
 
-export function FRQ({ onAnswer, description, hints, title }) {
-  const [response, setResponse] = useState("");
+export function FRQ({ onAnswer, description, hints, title, initialAnswer = "", reviewMode = false }) {
+  const [response, setResponse] = useState(initialAnswer);
+
+
+  useEffect(() => {
+    setResponse(initialAnswer || "");
+  }, [initialAnswer]);
 
   const handleChange = (e) => {
+    if (reviewMode) return; 
     const value = e.target.value;
     setResponse(value);
     onAnswer(value);
   };
 
   const handleTabInsert = (e) => {
+    if (reviewMode) return; 
     if (e.key === "Tab") {
       e.preventDefault();
       const textarea = e.target;
@@ -129,6 +151,7 @@ export function FRQ({ onAnswer, description, hints, title }) {
               autoComplete="off"
               autoCorrect="off"
               rows={20}
+              disabled={reviewMode}
               className="
                 w-full min-h-[600px] p-5 font-mono text-base text-zinc-900 dark:text-zinc-100
                 resize-y rounded-xl bg-zinc-100 dark:bg-zinc-800
