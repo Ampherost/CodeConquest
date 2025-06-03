@@ -17,15 +17,21 @@ import ApplicantSidebar from "../applicantSidebar/applicantSidebar";
 
 const supabase = createClient();
 
-const  Page = () => {
+const Page = () => {
   const router = useRouter();
   const [user, setUser] = useState(null);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [sidebarCollapse, setSidebarCollapse] = useState(true);
   const [selectedCandidate, setSelectedCandidate] = useState(null);
+  const [inviteCode, setInviteCode] = useState("");
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const handleInviteSuccess = (code) => {
+    setInviteCode(code);
+    setIsModalOpen(true);
+  };
 
   useEffect(() => {
-
     supabase.auth.getUser().then(({ data }) => {
       if (!data.user) {
         router.replace("/login");
@@ -52,7 +58,10 @@ const  Page = () => {
         <div className="flex flex-row items-center space-x-4">
           <Profile />
           <Notifications />
-          <Invitation business_user_id={user.id} />
+          <Invitation
+            business_user_id={user.id}
+            onSuccess={handleInviteSuccess}
+          />
           <Signout />
         </div>
       </div>
@@ -106,6 +115,27 @@ const  Page = () => {
               setSidebarOpen={setSidebarOpen}
               sidebarCollapse={setSidebarCollapse}
             />
+          </div>
+        )}
+        {isModalOpen && (
+          <div className="fixed inset-0 flex items-center justify-center bg-zinc-900/95 bg-opacity-60 z-50 transform transition-all duration-500 ease-in-out">
+            <div className="bg-gray-800 p-6 rounded-lg shadow-xl max-w-md w-full text-white">
+              <h2 className="text-lg font-medium mb-4 text-white">
+                Invitation Created
+              </h2>
+              <p className="text-gray-200 mb-6">
+                Your invitation code is:
+                <span className="font-semibold text-indigo-400 ml-1">
+                  {inviteCode}
+                </span>
+              </p>
+              <button
+                onClick={() => setIsModalOpen(false)}
+                className="px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-500 transition cursor-pointer"
+              >
+                Close
+              </button>
+            </div>
           </div>
         )}
       </div>

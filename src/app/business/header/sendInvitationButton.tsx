@@ -1,11 +1,15 @@
 import { useState } from "react";
-import InvitationForm from "@/app/business/sendInvitation/InvitationForm";
+import InvitationForm from "@/app/business/sendInvitation/formFieldInvitation";
 
 interface InvitationButtonProps {
   business_user_id: string;
+  onSuccess: (inviteCode: string) => void;
 }
 
-const InvitationButton = ({ business_user_id }: InvitationButtonProps) => {
+const InvitationButton = ({
+  business_user_id,
+  onSuccess,
+}: InvitationButtonProps) => {
   const [open, setOpen] = useState(false);
 
   return (
@@ -25,6 +29,7 @@ const InvitationButton = ({ business_user_id }: InvitationButtonProps) => {
             <InvitationForm
               employeerId={business_user_id}
               onCancel={() => setOpen(false)}
+              onSuccess={onSuccess}
             />
           </div>
         </div>
