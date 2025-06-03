@@ -1,5 +1,4 @@
 "use client";
-
 import { useRouter } from "next/navigation";
 import { createClient } from "@/utils/supabase/client";
 import DashboardCurrent from "./DashboardCurrent";
@@ -10,7 +9,7 @@ const Page = () => {
   const [user, setUser] = useState(null);
 
   useEffect(() => {
-    const supabase =  createClient();
+    const supabase = createClient();
     supabase.auth.getUser().then(({ data }) => {
       if (!data.user) {
         router.replace("/login");
