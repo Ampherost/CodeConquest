@@ -15,3 +15,4 @@ export default async function getQuizQuestions(quiz_id) {
 
   return data || null;
 }
+

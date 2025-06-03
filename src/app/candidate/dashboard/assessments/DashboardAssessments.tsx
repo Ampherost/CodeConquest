@@ -54,28 +54,42 @@ const DashboardAssessments: React.FC<Props> = ({ userEmail }) => {
       status,
       assessment_id,
       assessment_quizzes:assessment_id (
-      quiz_id,
-      status
-    )
-  `
+        quiz_id,
+        status
+      )
+    `
       )
       .eq("candidate_user_id", user.id);
 
-  if (!error && data) {
-  const allQuizzes = data.flatMap((d) =>
-    d.assessment_quizzes?.map((quiz) => ({    
-      ...d,
-      quiz_id: quiz.quiz_id ?? null,
-      quiz_status: quiz.status,
-    })) ?? []
-  );
+    if (!error && data) {
+      // Build one list item per quiz so multiple pending quizzes show up
+      const pending = data.flatMap((inv) =>
+        (Array.isArray(inv.assessment_quizzes) ? inv.assessment_quizzes : [])
+          .filter((q) => q.status === "pending")
+          .map((q) => ({
+            invitation_id: inv.invitation_id,
+            position: inv.position,
+            assessment_id: inv.assessment_id,
+            quiz_id: q.quiz_id,
+            status: q.status,
+          }))
+      );
 
-  const pending = allQuizzes.filter((q) => q.quiz_status === "pending");
-  const completed = allQuizzes.filter((q) => q.quiz_status === "completed");
+      const completed = data.flatMap((inv) =>
+        (Array.isArray(inv.assessment_quizzes) ? inv.assessment_quizzes : [])
+          .filter((q) => q.status === "completed")
+          .map((q) => ({
+            invitation_id: inv.invitation_id,
+            position: inv.position,
+            assessment_id: inv.assessment_id,
+            quiz_id: q.quiz_id,
+            status: q.status,
+          }))
+      );
 
-  setPendingAssessments(pending);
-  setCompletedAssessments(completed);
-}
+      setPendingAssessments(pending);
+      setCompletedAssessments(completed);
+    }
   }, []);
 
   useEffect(() => {
@@ -182,7 +196,7 @@ const DashboardAssessments: React.FC<Props> = ({ userEmail }) => {
             Your Assessments
           </h2>
           <div className="overflow-x-auto">
-            <div className="flex gap-6 py-1 w-max">
+            <div className="flex flex-col gap-6 py-1">
               {/* Tab Switcher */}
               <div className="flex gap-6 border-b border-zinc-600 mb-4">
                 <button
@@ -214,37 +228,36 @@ const DashboardAssessments: React.FC<Props> = ({ userEmail }) => {
               </div>
               {/* Content Swap */}
               {activeTab === "pending" ? (
-                <div className="text-center mt-12">
+                <div className="text-center mt-12 flex flex-col">
                   {pendingAssessments.length === 0 ? (
                     <>
                       <p className="text-lg font-semibold">
                         You have no pending assessments
                       </p>
-                      <p className="text-sm text-zinc-400">
+                      <p className="text-sm text-zinc-400 flex flex-col">
                         Check back later or explore more modules.
                       </p>
                     </>
                   ) : (
                     <ul className="space-y-4">
                       {/*   key={assessment.invitation_id} */}
-                      {pendingAssessments.map((assessment,id) => (
+                      {pendingAssessments.map((assessment) => (
                         <li
-                         key = {`${assessment.invitation_id}-${id}`} 
-                         
+                          key={`${assessment.invitation_id}-${assessment.quiz_id}`}
                           className="bg-zinc-800 p-4 rounded-lg"
                         >
-                          <div className="flex justify-between items-center">
+                          <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
                             <div>
                               <h3 className="font-semibold text-white">
-                                Pending Invite
+                                Your Assesment is Pendiing
                               </h3>
                               <p className="text-sm text-zinc-400">
-                                From: {assessment.position}
+                                For: {assessment.position}
                               </p>
+                              <p></p>
                             </div>
                             {assessment.quiz_id ? (
                               <Link
-                                // href={`/assessments/${assessment.assessment_id}/quiz/${assessment.quiz_id}`}
                                 href={`/assesment/${assessment.assessment_id}/quiz/${assessment.quiz_id}`}
                                 className="bg-blue-600 text-white px-4 py-1 rounded hover:bg-blue-700"
                               >
@@ -276,10 +289,10 @@ const DashboardAssessments: React.FC<Props> = ({ userEmail }) => {
                     <ul className="space-y-4">
                       {completedAssessments.map((assessment) => (
                         <li
-                          key={assessment.invitation_id}
+                          key={`${assessment.invitation_id}-${assessment.quiz_id}`}
                           className="bg-zinc-800 p-4 rounded-lg"
                         >
-                          <div className="flex justify-between items-center">
+                          <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
                             <div>
                               <h3 className="font-semibold text-white">
                                 Completed Assessment
@@ -289,8 +302,7 @@ const DashboardAssessments: React.FC<Props> = ({ userEmail }) => {
                               </p>
                             </div>
                             <Link
-                              // href={`/assessments/${assessment.assessment_id}/quiz/${assessment.quiz_id}`}
-                              href={`/assesment/${assessment.assessment_id}/quiz/${assessment.quiz_id}`}
+                              href={`/assesment/${assessment.assessment_id}/quiz/${assessment.quiz_id}/review`}
                               className="bg-green-600 text-white px-4 py-1 rounded hover:bg-green-700"
                             >
                               Review Quiz

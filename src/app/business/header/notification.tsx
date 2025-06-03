@@ -2,7 +2,7 @@ import Image from "next/image";
 const notifications = () => {
   return (
     <div>
-      <button className="bg-blend-lighten rounded-md p-2">
+      <button className="bg-blend-lighten cursor-pointer rounded-md p-2 hover:bg-black  transition-all duration-300">
         <Image
           src={"/assets/notification.png"}
           alt="Notification Icon"
