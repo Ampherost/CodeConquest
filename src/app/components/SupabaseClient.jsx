@@ -14,7 +14,7 @@ const SupabaseClient = () => {
     {
       const { data, error } = await supabase.auth.getUser()
       if (error) {
-        console.error("Error fetching user:", error)
+        console.error("Error fetching user please:", error)
         return
       }
       setUser(data.user)
