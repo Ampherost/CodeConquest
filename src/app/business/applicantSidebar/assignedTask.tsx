@@ -4,9 +4,15 @@ import { createClient } from "@/utils/supabase/client";
 
 interface AssignedTaskProps {
   invitation_id: string;
+  refreshToggle?: number;
+  OnUnassigned: () => void;
 }
 
-const AssignedTask = ({ invitation_id }: AssignedTaskProps) => {
+const AssignedTask = ({
+  invitation_id,
+  refreshToggle,
+  OnUnassigned,
+}: AssignedTaskProps) => {
   interface Quiz {
     quiz?: {
       quiz_id?: string;
@@ -40,7 +46,26 @@ const AssignedTask = ({ invitation_id }: AssignedTaskProps) => {
     };
 
     fetchQuizzes();
-  }, [invitation_id]);
+  }, [invitation_id, refreshToggle]);
+
+  // Function to unassign a quiz by deleting the row via API
+  const handleUnassign = async (quizId?: string) => {
+    if (!quizId) return;
+    try {
+      const response = await fetch("/api/unassign", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ invitation_id, quiz_id: quizId }),
+      });
+      if (response.ok) {
+        OnUnassigned();
+      }
+    } catch (error) {
+      console.error("Failed to unassign quiz:", error);
+    }
+  };
 
   return (
     <div>
@@ -50,7 +75,7 @@ const AssignedTask = ({ invitation_id }: AssignedTaskProps) => {
       ) : (
         quizzes.map((q, idx) => (
           <div
-            key={idx}
+            key={q.quiz?.quiz_id ?? idx}
             className="flex flex-row justify-between items-center p-2"
           >
             <h2 className="font-medium">{q.quiz?.title || "Untitled Quiz"}</h2>
@@ -64,7 +89,26 @@ const AssignedTask = ({ invitation_id }: AssignedTaskProps) => {
                 Completed
               </button>
             ) : (
-              <span>{q.status || "Pending"}</span>
+              <>
+                <span>{q.status || "Pending"}</span>
+                <button
+                  disabled={!q.quiz?.quiz_id}
+                  className={`ml-4 px-3 py-1 rounded cursor-pointer ${
+                    q.quiz?.quiz_id
+                      ? "bg-red-500 text-white hover:bg-red-600"
+                      : "bg-gray-300 text-gray-600 cursor-not-allowed"
+                  }`}
+                  onClick={() => {
+                    if (q.quiz?.quiz_id) {
+                      handleUnassign(q.quiz.quiz_id);
+                    } else {
+                      console.error("Cannot unassign: quiz_id is undefined");
+                    }
+                  }}
+                >
+                  Unassign
+                </button>
+              </>
             )}
           </div>
         ))

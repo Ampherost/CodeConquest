@@ -38,6 +38,7 @@ const ApplicantSidebar = ({
   const [status, setStatus] = useState("Loading...");
   const [position, setPosition] = useState("Loading...");
   const [notes, setNotes] = useState("Loading...");
+  const [refreshToggle, setRefreshToggle] = useState(0);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -119,8 +120,16 @@ const ApplicantSidebar = ({
         <SideBarHeader name={name} status={status} position={position} />
         {!pendingData && (
           <>
-            <AssignedTask invitation_id={invitationID} />
-            <AvailableTask invitation_id={invitationID} />
+            <AssignedTask
+              invitation_id={invitationID}
+              refreshToggle={refreshToggle}
+              OnUnassigned={() => setRefreshToggle((prev) => prev + 1)}
+            />
+            <AvailableTask
+              invitation_id={invitationID}
+              onAssigned={() => setRefreshToggle((prev) => prev + 1)}
+              refreshToggle={refreshToggle}
+            />
           </>
         )}
         <Notes notes={notes} />

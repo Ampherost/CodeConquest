@@ -19,9 +19,9 @@ export default function MCQ({ options = [], onAnswer, title }) {
         )}
 
         <div className="flex flex-col gap-3">
-          {options.map((option, index) => (
+          {options.map((option) => (
             <label
-              key={index}
+              key={option}
               className={`
                 flex items-center gap-4 rounded-xl border p-4 cursor-pointer
                 transition-all select-none
@@ -108,7 +108,9 @@ export function FRQ({ onAnswer, description, hints, title }) {
               </h2>
               <ul className="list-disc list-inside text-zinc-700 dark:text-zinc-300 text-base leading-relaxed space-y-1">
                 {Array.isArray(hints) && hints.length > 0 ? (
-                  hints.map((hint, index) => <li key={index}>{hint}</li>)
+                  hints.map((hint, index) => (
+                    <li key={`${hint}-${index}`}>{hint}</li>
+                  ))
                 ) : (
                   <li>No hints available.</li>
                 )}
