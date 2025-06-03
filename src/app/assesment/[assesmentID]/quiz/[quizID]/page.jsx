@@ -57,6 +57,8 @@ export default async function functionQuizPage({ params }) {
           initialTimeLeft={timeLeft}
           assessmentID={assesmentID}
           quizID={quizID}
+          reviewMode={false}
+          submission={submission?.submission ?? []}
         />
       </main>
     </div>

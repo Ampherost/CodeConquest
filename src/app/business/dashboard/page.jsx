@@ -88,6 +88,11 @@ const Page = () => {
             id="sidebar"
             className={`${sidebarOpen ? "block w-64" : "hidden"} flex-[1]`}
           >
+            <div
+              className={`fixed top-0 right-0 h-full flex-[1] bg-zinc-800 transition-transform duration-300 ${
+                sidebarOpen ? "translate-x-0" : "translate-x-full"
+              }`}
+            ></div>
             <ApplicantSidebar
               candidateID={selectedCandidate.user_id}
               invitationID={selectedCandidate.invitation_id}
