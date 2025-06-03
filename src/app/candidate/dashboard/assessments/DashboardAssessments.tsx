@@ -61,24 +61,21 @@ const DashboardAssessments: React.FC<Props> = ({ userEmail }) => {
       )
       .eq("candidate_user_id", user.id);
 
-    if (!error && data) {
-      const pending = data
-        .filter((d) => d.assessment_quizzes?.[0]?.status === "pending")
-        .map((d) => ({
-          ...d,
-          quiz_id: d.assessment_quizzes?.[0]?.quiz_id ?? null,
-        }));
+  if (!error && data) {
+  const allQuizzes = data.flatMap((d) =>
+    d.assessment_quizzes?.map((quiz) => ({    
+      ...d,
+      quiz_id: quiz.quiz_id ?? null,
+      quiz_status: quiz.status,
+    })) ?? []
+  );
 
-      const completed = data
-        .filter((d) => d.assessment_quizzes?.[0]?.status === "completed")
-        .map((d) => ({
-          ...d,
-          quiz_id: d.assessment_quizzes?.[0]?.quiz_id ?? null,
-        }));
+  const pending = allQuizzes.filter((q) => q.quiz_status === "pending");
+  const completed = allQuizzes.filter((q) => q.quiz_status === "completed");
 
-      setPendingAssessments(pending);
-      setCompletedAssessments(completed);
-    }
+  setPendingAssessments(pending);
+  setCompletedAssessments(completed);
+}
   }, []);
 
   useEffect(() => {
@@ -229,9 +226,11 @@ const DashboardAssessments: React.FC<Props> = ({ userEmail }) => {
                     </>
                   ) : (
                     <ul className="space-y-4">
-                      {pendingAssessments.map((assessment) => (
+                      {/*   key={assessment.invitation_id} */}
+                      {pendingAssessments.map((assessment,id) => (
                         <li
-                          key={assessment.invitation_id}
+                         key = {`${assessment.invitation_id}-${id}`} 
+                         
                           className="bg-zinc-800 p-4 rounded-lg"
                         >
                           <div className="flex justify-between items-center">
