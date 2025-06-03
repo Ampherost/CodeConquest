@@ -34,6 +34,7 @@ const ApplicantSidebar = ({
   setSidebarOpen,
   sidebarCollapse,
 }: ApplicantSidebarProps) => {
+  const [mounted, setMounted] = useState(false);
   const [name, setName] = useState("Loading...");
   const [status, setStatus] = useState("Loading...");
   const [position, setPosition] = useState("Loading...");
@@ -84,6 +85,11 @@ const ApplicantSidebar = ({
 
     fetchData();
   }, [candidateID, invitationID, pendingData]);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
   return (
     <div className={`${sidebarCollapse ? "" : ""}  `}>
       <div className="flex justify-between p-5">
@@ -119,7 +125,11 @@ const ApplicantSidebar = ({
         <h1 className="text-white">Profile {pendingData ? "" : ""}</h1>
         <SideBarHeader name={name} status={status} position={position} />
         {!pendingData && (
-          <>
+          <div
+            className={`transform transition-transform duration-500 ease-out ${
+              mounted ? "translate-x-0" : "translate-x-full"
+            }`}
+          >
             <AssignedTask
               invitation_id={invitationID}
               refreshToggle={refreshToggle}
@@ -130,7 +140,7 @@ const ApplicantSidebar = ({
               onAssigned={() => setRefreshToggle((prev) => prev + 1)}
               refreshToggle={refreshToggle}
             />
-          </>
+          </div>
         )}
         <Notes notes={notes} />
       </div>

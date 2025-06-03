@@ -22,6 +22,7 @@ const AssignedTask = ({
   }
 
   const [quizzes, setQuizzes] = useState<Quiz[]>([]);
+  const [assessmentID, setAssessmentID] = useState<string>("");
 
   useEffect(() => {
     const fetchQuizzes = async () => {
@@ -33,6 +34,8 @@ const AssignedTask = ({
         .single();
 
       if (invitationError || !invitation) return;
+
+      setAssessmentID(invitation.assessment_id);
 
       const result = await getAssignedQuizes(invitation.assessment_id);
       if (
@@ -83,7 +86,10 @@ const AssignedTask = ({
               <button
                 className="text-blue-500 underline"
                 onClick={() =>
-                  window.open(`/view-quiz/${q.quiz?.quiz_id}`, "_blank")
+                  window.open(
+                    `/assesment/${assessmentID}/quiz/${q.quiz?.quiz_id}/review`,
+                    "_blank"
+                  )
                 }
               >
                 Completed
