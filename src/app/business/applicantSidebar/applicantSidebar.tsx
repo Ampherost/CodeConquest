@@ -119,8 +119,8 @@ const ApplicantSidebar = ({
         <SideBarHeader name={name} status={status} position={position} />
         {!pendingData && (
           <>
-            <AssignedTask candidate_user_id={candidateID} />
-            <AvailableTask candidate_user_id={candidateID} />
+            <AssignedTask invitation_id={invitationID} />
+            <AvailableTask />
           </>
         )}
         <Notes notes={notes} />

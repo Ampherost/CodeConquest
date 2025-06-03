@@ -1,17 +1,15 @@
-import { createClient } from "@/utils/supabase/server";
+import { createClient } from "@/utils/supabase/client";
 
-export default async function getQuizQuestions(quiz_id) {
-  const supabase = await createClient();
-
-  const { data, error } = await supabase
-    .from('questions')
-    .select('question_id, quiz_id, title, options, description, hints, type')
-    .eq('quiz_id', quiz_id);
-
-  if (error) {
-    console.error('Error fetching quizzes:', error.message);
-    return null;
+export default async function getQuizQuestions(quizId) {
+  const supabase = createClient();
+  let query = supabase.from("quizzes").select("*");
+  if (quizId && !isNaN(Number(quizId))) {
+    query = query.eq("quiz_id", Number(quizId));
   }
-
-  return data || null;
+  const { data, error } = await query;
+  if (error) {
+    console.error("Error fetching quiz questions:", error.message);
+    return [];
+  }
+  return data;
 }
