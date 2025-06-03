@@ -27,9 +27,9 @@ export default async function ChapterPage({
 }) {
   const { id, chapter } = await params;
 
-  // 1️⃣ Find the module
+  // Find the module
   const mod: Module | undefined = modules.find((m) => m.id === id);
-  // 2️⃣ Find the chapter content
+  // Find the chapter content
   const content: ChapterContent | undefined =
     chaptersByModule[id]?.find((c) => c.slug === chapter);
 
@@ -72,7 +72,7 @@ export default async function ChapterPage({
           )}
         </Container>
       </div>
-        {/* ✅ Place this at the bottom so it triggers on page load */}
+        {/* Place this at the bottom so it triggers on page load */}
       <ClientTracker
         moduleId={id}
         title={mod.title}
