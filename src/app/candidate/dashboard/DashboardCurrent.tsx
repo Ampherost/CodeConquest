@@ -208,7 +208,7 @@ const DashboardCurrent: React.FC<Props> = ({ userEmail }) => {
         )}
         <section className="mt-8">
           <h2 className="text-lg font-semibold text-white mb-2">
-            Your current leanring Models
+            Your current learning Models
           </h2>
           <div className="overflow-x-auto">
             <div className="flex gap-6 px-1 py-3 w-max">
