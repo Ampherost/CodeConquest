@@ -150,18 +150,7 @@ A linear, document-driven approach with well-defined stages:
 ---
 
       `.trim(),
-      quiz: [
-        {
-          question: "What does the 'O' in SOLID stand for?",
-          options: ["Open/Closed", "Object/Oriented", "Optionality"],
-          answer: "Open/Closed",
-        },
-        {
-          question: "Which SOLID principle advocates that a class should have only one reason to change?",
-          options: ["Single Responsibility", "Interface Segregation", "Dependency Inversion"],
-          answer: "Single Responsibility",
-        },
-      ],
+      quiz: [],
     },
     {
        moduleId: "software-engineering",  // Chapter Two
