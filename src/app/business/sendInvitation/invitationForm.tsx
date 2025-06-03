@@ -58,7 +58,7 @@ const InvitationForm = ({ employeerId, onCancel }: InvitationFormProps) => {
       return;
     }
 
-    alert("Invitation created successfully!");
+    alert("Your invitation code is: " + inviteCode);
     if (onCancel) onCancel();
     setSubmitted(false);
   };
