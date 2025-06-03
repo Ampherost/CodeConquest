@@ -9,6 +9,7 @@ interface Candidate {
   user_id: string;
   first_name: string;
   last_name: string;
+  invitation_id?: string;
 }
 
 interface CurrentApplicantsProps {
@@ -35,7 +36,7 @@ const CurrentApplicants: React.FC<CurrentApplicantsProps> = ({
       // 1. All invitations for this business user
       const { data: invites, error: invitesError } = await supabase
         .from("invitations")
-        .select("candidate_user_id")
+        .select("candidate_user_id, invitation_id")
         .eq("business_user_id", businessUserId)
         .eq("status", "completed");
 
@@ -48,8 +49,15 @@ const CurrentApplicants: React.FC<CurrentApplicantsProps> = ({
         return;
       }
 
-      const candidateIds =
-        (invites?.map((row) => row.candidate_user_id) as string[]) || [];
+      const candidateMap =
+        invites?.reduce(
+          (acc, row) => {
+            acc[row.candidate_user_id] = row.invitation_id;
+            return acc;
+          },
+          {} as Record<string, string>
+        ) || {};
+      const candidateIds = Object.keys(candidateMap);
 
       if (candidateIds.length === 0) {
         setCandidates([]);
@@ -66,7 +74,12 @@ const CurrentApplicants: React.FC<CurrentApplicantsProps> = ({
       if (candError) {
         console.error("Error fetching candidate users:", candError);
       } else {
-        setCandidates((candRows ?? []) as Candidate[]);
+        setCandidates(
+          (candRows ?? []).map((cand) => ({
+            ...cand,
+            invitation_id: candidateMap[cand.user_id] || "",
+          }))
+        );
       }
 
       setLoading(false);
@@ -89,7 +102,7 @@ const CurrentApplicants: React.FC<CurrentApplicantsProps> = ({
         {candidates.map((c) => (
           <li key={c.user_id}>
             <button
-              className="w-full text-left hover:text-blue-400 transition-colors"
+              className="cursor-pointer w-full text-left hover:text-blue-400 transition-colors"
               onClick={() => {
                 onSelect?.(c);
                 setSidebarOpen?.((prev) => !prev); // Toggle sidebar open state

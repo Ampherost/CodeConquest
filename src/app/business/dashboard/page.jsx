@@ -21,8 +21,8 @@ const Page = () => {
   const router = useRouter();
   const [user, setUser] = useState(null);
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [sidebarCollapse, setSidebarExpand] = useState(true);
-
+  const [sidebarCollapse, setSidebarCollapse] = useState(true);
+  const [selectedCandidate, setSelectedCandidate] = useState(null);
   useEffect(() => {
     supabase.auth.getUser().then(({ data }) => {
       if (!data.user) {
@@ -61,25 +61,43 @@ const Page = () => {
               <CurrentApplicants
                 businessUserId={user.id}
                 setSidebarOpen={setSidebarOpen}
+                onSelect={(candidate) =>
+                  setSelectedCandidate({
+                    user_id: candidate.user_id,
+                    invitation_id: candidate.invitation_id,
+                  })
+                }
               />
             </div>
             <div id="Pending Applicatns" className="flex flex-row p-7">
               <PendingApplicants
                 businessUserId={user.id}
                 setSidebarOpen={setSidebarOpen}
+                onSelect={(candidate) =>
+                  setSelectedCandidate({
+                    ...candidate,
+                    invitation_id: "",
+                  })
+                }
               />
             </div>
           </div>
         )}
-        {sidebarOpen && (
+        {sidebarOpen && selectedCandidate && (
           <div
             id="sidebar"
             className={`${sidebarOpen ? "block w-64" : "hidden"} flex-[1]`}
           >
             <ApplicantSidebar
-              businessUserId={user.id}
+              candidateID={selectedCandidate.user_id}
+              invitationID={selectedCandidate.invitation_id}
+              pendingData={
+                selectedCandidate.invitation_id === ""
+                  ? selectedCandidate
+                  : undefined
+              }
               setSidebarOpen={setSidebarOpen}
-              sidebarCollapse={setSidebarExpand}
+              sidebarCollapse={setSidebarCollapse}
             />
           </div>
         )}

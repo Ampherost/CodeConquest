@@ -1,12 +1,12 @@
 interface NotesProps {
-  business_user_id: string;
+  notes: string;
 }
-const Notes = ({ business_user_id }: NotesProps) => {
+const Notes = ({ notes }: NotesProps) => {
   return (
     <div className="flex flex-col">
       <h1>Notes</h1>
       <div className="border rounded-md p-2 bg-zinc-800 shadow-sm">
-        <h1 className="text-sm font-light">Pull Notes here</h1>
+        <h1 className="text-sm font-light">{notes}</h1>
       </div>
     </div>
   );

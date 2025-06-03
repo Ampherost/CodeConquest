@@ -1,23 +1,88 @@
+"use client";
 import AssignedTask from "./assignedTask";
 import AvailableTask from "./availableTasks";
 import SideBarHeader from "./header";
 import Notes from "./notes";
 import defaultProfilePic from "../../../../public/assets/defaultProfile.png";
 import expand from "../../../../public/assets/expand.png";
+import { useState, useEffect } from "react";
+import { createClient } from "@/utils/supabase/client";
 
 import Image from "next/image";
 
+const supabase = await createClient();
+interface PendingCandidate {
+  user_id: string;
+  full_name: string;
+  email: string;
+  position?: string;
+  notes?: string;
+  invitation_id?: string;
+}
 interface ApplicantSidebarProps {
-  businessUserId: string;
+  candidateID: string;
+  invitationID: string;
+  pendingData?: PendingCandidate;
   setSidebarOpen?: (open: boolean) => void;
   sidebarCollapse?: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const ApplicantSidebar = ({
-  businessUserId,
+  candidateID,
+  invitationID,
+  pendingData,
   setSidebarOpen,
   sidebarCollapse,
 }: ApplicantSidebarProps) => {
+  const [name, setName] = useState("Loading...");
+  const [status, setStatus] = useState("Loading...");
+  const [position, setPosition] = useState("Loading...");
+  const [notes, setNotes] = useState("Loading...");
+
+  useEffect(() => {
+    const fetchData = async () => {
+      if (pendingData) {
+        setName(pendingData.full_name);
+        setPosition(pendingData.position || "Unknown");
+        setStatus("Pending");
+        setNotes(pendingData.notes || "None");
+      } else {
+        try {
+          const { data: nameData, error: nameError } = await supabase
+            .from("candidate_users")
+            .select("first_name, last_name")
+            .eq("user_id", candidateID)
+            .single();
+
+          if (nameError || !nameData) {
+            setName("Unknown Candidate");
+          } else {
+            setName(`${nameData.first_name} ${nameData.last_name}`);
+          }
+
+          const { data: inviteData, error: inviteError } = await supabase
+            .from("invitations")
+            .select("status, position, notes")
+            .eq("invitation_id", invitationID)
+            .single();
+
+          if (inviteError || !inviteData) {
+            setStatus("Unknown");
+            setPosition("Unknown");
+            setNotes("Unknown");
+          } else {
+            setStatus(inviteData.status);
+            setPosition(inviteData.position);
+            setNotes(inviteData.notes);
+          }
+        } catch (err) {
+          console.error("Error fetching sidebar data:", err);
+        }
+      }
+    };
+
+    fetchData();
+  }, [candidateID, invitationID, pendingData]);
   return (
     <div className={`${sidebarCollapse ? "" : ""}  `}>
       <div className="flex justify-between p-5">
@@ -50,11 +115,15 @@ const ApplicantSidebar = ({
         />
       </div>
       <div className="p-5 space-y-4">
-        <h1 className="text-white">Profile</h1>
-        <SideBarHeader business_user_id={businessUserId} />
-        <AssignedTask business_user_id={businessUserId} />
-        <AvailableTask business_user_id={businessUserId} />
-        <Notes business_user_id={businessUserId} />
+        <h1 className="text-white">Profile {pendingData ? "" : ""}</h1>
+        <SideBarHeader name={name} status={status} position={position} />
+        {!pendingData && (
+          <>
+            <AssignedTask candidate_user_id={candidateID} />
+            <AvailableTask candidate_user_id={candidateID} />
+          </>
+        )}
+        <Notes notes={notes} />
       </div>
     </div>
   );

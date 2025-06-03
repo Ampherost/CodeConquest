@@ -1,7 +1,7 @@
 interface AvailableTaskProps {
-  business_user_id: string;
+  candidate_user_id: string;
 }
-const AvailableTask = ({ business_user_id }: AvailableTaskProps) => {
+const AvailableTask = ({ candidate_user_id }: AvailableTaskProps) => {
   return (
     <div>
       <div>

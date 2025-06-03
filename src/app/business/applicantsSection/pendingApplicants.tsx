@@ -5,18 +5,20 @@ import { createClient } from "@/utils/supabase/client";
 
 const supabase = createClient();
 
-interface Candidate {
+// Represents a pending applicant profile (not yet accepted or completed)
+interface PendingCandidate {
   user_id: string;
   full_name: string;
   email: string;
-  position?: string;
-  notes?: string;
+  position: string;
+  notes: string;
   invite_code?: string;
+  invitation_id?: string;
 }
 
 interface pendingApplicantsProps {
   businessUserId: string;
-  onSelect?: (candidate: Candidate) => void;
+  onSelect?: (candidate: PendingCandidate) => void;
   setSidebarOpen?: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
@@ -25,7 +27,7 @@ const PendingApplicants: React.FC<pendingApplicantsProps> = ({
   onSelect,
   setSidebarOpen,
 }) => {
-  const [candidates, setCandidates] = useState<Candidate[]>([]);
+  const [candidates, setCandidates] = useState<PendingCandidate[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
@@ -45,7 +47,7 @@ const PendingApplicants: React.FC<pendingApplicantsProps> = ({
         console.error("Error fetching candidate users:", candError);
         setCandidates([]);
       } else {
-        setCandidates(candRows as Candidate[]);
+        setCandidates(candRows as PendingCandidate[]);
       }
 
       setLoading(false);
@@ -69,9 +71,9 @@ const PendingApplicants: React.FC<pendingApplicantsProps> = ({
         {candidates.map((c) => (
           <li key={c.invite_code}>
             <button
-              className="w-full text-left hover:text-blue-400 transition-colors"
+              className="cursor-pointer w-full text-left hover:text-blue-400 transition-colors"
               onClick={() => {
-                onSelect?.(c);
+                onSelect?.({ ...c, invitation_id: "" });
                 setSidebarOpen?.((prev) => !prev); // Toggle sidebar open state
               }}
             >
