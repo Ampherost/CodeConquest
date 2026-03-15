@@ -1,45 +1,84 @@
 import React from "react";
 import Quiz from "@/app/components/Assesment/Quiz";
 import { createClient } from "@/utils/supabase/server";
+import { redirect } from "next/navigation";
 import getQuizQuestions from "@/app/helper/get/getQuizQuestions";
+import getUserRolebyEmail from "@/app/helper/get/getUserRolebyEmail";
+import getUserID from "@/app/helper/get/getUserID";
 
 export default async function ReviewQuizPage({ params }) {
-  // params is already an object, no need to await
   const { assesmentID, quizID } = await params;
 
   const supabase = await createClient();
+  const { data, error } = await supabase.auth.getUser();
+
+  if (error || !data?.user) {
+    console.error("Error fetching user:", error);
+    redirect("/unauthorized");
+  }
+
+  const role = await getUserRolebyEmail(data.user.email);
+  const userID = await getUserID(data.user.email);
+
+  // Allow both candidates (who own the assessment) and business users (who created the invitation)
+  let authorized = false;
+
+  if (role === "candidate") {
+    const { data: invLink } = await supabase
+      .from("invitations")
+      .select("invitation_id")
+      .eq("assessment_id", assesmentID)
+      .eq("candidate_user_id", userID)
+      .maybeSingle();
+    authorized = Boolean(invLink);
+  } else if (role === "business") {
+    const { data: invLink } = await supabase
+      .from("invitations")
+      .select("invitation_id")
+      .eq("assessment_id", assesmentID)
+      .eq("business_user_id", userID)
+      .maybeSingle();
+    authorized = Boolean(invLink);
+  }
+
+  if (!authorized) {
+    redirect("/unauthorized");
+  }
 
   // Fetch the stored submission for this assessment and quiz
-  const { data: fetched, error } = await supabase
+  const { data: fetched, error: fetchError } = await supabase
     .from("assessment_quizzes")
     .select("submission")
     .eq("assessment_id", assesmentID)
     .eq("quiz_id", quizID)
     .single();
 
-  if (error) {
+  if (fetchError) {
     return (
       <div className="p-8 text-red-500">
-        Failed to load submission: {error.message}
+        Failed to load submission: {fetchError.message}
       </div>
     );
   }
 
-
   const quizQuestions = await getQuizQuestions(quizID);
 
-  // fetched.submission is jsonb, so it should be object/array already.
-  // But just in case it is a string, parse it safely:
-  let submissionArray = fetched?.submission ?? [];
+  // Safely extract the submission data
+  let submissionData = fetched?.submission ?? {};
 
-  if (typeof submissionArray === "string") {
+  if (typeof submissionData === "string") {
     try {
-      submissionArray = JSON.parse(submissionArray);
+      submissionData = JSON.parse(submissionData);
     } catch (err) {
       console.error("Failed to parse submission JSON:", err);
-      submissionArray = [];
+      submissionData = {};
     }
   }
+
+  // The submission is stored as { submission: [...answers] }
+  const submissionArray = Array.isArray(submissionData?.submission)
+    ? submissionData.submission
+    : [];
 
   return (
     <div className="min-h-screen bg-white dark:bg-zinc-900 text-zinc-900 dark:text-zinc-100 flex flex-col">
@@ -49,9 +88,10 @@ export default async function ReviewQuizPage({ params }) {
           assessmentID={assesmentID}
           quizID={quizID}
           reviewMode={true}
-          submission={submissionArray.submission}
+          submission={submissionArray}
         />
       </main>
     </div>
   );
 }
+
