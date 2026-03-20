@@ -3,9 +3,6 @@
 import { useEffect, useState } from "react";
 import { createClient } from "@/utils/supabase/client";
 
-const supabase = createClient();
-
-// Represents a pending applicant profile (not yet accepted or completed)
 interface PendingCandidate {
   user_id: string;
   full_name: string;
@@ -16,13 +13,13 @@ interface PendingCandidate {
   invitation_id?: string;
 }
 
-interface pendingApplicantsProps {
+interface PendingApplicantsProps {
   businessUserId: string;
   onSelect?: (candidate: PendingCandidate) => void;
   setSidebarOpen?: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const PendingApplicants: React.FC<pendingApplicantsProps> = ({
+const PendingApplicants: React.FC<PendingApplicantsProps> = ({
   businessUserId,
   onSelect,
   setSidebarOpen,
@@ -35,8 +32,8 @@ const PendingApplicants: React.FC<pendingApplicantsProps> = ({
 
     const fetchCandidates = async () => {
       setLoading(true);
+      const supabase = createClient();
 
-      // 1. All invitations for this business user
       const { data: candRows, error: candError } = await supabase
         .from("invitation_codes")
         .select("invite_code, full_name, email, position, notes")
@@ -51,7 +48,6 @@ const PendingApplicants: React.FC<pendingApplicantsProps> = ({
       }
 
       setLoading(false);
-      return;
     };
 
     fetchCandidates();
@@ -74,7 +70,7 @@ const PendingApplicants: React.FC<pendingApplicantsProps> = ({
               className="cursor-pointer w-full text-left hover:text-blue-400 transition-colors"
               onClick={() => {
                 onSelect?.({ ...c, invitation_id: "" });
-                setSidebarOpen?.((prev) => !prev); // Toggle sidebar open state
+                setSidebarOpen?.((prev) => !prev);
               }}
             >
               {c.full_name}
