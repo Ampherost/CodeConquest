@@ -1,7 +1,7 @@
 import { createClient } from "@/utils/supabase/client";
 
 export async function getAssignedQuizes(assessment_id) {
-  const supabase = await createClient();
+  const supabase = createClient();
 
   // Step 1: Get all quiz assignments for this assessment
   const { data: assignments, error: assignmentErr } = await supabase
@@ -14,6 +14,10 @@ export async function getAssignedQuizes(assessment_id) {
   }
 
   const quizIds = assignments.map((a) => a.quiz_id);
+
+  if (quizIds.length === 0) {
+    return { quizzes: [], error: null };
+  }
 
   // Step 2: Fetch quiz details by quiz_id
   const { data: quizData, error: quizErr } = await supabase
