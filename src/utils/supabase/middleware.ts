@@ -45,22 +45,17 @@ export async function updateSession(request: NextRequest) {
     return NextResponse.redirect(url);
   }
 
-  // If user is logged in, check role for protected routes
+  // If user is logged in, check role for protected routes.
+  // Role is read from app_metadata (set by the sync_role_to_claims DB trigger) — no extra DB call.
   if (user) {
-    const { data: userData, error } = await supabase
-      .from('users')
-      .select('role')
-      .eq('user_id', user.id)
-      .single();
+    const role = user.app_metadata?.role as string | undefined;
 
-    if (!userData || error) {
-      console.error('Role fetch error or user not found');
+    if (!role) {
+      console.error('Role not found in app_metadata');
       const url = request.nextUrl.clone();
       url.pathname = '/unauthorized';
       return NextResponse.redirect(url);
     }
-
-    const role = userData.role;
 
     // Business routes
     if (pathname.startsWith('/business') && role !== 'business') {
