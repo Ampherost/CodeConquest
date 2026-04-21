@@ -29,10 +29,7 @@ export async function updateSession(request: NextRequest) {
 
   const pathname = request.nextUrl.pathname;
 
-  // Exact public paths (no trailing content allowed unless explicitly handled)
-  const exactPublicPaths = ['/', '/login', '/signup', '/about', '/modules'];
-
-  // Prefix-based public paths (these allow sub-paths)
+  const exactPublicPaths = ['/', '/login', '/signup', '/about', '/modules', '/unauthorized'];
   const prefixPublicPaths = ['/modules/'];
 
   const isPublicRoute =
@@ -45,26 +42,28 @@ export async function updateSession(request: NextRequest) {
     return NextResponse.redirect(url);
   }
 
-  // If user is logged in, check role for protected routes.
-  // Role is read from app_metadata (set by the sync_role_to_claims DB trigger) — no extra DB call.
   if (user) {
-    const role = user.app_metadata?.role as string | undefined;
+    const { data: userData, error } = await supabase
+      .from('users')
+      .select('role')
+      .eq('user_id', user.id)
+      .single();
 
-    if (!role) {
-      console.error('Role not found in app_metadata');
+    if (!userData || error) {
+      console.error('Role fetch error or user not found');
       const url = request.nextUrl.clone();
       url.pathname = '/unauthorized';
       return NextResponse.redirect(url);
     }
 
-    // Business routes
+    const role = userData.role;
+
     if (pathname.startsWith('/business') && role !== 'business') {
       const url = request.nextUrl.clone();
       url.pathname = '/unauthorized';
       return NextResponse.redirect(url);
     }
 
-    // Candidate routes
     if (pathname.startsWith('/candidate') && role !== 'candidate') {
       const url = request.nextUrl.clone();
       url.pathname = '/unauthorized';
