@@ -8,7 +8,12 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: error ?? "Unauthorized" }, { status: status ?? 401 });
   }
 
-  const body = await req.json();
+  let body: Record<string, unknown>;
+  try {
+    body = await req.json();
+  } catch {
+    return NextResponse.json({ error: "Invalid JSON body" }, { status: 400 });
+  }
 
   const {
     invite_code,
@@ -17,7 +22,14 @@ export async function POST(req: NextRequest) {
     full_name = "",
     email = "",
     status: inviteStatus = "pending",
-  } = body;
+  } = body as {
+    invite_code?: string;
+    notes?: string;
+    position?: string;
+    full_name?: string;
+    email?: string;
+    status?: string;
+  };
 
   if (!invite_code) {
     return NextResponse.json(

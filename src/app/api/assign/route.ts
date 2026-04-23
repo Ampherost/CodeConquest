@@ -8,13 +8,18 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: error ?? "Unauthorized" }, { status: status ?? 401 });
   }
 
-  const body = await req.json();
+  let body: Record<string, unknown>;
+  try {
+    body = await req.json();
+  } catch {
+    return NextResponse.json({ error: "Invalid JSON body" }, { status: 400 });
+  }
 
   const {
     assessment_id,
     quiz_id,
     status: assignStatus = "pending",
-  } = body;
+  } = body as { assessment_id?: string; quiz_id?: string; status?: string };
 
   if (!assessment_id || !quiz_id) {
     return NextResponse.json(
