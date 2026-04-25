@@ -50,14 +50,21 @@ export async function POST(request) {
     const mcqAnswers = answers.filter((a) => a.type === "mcq");
     const mcqQuestionIDs = mcqAnswers.map((a) => a.question_id);
 
-    const { data: statusUpdate } = await supabase
+    const { data: statusUpdate, error: statusError } = await supabase
       .from("assessment_quizzes")
       .select("status")
       .eq("assessment_id", assessmentID)
       .eq("quiz_id", quizID)
       .single();
 
-    if (statusUpdate?.status === "completed") {
+    if (statusError || !statusUpdate) {
+      return NextResponse.json(
+        { error: "Assessment quiz not found" },
+        { status: 404 }
+      );
+    }
+
+    if (statusUpdate.status === "completed") {
       return NextResponse.json(
         { error: "Quiz already completed" },
         { status: 400 }
