@@ -10,7 +10,6 @@ import { createClient } from "@/utils/supabase/client";
 
 import Image from "next/image";
 
-const supabase = await createClient();
 interface PendingCandidate {
   user_id: string;
   full_name: string;
@@ -50,6 +49,8 @@ const ApplicantSidebar = ({
         setNotes(pendingData.notes || "None");
       } else {
         try {
+          const supabase = createClient();
+
           const { data: nameData, error: nameError } = await supabase
             .from("candidate_users")
             .select("first_name, last_name")

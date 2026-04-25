@@ -1,24 +1,49 @@
-import { createClient } from "@/utils/supabase/server";
 import { NextRequest, NextResponse } from "next/server";
+import { authenticateRequest } from "@/utils/supabase/apiAuth";
 
 export async function POST(req: NextRequest) {
-  const supabase = await createClient();
-  const body = await req.json();
+  // Require authenticated business user
+  const { supabase, user, error, status } = await authenticateRequest("business");
+  if (error || !supabase || !user) {
+    return NextResponse.json({ error: error ?? "Unauthorized" }, { status: status ?? 401 });
+  }
+
+  let body: Record<string, unknown>;
+  try {
+    body = await req.json();
+  } catch {
+    return NextResponse.json({ error: "Invalid JSON body" }, { status: 400 });
+  }
 
   const {
     assessment_id,
     quiz_id,
-    // timer_start,
-    // last_activity,
-    // submission,
-    // score,
-    // timer_duration,
-    // timer_flag,
-    status = "pending",
-  } = body;
+    status: assignStatus = "pending",
+  } = body as { assessment_id?: string; quiz_id?: string; status?: string };
 
-  // timer_flag is hardcoded as false, and other nullable fields set to null
-  const { data, error } = await supabase
+  if (!assessment_id || !quiz_id) {
+    return NextResponse.json(
+      { error: "Missing assessment_id or quiz_id" },
+      { status: 400 }
+    );
+  }
+
+  // Verify this business user owns the invitation linked to the assessment
+  const { data: invitation, error: invError } = await supabase
+    .from("invitations")
+    .select("invitation_id")
+    .eq("assessment_id", assessment_id)
+    .eq("business_user_id", user.id)
+    .maybeSingle();
+
+  if (invError || !invitation) {
+    return NextResponse.json(
+      { error: "You do not have permission to assign quizzes to this assessment." },
+      { status: 403 }
+    );
+  }
+
+  const { data, error: insertError } = await supabase
     .from("assessment_quizzes")
     .insert([
       {
@@ -29,15 +54,17 @@ export async function POST(req: NextRequest) {
         submission: null,
         score: null,
         timer_duration: "00:30:00",
-        status,
+        status: assignStatus,
         timer_flag: false,
       },
     ])
     .select()
     .single();
-  if (error) {
-    console.error(error);
-    return NextResponse.json({ error: error.message }, { status: 500 });
+
+  if (insertError) {
+    console.error(insertError);
+    return NextResponse.json({ error: insertError.message }, { status: 500 });
   }
-  return NextResponse.json({ message: "Invitation created", data });
+
+  return NextResponse.json({ message: "Quiz assigned", data });
 }

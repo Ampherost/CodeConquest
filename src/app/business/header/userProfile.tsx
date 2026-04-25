@@ -1,5 +1,6 @@
 import Image from "next/image";
-const profile = () => {
+
+const Profile = () => {
   return (
     <div className="flex items-center justify-center p-1 space-x-2 ">
       <button className="flex flex-row space-x-2 hover:bg-black cursor-pointer p-2 rounded-md transition-all duration-300">
@@ -9,4 +10,5 @@ const profile = () => {
     </div>
   );
 };
-export default profile;
+
+export default Profile;

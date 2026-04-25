@@ -1,15 +1,11 @@
 "use client";
 
-import { useState } from "react";
-import Image from "next/image";
+import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 import { createClient } from "@/utils/supabase/client";
-import { useEffect } from "react";
-import { useCallback } from "react";
-import { usePathname } from "next/navigation";
+import DashboardHeader from "../../../components/dashboard/DashboardHeader";
 import ProfilePanel from "../profilePanel/ProfilePanel";
 import InvitationPanel from "../notificationPanel/InvitationPanel";
-import Signout from "../../../business/header/signOut";
 
 interface Props {
   userEmail: string | null;
@@ -24,7 +20,6 @@ type AssessmentInvite = {
 };
 
 const DashboardAssessments: React.FC<Props> = ({ userEmail }) => {
-  const pathname = usePathname();
   const [isProfileOpen, setProfileOpen] = useState(false);
   const [isInviteOpen, setInviteOpen] = useState(false);
   const [activeTab, setActiveTab] = useState<"pending" | "completed">(
@@ -62,7 +57,6 @@ const DashboardAssessments: React.FC<Props> = ({ userEmail }) => {
       .eq("candidate_user_id", user.id);
 
     if (!error && data) {
-      // Build one list item per quiz so multiple pending quizzes show up
       const pending = data.flatMap((inv) =>
         (Array.isArray(inv.assessment_quizzes) ? inv.assessment_quizzes : [])
           .filter((q) => q.status === "pending")
@@ -98,99 +92,14 @@ const DashboardAssessments: React.FC<Props> = ({ userEmail }) => {
 
   return (
     <div className="min-h-screen bg-white dark:bg-zinc-900 text-zinc-900 dark:text-zinc-100">
-      {/* Header */}
-      <header className="bg-zinc-900 shadow-md px-6 py-4">
-        <div className="flex items-center justify-between w-full">
-          {/* Left: Logo + Tabs */}
-          <div className="flex items-center gap-16">
-            {/* Logo + Title */}
-            <div className="flex items-center gap-5">
-              <Image
-                src="/assets/CodeConquestLogo.png"
-                alt="Logo"
-                width={60}
-                height={60}
-              />
-              <span className="text-2xl text-white font-semibold">
-                CodeConquest
-              </span>
-            </div>
+      <DashboardHeader
+        onProfileClick={() => setProfileOpen(true)}
+        onInviteClick={() => setInviteOpen(true)}
+      />
 
-            {/* Tabs */}
-            <nav className="flex gap-12 items-end pb-1">
-              <TabLink
-                href="/candidate/dashboard"
-                label="Current"
-                pathname={pathname}
-              />
-              <TabLink
-                href="/candidate/dashboard/learning"
-                label="Learning"
-                pathname={pathname}
-              />
-              <TabLink
-                href="/candidate/dashboard/assessments"
-                label="Assessments"
-                pathname={pathname}
-              />
-            </nav>
-          </div>
-
-          {/* Right: Profile + Bell + Sign Out */}
-          <div className="flex items-center gap-6 text-white">
-            <div
-              className="flex items-center gap-2 hover:opacity-80 cursor-pointer"
-              onClick={() => setProfileOpen(true)}
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-5 w-5"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M5.121 17.804A13.937 13.937 0 0112 15c2.485 0 4.8.755 6.879 2.047M15 11a3 3 0 11-6 0 3 3 0 016 0z"
-                />
-              </svg>
-              <span>Profile</span>
-            </div>
-            {/* Mail Icon */}
-            <button
-              onClick={() => setInviteOpen(true)}
-              className="relative hover:opacity-80 cursor-pointer"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-5 w-5"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-                strokeWidth={2}
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
-                />
-              </svg>
-            </button>
-
-            {/* Sign Out */}
-            {/* <button className="hover:opacity-80">Sign Out</button>
-             */}
-            <Signout />
-          </div>
-        </div>
-      </header>
-
-      {/* Page Content */}
       <main className="p-6">
         <h1 className="text-xl text-white">Welcome to your dashboard!</h1>
-        {/* Dashboard cards and components */}
+
         <section className="mt-8">
           <h2 className="text-lg font-semibold text-white mb-2">
             Your Assessments
@@ -226,6 +135,7 @@ const DashboardAssessments: React.FC<Props> = ({ userEmail }) => {
                   </span>
                 </button>
               </div>
+
               {/* Content Swap */}
               {activeTab === "pending" ? (
                 <div className="text-center mt-12 flex flex-col">
@@ -240,7 +150,6 @@ const DashboardAssessments: React.FC<Props> = ({ userEmail }) => {
                     </>
                   ) : (
                     <ul className="space-y-4">
-                      {/*   key={assessment.invitation_id} */}
                       {pendingAssessments.map((assessment) => (
                         <li
                           key={`${assessment.invitation_id}-${assessment.quiz_id}`}
@@ -249,12 +158,11 @@ const DashboardAssessments: React.FC<Props> = ({ userEmail }) => {
                           <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
                             <div>
                               <h3 className="font-semibold text-white">
-                                Your Assesment is Pendiing
+                                Your Assessment is Pending
                               </h3>
                               <p className="text-sm text-zinc-400">
                                 For: {assessment.position}
                               </p>
-                              <p></p>
                             </div>
                             {assessment.quiz_id ? (
                               <Link
@@ -282,7 +190,7 @@ const DashboardAssessments: React.FC<Props> = ({ userEmail }) => {
                         No completed assessments yet
                       </p>
                       <p className="text-sm text-zinc-400">
-                        They’ll appear here when finished.
+                        They will appear here when finished.
                       </p>
                     </>
                   ) : (
@@ -318,6 +226,7 @@ const DashboardAssessments: React.FC<Props> = ({ userEmail }) => {
           </div>
         </section>
       </main>
+
       <InvitationPanel
         open={isInviteOpen}
         onClose={() => setInviteOpen(false)}
@@ -329,26 +238,6 @@ const DashboardAssessments: React.FC<Props> = ({ userEmail }) => {
         userEmail={userEmail}
       />
     </div>
-  );
-};
-
-const TabLink: React.FC<{ href: string; label: string; pathname: string }> = ({
-  href,
-  label,
-  pathname,
-}) => {
-  const isActive = pathname === href;
-  return (
-    <Link
-      href={href}
-      className={`flex flex-col items-center justify-end h-12 px-6 text-base tracking-wide transition-all duration-200 ${
-        isActive
-          ? "text-white font-semibold border-b-2 border-blue-500"
-          : "text-zinc-400 border-b-2 border-transparent hover:text-white hover:border-blue-500"
-      }`}
-    >
-      <span className="mt-auto mb-1">{label}</span>
-    </Link>
   );
 };
 

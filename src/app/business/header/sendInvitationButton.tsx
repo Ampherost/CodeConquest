@@ -1,5 +1,7 @@
+"use client";
+
 import { useState } from "react";
-import InvitationForm from "@/app/business/sendInvitation/formFieldInvitation";
+import InvitationModal from "@/app/business/sendInvitation/invitationModal";
 
 interface InvitationButtonProps {
   business_user_id: string;
@@ -12,6 +14,11 @@ const InvitationButton = ({
 }: InvitationButtonProps) => {
   const [open, setOpen] = useState(false);
 
+  const handleSuccess = (inviteCode: string) => {
+    onSuccess(inviteCode);
+    setOpen(false);
+  };
+
   return (
     <div>
       <button
@@ -21,19 +28,12 @@ const InvitationButton = ({
         Send Invitation
       </button>
 
-      {open && (
-        <div
-          className={`fixed inset-0 z-100 flex items-center justify-center bg-zinc-900/70 transition-all duration-300 ease-in-out  ${open ? "opacity-100 scale-100" : "opacity-0 scale-90"}`}
-        >
-          <div className="bg-white dark:bg-zinc-900 rounded-lg shadow-xl p-6 min-w-[350px]">
-            <InvitationForm
-              employeerId={business_user_id}
-              onCancel={() => setOpen(false)}
-              onSuccess={onSuccess}
-            />
-          </div>
-        </div>
-      )}
+      <InvitationModal
+        open={open}
+        business_user_id={business_user_id}
+        onClose={() => setOpen(false)}
+        onSuccess={handleSuccess}
+      />
     </div>
   );
 };

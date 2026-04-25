@@ -3,8 +3,6 @@
 import { useEffect, useState } from "react";
 import { createClient } from "@/utils/supabase/client";
 
-const supabase = createClient();
-
 interface Candidate {
   user_id: string;
   first_name: string;
@@ -32,6 +30,7 @@ const CurrentApplicants: React.FC<CurrentApplicantsProps> = ({
 
     const fetchCandidates = async () => {
       setLoading(true);
+      const supabase = createClient();
 
       // 1. All invitations for this business user
       const { data: invites, error: invitesError } = await supabase
@@ -105,7 +104,7 @@ const CurrentApplicants: React.FC<CurrentApplicantsProps> = ({
               className="cursor-pointer w-full text-left hover:text-blue-400 transition-colors"
               onClick={() => {
                 onSelect?.(c);
-                setSidebarOpen?.((prev) => !prev); // Toggle sidebar open state
+                setSidebarOpen?.((prev) => !prev);
               }}
             >
               {c.first_name} {c.last_name}
@@ -118,3 +117,4 @@ const CurrentApplicants: React.FC<CurrentApplicantsProps> = ({
 };
 
 export default CurrentApplicants;
+

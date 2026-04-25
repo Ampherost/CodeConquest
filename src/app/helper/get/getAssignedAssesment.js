@@ -11,7 +11,7 @@ export default async function getAssignedAssessment(assessmentID, quizID) {
 
   const { data, error } = await supabase
     .from("assessment_quizzes")
-    .select("(*)")
+    .select("*")
     .eq("assessment_id", assessmentID)
     .eq("quiz_id", quizID)
     .single(); 

@@ -1,5 +1,6 @@
 import Image from "next/image";
-const notifications = () => {
+
+const Notifications = () => {
   return (
     <div>
       <button className="bg-blend-lighten cursor-pointer rounded-md p-2 hover:bg-black  transition-all duration-300">
@@ -14,4 +15,4 @@ const notifications = () => {
   );
 };
 
-export default notifications;
+export default Notifications;

@@ -1,22 +1,12 @@
 "use client";
 
-import { useEffect } from "react";
-import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { ToastContainer } from "react-toastify";
 import { HandleSignIn } from "@/app/login/loginActions";
 import { useActionState } from "react";
 
 export default function SignIn() {
-  const router = useRouter();
   const [state, formAction, isPending] = useActionState(HandleSignIn, null);
-
-  // Client-side redirect on success
-  useEffect(() => {
-    if (state?.success && state?.redirectTo) {
-      router.push(state.redirectTo);
-    }
-  }, [state, router]);
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-black-100 p-6">

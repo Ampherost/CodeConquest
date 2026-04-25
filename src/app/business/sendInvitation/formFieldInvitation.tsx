@@ -15,8 +15,10 @@ interface FormData {
   notes: string;
 }
 
+const MAX_RETRIES = 3;
+
 const FormFieldInvitation = ({
-  employeerId,
+  // employeerId,
   onCancel,
   onSuccess,
 }: InvitationFormProps) => {
@@ -39,33 +41,50 @@ const FormFieldInvitation = ({
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setSubmitted(true);
-    const inviteCode = generateCode();
 
-    const payload = {
-      invite_code: inviteCode,
-      business_user_id: employeerId,
-      notes: formData.notes,
-      position: formData.position,
-      email: formData.email,
-      full_name: formData.fullName,
-    };
+    let lastError = "";
 
-    const res = await fetch("/api/invitation", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload),
-    });
+    for (let attempt = 0; attempt < MAX_RETRIES; attempt++) {
+      const inviteCode = generateCode();
 
-    if (!res.ok) {
+      const payload = {
+        invite_code: inviteCode,
+        // business_user_id is now derived from auth on the server
+        notes: formData.notes,
+        position: formData.position,
+        email: formData.email,
+        full_name: formData.fullName,
+      };
+
+      const res = await fetch("/api/invitation", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+
+      if (res.ok) {
+        onSuccess(inviteCode);
+        if (onCancel) onCancel();
+        setSubmitted(false);
+        return;
+      }
+
       const { error } = await res.json();
+
+      // If it's a code collision (409), retry with a new code
+      if (res.status === 409) {
+        lastError = error;
+        continue;
+      }
+
+      // Any other error, stop retrying
       alert("Error creating invitation: " + error);
       setSubmitted(false);
       return;
     }
 
-    onSuccess(inviteCode);
-    // alert("Your invitation code is: " + inviteCode);
-    if (onCancel) onCancel();
+    // All retries exhausted
+    alert("Failed to generate a unique code after multiple attempts. Please try again. Last error: " + lastError);
     setSubmitted(false);
   };
 

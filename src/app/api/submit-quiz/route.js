@@ -1,11 +1,18 @@
 import { NextResponse } from "next/server";
-import { createClient } from "@/utils/supabase/server";
+import { authenticateRequest } from "@/utils/supabase/apiAuth";
 
 export async function POST(request) {
   try {
-    let body;
+    // Require authenticated candidate user
+    const { supabase, user, error: authError, status: authStatus } = await authenticateRequest("candidate");
+    if (authError || !supabase || !user) {
+      return NextResponse.json(
+        { error: authError ?? "Unauthorized" },
+        { status: authStatus ?? 401 }
+      );
+    }
 
-    // Safely parse JSON body
+    let body;
     try {
       body = await request.json();
     } catch (err) {
@@ -25,21 +32,39 @@ export async function POST(request) {
       );
     }
 
-    console.log("Received data:", { assessmentID, quizID, answers });
+    // Verify the authenticated user is linked to this assessment
+    const { data: invitationLink, error: linkError } = await supabase
+      .from("invitations")
+      .select("invitation_id")
+      .eq("assessment_id", assessmentID)
+      .eq("candidate_user_id", user.id)
+      .maybeSingle();
 
-    const supabase = await createClient();
+    if (linkError || !invitationLink) {
+      return NextResponse.json(
+        { error: "You are not authorized to submit this quiz." },
+        { status: 403 }
+      );
+    }
 
     const mcqAnswers = answers.filter((a) => a.type === "mcq");
     const mcqQuestionIDs = mcqAnswers.map((a) => a.question_id);
 
-    const { data: statusUpdate } = await supabase
+    const { data: statusUpdate, error: statusError } = await supabase
       .from("assessment_quizzes")
       .select("status")
       .eq("assessment_id", assessmentID)
       .eq("quiz_id", quizID)
       .single();
 
-    if (statusUpdate?.status === "completed") {
+    if (statusError || !statusUpdate) {
+      return NextResponse.json(
+        { error: "Assessment quiz not found" },
+        { status: 404 }
+      );
+    }
+
+    if (statusUpdate.status === "completed") {
       return NextResponse.json(
         { error: "Quiz already completed" },
         { status: 400 }

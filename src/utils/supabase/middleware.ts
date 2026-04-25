@@ -25,39 +25,30 @@ export async function updateSession(request: NextRequest) {
     }
   );
 
-  const  { data: { user }, } = await supabase.auth.getUser();
+  const { data: { user } } = await supabase.auth.getUser();
 
-  const publicPaths = 
-  [
-    '/login',
-    '/signup',
-    '/about',
-    '/',
-    '/modules',
-    '/components',
-  ];
+  const pathname = request.nextUrl.pathname;
+
+  const exactPublicPaths = ['/', '/login', '/signup', '/about', '/modules', '/unauthorized'];
+  const prefixPublicPaths = ['/modules/'];
 
   const isPublicRoute =
-    publicPaths.some((path) => request.nextUrl.pathname.startsWith(path)) ||
-    /^\/blog\/[^\/]+$/.test(request.nextUrl.pathname);
+    exactPublicPaths.includes(pathname) ||
+    prefixPublicPaths.some((prefix) => pathname.startsWith(prefix));
 
-  if (!user && !isPublicRoute) 
-  {
+  if (!user && !isPublicRoute) {
     const url = request.nextUrl.clone();
     url.pathname = '/login';
     return NextResponse.redirect(url);
   }
 
-  // If user is logged in, check role
-  if (user) 
-  {
+  if (user) {
     const { data: userData, error } = await supabase
       .from('users')
       .select('role')
       .eq('user_id', user.id)
       .single();
 
-      //if use not logged
     if (!userData || error) {
       console.error('Role fetch error or user not found');
       const url = request.nextUrl.clone();
@@ -65,28 +56,19 @@ export async function updateSession(request: NextRequest) {
       return NextResponse.redirect(url);
     }
 
-    //we get the role from user database
     const role = userData.role;
 
-    //bussiness routes
-    if (request.nextUrl.pathname.startsWith('/business') && role !== 'business') 
-    {
+    if (pathname.startsWith('/business') && role !== 'business') {
       const url = request.nextUrl.clone();
       url.pathname = '/unauthorized';
       return NextResponse.redirect(url);
     }
 
-    // Candidate routes
-    if (request.nextUrl.pathname.startsWith('/candidate') && role !== 'candidate') 
-    {
+    if (pathname.startsWith('/candidate') && role !== 'candidate') {
       const url = request.nextUrl.clone();
       url.pathname = '/unauthorized';
       return NextResponse.redirect(url);
     }
-
-     
-
-
   }
 
   return supabaseResponse;
