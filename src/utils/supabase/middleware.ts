@@ -29,7 +29,7 @@ export async function updateSession(request: NextRequest) {
 
   const pathname = request.nextUrl.pathname;
 
-  const exactPublicPaths = ['/', '/login', '/signup', '/about', '/modules', '/unauthorized'];
+  const exactPublicPaths = ['/', '/login', '/signup', '/about', '/modules', '/unauthorized', '/error'];
   const prefixPublicPaths = ['/modules/'];
 
   const isPublicRoute =
