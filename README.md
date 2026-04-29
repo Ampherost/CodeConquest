@@ -58,9 +58,12 @@ Choose a destination on your computer and select clone
 
 run these commands to run the website locally
 
-npm install     # Install all dependencies
-npm run dev     # Start the local dev server
-nom run build   # Compiles the project
+npm install           # Install all dependencies
+npm run dev           # Start the local dev server
+nom run build         # Compiles the project
+npm run test          # Run all Jest tests
+npm run test:watch    # Run tests in watch mode
+npm run test:coverage # Run tests with coverage report
 
 then click on localhost:3000 to see the website
 
