@@ -1,5 +1,6 @@
 import { createClient } from "@/utils/supabase/server";
 import { NextRequest, NextResponse } from "next/server";
+import { getUserById } from "@/lib/db/users";
 
 export async function POST(request: NextRequest) {
   let body: Record<string, unknown>;
@@ -27,13 +28,9 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "Unauthorized." }, { status: 401 });
   }
 
-  const { data: userData, error: roleError } = await supabase
-    .from("users")
-    .select("role")
-    .eq("user_id", user.id)
-    .single();
+  const userResult = await getUserById(supabase, user.id);
 
-  if (roleError || userData?.role !== "candidate") {
+  if (!userResult.ok || userResult.data.role !== "candidate") {
     return NextResponse.json(
       { error: "You are not authorized to accept invitation codes." },
       { status: 403 }

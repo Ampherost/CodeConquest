@@ -3,6 +3,7 @@ import { businessSchema, candidateSchema } from "@/app/signup/lib/schemas";
 import { createClient } from "@/utils/supabase/server";
 import { handleError } from "@/app/signup/lib/utility";
 import { UserType } from "@/app/signup/lib/userType";
+import { createUser } from "@/lib/db/users";
 
 export async function handleSubmit(state, formData, userType) {
   // Set payload based on user type (Business or Candidate)
@@ -65,11 +66,9 @@ export async function handleSubmit(state, formData, userType) {
     const userId = data.user.id;
 
     // Insert the user into the 'users' table
-    const { error: insertError } = await client
-      .from("users")
-      .insert([{ user_id: userId, email, role: payload.role }]);
-    if (insertError) {
-      console.error("Error inserting user into users table:", insertError);
+    const createResult = await createUser(client, { user_id: userId, email, role: payload.role });
+    if (!createResult.ok) {
+      console.error("Error inserting user into users table:", createResult.error);
       return {
         success: false,
         message: "Error saving user to main database.",

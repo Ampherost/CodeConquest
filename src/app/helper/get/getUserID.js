@@ -1,18 +1,15 @@
 import { createClient } from "@/utils/supabase/server";
+import { getUserByEmail } from "@/lib/db/users";
 
 export default async function getUserID(email) {
-  const supabase = await createClient(); // Removed `await` unless your createClient is async
+  const supabase = await createClient();
 
-  const { data, error } = await supabase
-    .from('users')
-    .select('user_id')
-    .eq('email', email)
-    .single();
+  const result = await getUserByEmail(supabase, email);
 
-  if (error) {
-    console.error('Error fetching user ID:', error.message);
+  if (!result.ok) {
+    console.error('Error fetching user ID:', result.error.message);
     return null;
   }
 
-  return data?.user_id || null;
+  return result.data.user_id || null;
 }

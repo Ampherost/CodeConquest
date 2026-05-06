@@ -1,4 +1,5 @@
 import { createClient } from "@/utils/supabase/server";
+import { getUserById } from "@/lib/db/users";
 
 /**
  * Authenticate the current user and optionally check their role.
@@ -15,17 +16,15 @@ export async function authenticateRequest(requiredRole?: string) {
     return { error: "Unauthorized.", status: 401, supabase: null, user: null, role: null };
   }
 
-  const { data: userData, error: roleError } = await supabase
-    .from("users")
-    .select("role")
-    .eq("user_id", user.id)
-    .single();
+  const userResult = await getUserById(supabase, user.id);
 
-  if (roleError || !userData?.role) {
+  if (!userResult.ok) {
     return { error: "User role not found.", status: 403, supabase: null, user: null, role: null };
   }
 
-  if (requiredRole && userData.role !== requiredRole) {
+  const { role } = userResult.data;
+
+  if (requiredRole && role !== requiredRole) {
     return {
       error: `Access denied. Required role: ${requiredRole}.`,
       status: 403,
@@ -35,5 +34,5 @@ export async function authenticateRequest(requiredRole?: string) {
     };
   }
 
-  return { supabase, user, role: userData.role, error: null, status: null };
+  return { supabase, user, role, error: null, status: null };
 }
