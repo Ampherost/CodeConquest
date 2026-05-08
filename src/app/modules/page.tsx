@@ -2,9 +2,12 @@
 import Link from "next/link"
 import Header from "@/app/components/Header"
 import Footer from "@/app/components/Footer"
-import { modules } from "../../../lib/modules"
+import { listModules } from "@/lib/db/modules"
 
-export default function ModulesPage() {
+export default async function ModulesPage() {
+  const result = await listModules(null);
+  const modules = result.ok ? result.data : [];
+
   return (
     <div className="flex flex-col min-h-screen bg-white dark:bg-zinc-900 text-zinc-900 dark:text-zinc-100">
       <Header />

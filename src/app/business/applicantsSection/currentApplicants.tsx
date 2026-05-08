@@ -2,18 +2,11 @@
 
 import { useEffect, useState } from "react";
 import { createClient } from "@/utils/supabase/client";
-
-interface Candidate {
-  user_id: string;
-  first_name: string;
-  last_name: string;
-  invitation_id?: string;
-}
+import { listCandidatesForBusiness, type CandidateWithInvitation } from "@/lib/db/candidates";
 
 interface CurrentApplicantsProps {
   businessUserId: string;
-  invitationStatus?: "pending" | "completed";
-  onSelect?: (candidate: Candidate) => void;
+  onSelect?: (candidate: CandidateWithInvitation) => void;
   setSidebarOpen?: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
@@ -22,7 +15,7 @@ const CurrentApplicants: React.FC<CurrentApplicantsProps> = ({
   onSelect,
   setSidebarOpen,
 }) => {
-  const [candidates, setCandidates] = useState<Candidate[]>([]);
+  const [candidates, setCandidates] = useState<CandidateWithInvitation[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
@@ -32,53 +25,12 @@ const CurrentApplicants: React.FC<CurrentApplicantsProps> = ({
       setLoading(true);
       const supabase = createClient();
 
-      // 1. All invitations for this business user
-      const { data: invites, error: invitesError } = await supabase
-        .from("invitations")
-        .select("candidate_user_id, invitation_id")
-        .eq("business_user_id", businessUserId)
-        .eq("status", "completed");
+      const result = await listCandidatesForBusiness(supabase, businessUserId, "completed");
 
-      if (invitesError) {
-        console.error(
-          "Error fetching invitations:",
-          JSON.stringify(invitesError, null, 2)
-        );
-        setLoading(false);
-        return;
-      }
-
-      const candidateMap =
-        invites?.reduce(
-          (acc, row) => {
-            acc[row.candidate_user_id] = row.invitation_id;
-            return acc;
-          },
-          {} as Record<string, string>
-        ) || {};
-      const candidateIds = Object.keys(candidateMap);
-
-      if (candidateIds.length === 0) {
-        setCandidates([]);
-        setLoading(false);
-        return;
-      }
-
-      // 2. Fetch candidate names
-      const { data: candRows, error: candError } = await supabase
-        .from("candidate_users")
-        .select("user_id, first_name, last_name")
-        .in("user_id", candidateIds);
-
-      if (candError) {
-        console.error("Error fetching candidate users:", candError);
+      if (!result.ok) {
+        console.error("Error fetching candidates:", result.error.message);
       } else {
-        setCandidates(
-          (candRows ?? []).map((cand) => ({
-            ...cand,
-            invitation_id: candidateMap[cand.user_id] || "",
-          }))
-        );
+        setCandidates(result.data);
       }
 
       setLoading(false);
@@ -117,4 +69,3 @@ const CurrentApplicants: React.FC<CurrentApplicantsProps> = ({
 };
 
 export default CurrentApplicants;
-

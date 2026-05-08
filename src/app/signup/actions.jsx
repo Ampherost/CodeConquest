@@ -3,6 +3,9 @@ import { businessSchema, candidateSchema } from "@/app/signup/lib/schemas";
 import { createClient } from "@/utils/supabase/server";
 import { handleError } from "@/app/signup/lib/utility";
 import { UserType } from "@/app/signup/lib/userType";
+import { createUser } from "@/lib/db/users";
+import { createBusinessProfile } from "@/lib/db/businesses";
+import { createCandidateProfile } from "@/lib/db/candidates";
 
 export async function handleSubmit(state, formData, userType) {
   // Set payload based on user type (Business or Candidate)
@@ -65,11 +68,9 @@ export async function handleSubmit(state, formData, userType) {
     const userId = data.user.id;
 
     // Insert the user into the 'users' table
-    const { error: insertError } = await client
-      .from("users")
-      .insert([{ user_id: userId, email, role: payload.role }]);
-    if (insertError) {
-      console.error("Error inserting user into users table:", insertError);
+    const createResult = await createUser(client, { user_id: userId, email, role: payload.role });
+    if (!createResult.ok) {
+      console.error("Error inserting user into users table:", createResult.error);
       return {
         success: false,
         message: "Error saving user to main database.",
@@ -77,27 +78,21 @@ export async function handleSubmit(state, formData, userType) {
     }
 
     // Build user profile and insert into respective table
-    const userData =
+    const profileResult =
       userType === UserType.BUSINESS
-        ? {
+        ? await createBusinessProfile(client, {
             user_id: userId,
             business_name: payload.business_name,
             business_email: payload.business_email,
-          }
-        : {
+          })
+        : await createCandidateProfile(client, {
             user_id: userId,
             first_name: payload.first_name,
             last_name: payload.last_name,
-          };
+          });
 
-    const tableName =
-      userType === UserType.BUSINESS ? "business_users" : "candidate_users";
-
-    const { error: profileInsertError } = await client
-      .from(tableName)
-      .insert([userData]);
-    if (profileInsertError) {
-      console.error("Error inserting user profile:", profileInsertError);
+    if (!profileResult.ok) {
+      console.error("Error inserting user profile:", profileResult.error);
       return {
         success: false,
         message: "Error saving user profile to the database.",

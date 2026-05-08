@@ -1,8 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { authenticateRequest } from "@/utils/supabase/apiAuth";
+import { findInvitationByAssessmentAndBusiness } from "@/lib/db/invitations";
+import { assignQuizToAssessment } from "@/lib/db/assessments";
 
 export async function POST(req: NextRequest) {
-  // Require authenticated business user
   const { supabase, user, error, status } = await authenticateRequest("business");
   if (error || !supabase || !user) {
     return NextResponse.json({ error: error ?? "Unauthorized" }, { status: status ?? 401 });
@@ -19,7 +20,7 @@ export async function POST(req: NextRequest) {
     assessment_id,
     quiz_id,
     status: assignStatus = "pending",
-  } = body as { assessment_id?: string; quiz_id?: string; status?: string };
+  } = body as { assessment_id?: string; quiz_id?: number; status?: string };
 
   if (!assessment_id || !quiz_id) {
     return NextResponse.json(
@@ -29,42 +30,28 @@ export async function POST(req: NextRequest) {
   }
 
   // Verify this business user owns the invitation linked to the assessment
-  const { data: invitation, error: invError } = await supabase
-    .from("invitations")
-    .select("invitation_id")
-    .eq("assessment_id", assessment_id)
-    .eq("business_user_id", user.id)
-    .maybeSingle();
-
-  if (invError || !invitation) {
+  const invResult = await findInvitationByAssessmentAndBusiness(
+    supabase,
+    assessment_id,
+    user.id
+  );
+  if (!invResult.ok || !invResult.data) {
     return NextResponse.json(
       { error: "You do not have permission to assign quizzes to this assessment." },
       { status: 403 }
     );
   }
 
-  const { data, error: insertError } = await supabase
-    .from("assessment_quizzes")
-    .insert([
-      {
-        assessment_id,
-        quiz_id,
-        timer_start: null,
-        last_activity: null,
-        submission: null,
-        score: null,
-        timer_duration: "00:30:00",
-        status: assignStatus,
-        timer_flag: false,
-      },
-    ])
-    .select()
-    .single();
-
-  if (insertError) {
-    console.error(insertError);
-    return NextResponse.json({ error: insertError.message }, { status: 500 });
+  const assignResult = await assignQuizToAssessment(
+    supabase,
+    assessment_id,
+    Number(quiz_id),
+    String(assignStatus)
+  );
+  if (!assignResult.ok) {
+    console.error(assignResult.error);
+    return NextResponse.json({ error: assignResult.error.message }, { status: 500 });
   }
 
-  return NextResponse.json({ message: "Quiz assigned", data });
+  return NextResponse.json({ message: "Quiz assigned" });
 }

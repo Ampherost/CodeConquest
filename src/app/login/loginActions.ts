@@ -3,6 +3,7 @@
 import { redirect } from "next/navigation";
 import { createClient } from "@/utils/supabase/server";
 import { handleError } from "@/app/signup/lib/utility";
+import { getUserById } from "@/lib/db/users";
 
 type ActionState = {
   success: false;
@@ -41,13 +42,9 @@ export async function HandleSignIn(_state: ActionState, formData: FormData): Pro
       };
     }
 
-    const { data: userData, error: roleError } = await client
-      .from("users")
-      .select("role")
-      .eq("user_id", user.id)
-      .single();
+    const userResult = await getUserById(client, user.id);
 
-    redirectTo = roleError || !userData?.role ? "/unauthorized" : `/${userData.role}/dashboard`;
+    redirectTo = !userResult.ok ? "/unauthorized" : `/${userResult.data.role}/dashboard`;
   } catch (err) {
     return {
       success: false,

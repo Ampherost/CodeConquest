@@ -2,6 +2,7 @@ import { type EmailOtpType } from '@supabase/supabase-js';
 import { type NextRequest, NextResponse } from 'next/server';
 
 import { createClient } from '@/utils/supabase/server';
+import { getUserById } from '@/lib/db/users';
 
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
@@ -34,20 +35,16 @@ export async function GET(request: NextRequest) {
     }
 
     //get supabase user role
-    const { data: userData, error: roleError } = await supabase
-      .from('users')
-      .select('role')
-      .eq('user_id', user.id)
-      .single();
+    const userResult = await getUserById(supabase, user.id);
 
     //we check if user has role or not
-    if (roleError || !userData?.role) 
+    if (!userResult.ok)
     {
       return NextResponse.redirect(new URL('/unauthorized', request.url));
     }
 
     // we reidrect to role page
-    const redirectPath = `/${userData.role}/dashboard`;
+    const redirectPath = `/${userResult.data.role}/dashboard`;
     return NextResponse.redirect(new URL(redirectPath, request.url));
   }
 

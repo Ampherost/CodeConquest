@@ -1,18 +1,15 @@
 import { createClient } from "@/utils/supabase/server";
+import { getUserByEmail } from "@/lib/db/users";
 
 export default async function getUserRolebyEmail(email) {
-    const supabase = await createClient(); 
-    const { data, error } = await supabase
-        .from('users')
-        .select('role')
-        .eq('email', email)
-        .single(); 
+    const supabase = await createClient();
 
-    if (error)
-         {
-        console.error('Error fetching user role:', error.message);
+    const result = await getUserByEmail(supabase, email);
+
+    if (!result.ok) {
+        console.error('Error fetching user role:', result.error.message);
         return null;
     }
 
-    return data?.role || null;
+    return result.data.role || null;
 }

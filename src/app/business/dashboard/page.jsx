@@ -15,8 +15,6 @@ import CurrentApplicants from "../applicantsSection/currentApplicants";
 import PendingApplicants from "../applicantsSection/pendingApplicants";
 import ApplicantSidebar from "../applicantSidebar/applicantSidebar";
 
-const supabase = createClient();
-
 const Page = () => {
   const router = useRouter();
   const [user, setUser] = useState(null);
@@ -32,6 +30,7 @@ const Page = () => {
   };
 
   useEffect(() => {
+    const supabase = createClient();
     supabase.auth.getUser().then(({ data }) => {
       if (!data.user) {
         router.replace("/login");

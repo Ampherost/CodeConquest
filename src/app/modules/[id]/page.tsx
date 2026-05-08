@@ -3,7 +3,8 @@ import { notFound } from "next/navigation"
 import Header from "@/app/components/Header"
 import Footer from "@/app/components/Footer"
 import ChapterList from "@/app/components/chapter/ChapterList"
-import { modules, Module } from "../../../../lib/modules"
+import { modules } from "../../../../lib/modules"
+import { getModuleBySlug, type ModuleSummary } from "@/lib/db/modules"
 
 export function generateStaticParams() {
   return modules.map((m) => ({ id: m.id }))
@@ -15,8 +16,9 @@ export default async function ModulePage({
   params: Promise<{ id: string }>
 }) {
   const { id } = await params
-  const mod: Module | undefined = modules.find((m) => m.id === id)
-  if (!mod) notFound()
+  const result = await getModuleBySlug(null, id)
+  if (!result.ok) notFound()
+  const mod: ModuleSummary = result.data
 
   return (
     <div className="flex flex-col min-h-screen bg-white dark:bg-zinc-900 text-zinc-900 dark:text-zinc-100">

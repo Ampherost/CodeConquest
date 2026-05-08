@@ -2,7 +2,12 @@ import React from "react";
 import Quiz from "@/app/components/Assesment/Quiz";
 import { createClient } from "@/utils/supabase/server";
 import { redirect } from "next/navigation";
-import getQuizQuestions from "@/app/helper/get/getQuizQuestions";
+import { getQuizQuestions } from "@/lib/db/quizzes";
+import { getQuizSubmission } from "@/lib/db/assessments";
+import {
+  findInvitationByAssessmentAndCandidate,
+  findInvitationByAssessmentAndBusiness,
+} from "@/lib/db/invitations";
 import getUserRolebyEmail from "@/app/helper/get/getUserRolebyEmail";
 import getUserID from "@/app/helper/get/getUserID";
 
@@ -24,21 +29,11 @@ export default async function ReviewQuizPage({ params }) {
   let authorized = false;
 
   if (role === "candidate") {
-    const { data: invLink } = await supabase
-      .from("invitations")
-      .select("invitation_id")
-      .eq("assessment_id", assesmentID)
-      .eq("candidate_user_id", userID)
-      .maybeSingle();
-    authorized = Boolean(invLink);
+    const invResult = await findInvitationByAssessmentAndCandidate(supabase, assesmentID, userID);
+    authorized = invResult.ok && invResult.data !== null;
   } else if (role === "business") {
-    const { data: invLink } = await supabase
-      .from("invitations")
-      .select("invitation_id")
-      .eq("assessment_id", assesmentID)
-      .eq("business_user_id", userID)
-      .maybeSingle();
-    authorized = Boolean(invLink);
+    const invResult = await findInvitationByAssessmentAndBusiness(supabase, assesmentID, userID);
+    authorized = invResult.ok && invResult.data !== null;
   }
 
   if (!authorized) {
@@ -46,25 +41,21 @@ export default async function ReviewQuizPage({ params }) {
   }
 
   // Fetch the stored submission for this assessment and quiz
-  const { data: fetched, error: fetchError } = await supabase
-    .from("assessment_quizzes")
-    .select("submission")
-    .eq("assessment_id", assesmentID)
-    .eq("quiz_id", quizID)
-    .single();
+  const submissionResult = await getQuizSubmission(supabase, assesmentID, quizID);
 
-  if (fetchError) {
+  if (!submissionResult.ok) {
     return (
       <div className="p-8 text-red-500">
-        Failed to load submission: {fetchError.message}
+        Failed to load submission: {submissionResult.error.message}
       </div>
     );
   }
 
-  const quizQuestions = await getQuizQuestions(quizID);
+  const questionsResult = await getQuizQuestions(supabase, Number(quizID));
+  const quizQuestions = questionsResult.ok ? questionsResult.data : [];
 
   // Safely extract the submission data
-  let submissionData = fetched?.submission ?? {};
+  let submissionData = submissionResult.data ?? {};
 
   if (typeof submissionData === "string") {
     try {
@@ -94,4 +85,3 @@ export default async function ReviewQuizPage({ params }) {
     </div>
   );
 }
-

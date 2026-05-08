@@ -1,37 +1,24 @@
 import { createClient } from "@/utils/supabase/server";
+import { findInvitationByAssessmentAndCandidate } from "@/lib/db/invitations";
+import { isQuizAssigned } from "@/lib/db/assessments";
 
 export default async function isAssessmentLinked(userId, assessmentId, quizId) {
   const supabase = await createClient();
 
-  // Check if invitation exists
-  const { data: invitationData, error: invitationError } = await supabase
-    .from('invitations')
-    .select('*')
-    .eq('assessment_id', assessmentId)
-    .eq('candidate_user_id', userId)
-    .maybeSingle();
-
-  if (invitationError) {
-    console.error('Supabase error (invitations):', invitationError);
+  const invResult = await findInvitationByAssessmentAndCandidate(supabase, assessmentId, userId);
+  if (!invResult.ok) {
+    console.error('Supabase error (invitations):', invResult.error);
+    return false;
+  }
+  if (!invResult.data) {
     return false;
   }
 
-  if (!invitationData) {
+  const quizResult = await isQuizAssigned(supabase, assessmentId, quizId);
+  if (!quizResult.ok) {
+    console.error('Supabase error (assessment_quizzes):', quizResult.error);
     return false;
   }
 
-  // Check if assessment_quizes has a row linking the quiz
-  const { data: quizLinkData, error: quizLinkError } = await supabase
-    .from('assessment_quizzes')
-    .select('*')
-    .eq('assessment_id', assessmentId)
-    .eq('quiz_id', quizId)
-    .maybeSingle();
-
-  if (quizLinkError) {
-    console.error('Supabase error (assessment_quizes):', quizLinkError);
-    return false;
-  }
-
-  return Boolean(quizLinkData);
+  return quizResult.data;
 }

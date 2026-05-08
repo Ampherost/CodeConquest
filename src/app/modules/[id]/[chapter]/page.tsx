@@ -3,8 +3,9 @@ import { notFound } from "next/navigation";
 import Header from "@/app/components/Header";
 import Footer from "@/app/components/Footer";
 import Container from "@/app/components/Container";
-import { modules, Module } from "../../../../../lib/modules";
-import { chaptersByModule, ChapterContent } from "../../../../../lib/chapters";
+import { modules } from "../../../../../lib/modules";
+import { getModuleBySlug, type ModuleSummary } from "@/lib/db/modules";
+import type { ChapterContent } from "../../../../../lib/chapters";
 import { markdownToHtml } from "../../../../../lib/markdown";
 import ClientTracker from "@/app/components/ClientTracker";
 
@@ -13,9 +14,9 @@ type Params = { id: string; chapter: string };
 /** Build all /modules/:id/chapter/:chapter pages at build time */
 export function generateStaticParams(): Params[] {
   return modules.flatMap((mod) =>
-    (chaptersByModule[mod.id] || []).map((c) => ({
+    (mod.chapters || []).map((c) => ({
       id: mod.id,
-      chapter: c.slug,
+      chapter: c.id,
     }))
   );
 }
@@ -27,13 +28,14 @@ export default async function ChapterPage({
 }) {
   const { id, chapter } = await params;
 
-  // Find the module
-  const mod: Module | undefined = modules.find((m) => m.id === id);
-  // Find the chapter content
-  const content: ChapterContent | undefined =
-    chaptersByModule[id]?.find((c) => c.slug === chapter);
+  const modResult = await getModuleBySlug(null, id);
+  if (!modResult.ok) notFound();
 
-  if (!mod || !content) {
+  const mod: ModuleSummary = modResult.data;
+  const content: ChapterContent | undefined =
+    modResult.data.chapterContents.find((c) => c.slug === chapter);
+
+  if (!content) {
     notFound();
   }
 

@@ -1,5 +1,6 @@
 import { createServerClient } from '@supabase/ssr';
 import { NextResponse, type NextRequest } from 'next/server';
+import { getUserById } from '@/lib/db/users';
 
 export async function updateSession(request: NextRequest) {
   let supabaseResponse = NextResponse.next({
@@ -29,7 +30,7 @@ export async function updateSession(request: NextRequest) {
 
   const pathname = request.nextUrl.pathname;
 
-  const exactPublicPaths = ['/', '/login', '/signup', '/about', '/modules', '/unauthorized'];
+  const exactPublicPaths = ['/', '/login', '/signup', '/about', '/modules', '/unauthorized', '/error'];
   const prefixPublicPaths = ['/modules/'];
 
   const isPublicRoute =
@@ -43,20 +44,16 @@ export async function updateSession(request: NextRequest) {
   }
 
   if (user) {
-    const { data: userData, error } = await supabase
-      .from('users')
-      .select('role')
-      .eq('user_id', user.id)
-      .single();
+    const userResult = await getUserById(supabase, user.id);
 
-    if (!userData || error) {
+    if (!userResult.ok) {
       console.error('Role fetch error or user not found');
       const url = request.nextUrl.clone();
       url.pathname = '/unauthorized';
       return NextResponse.redirect(url);
     }
 
-    const role = userData.role;
+    const role = userResult.data.role;
 
     if (pathname.startsWith('/business') && role !== 'business') {
       const url = request.nextUrl.clone();

@@ -2,19 +2,13 @@
 
 import React, { useState, useEffect } from "react";
 import { createClient } from "@/utils/supabase/client";
-import { getAssignedQuizes } from "@/app/helper/get/getAssignedQuizes";
-import getQuizQuestionsEmployeer from "@/app/helper/get/getQuizQuestionsEmployeer";
+import { getAssessmentForInvitation, listAssignedQuizzes } from "@/lib/db/assessments";
+import { listQuizzes, type Quiz } from "@/lib/db/quizzes";
 
 interface AvailableTaskProps {
   invitation_id: string;
   onAssigned: () => void;
   refreshToggle: number;
-}
-
-interface Quiz {
-  quiz_id?: number;
-  id?: number;
-  title?: string;
 }
 
 const AvailableTask: React.FC<AvailableTaskProps> = ({
@@ -23,6 +17,7 @@ const AvailableTask: React.FC<AvailableTaskProps> = ({
   refreshToggle,
 }) => {
   const [quizzes, setQuizzes] = useState<Quiz[]>([]);
+  const [assessmentId, setAssessmentId] = useState<string>("");
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -31,38 +26,27 @@ const AvailableTask: React.FC<AvailableTaskProps> = ({
         const supabase = createClient();
 
         // 1. Fetch the assessment_id from the invitation
-        const { data: invitation, error: invError } = await supabase
-          .from("invitations")
-          .select("assessment_id")
-          .eq("invitation_id", invitation_id)
-          .single();
-
-        if (invError || !invitation) {
-          throw new Error("Failed to fetch invitation");
-        }
-        const assessmentId = invitation.assessment_id;
+        const assessResult = await getAssessmentForInvitation(supabase, invitation_id);
+        if (!assessResult.ok) throw new Error("Failed to fetch invitation");
+        const currentAssessmentId = assessResult.data.assessment_id;
+        setAssessmentId(currentAssessmentId);
 
         // 2. Fetch all assigned quizzes for this assessment
-        const assignedResult = await getAssignedQuizes(assessmentId);
-        const assignedIds: number[] = Array.isArray(assignedResult.quizzes)
-          ? assignedResult.quizzes
-              .map((q): number | undefined => {
-                const idValue = q.quiz?.quiz_id;
-                return typeof idValue === "number" ? idValue : undefined;
-              })
-              .filter((idValue): idValue is number => idValue !== undefined)
+        const assignedResult = await listAssignedQuizzes(supabase, currentAssessmentId);
+        const assignedIds: number[] = assignedResult.ok
+          ? assignedResult.data
+              .map((q) => q.quiz_id)
+              .filter((id): id is number => typeof id === "number")
           : [];
 
         // 3. Fetch all quizzes
-        const allQuizzes = await getQuizQuestionsEmployeer();
+        const quizzesResult = await listQuizzes(supabase);
+        const allQuizzes = quizzesResult.ok ? quizzesResult.data : [];
 
         // 4. Filter out quizzes that are already assigned
-        const available = allQuizzes.filter((quiz: Quiz) => {
-          const idToCheck = quiz.quiz_id ?? quiz.id;
-          return (
-            typeof idToCheck === "number" && !assignedIds.includes(idToCheck)
-          );
-        });
+        const available = allQuizzes.filter(
+          (quiz) => !assignedIds.includes(quiz.quiz_id)
+        );
 
         setQuizzes(available);
       } catch (err) {
@@ -79,41 +63,18 @@ const AvailableTask: React.FC<AvailableTaskProps> = ({
 
   const handleAssignQuiz = async (quiz: Quiz) => {
     try {
-      const supabase = createClient();
-      // 1. Fetch the assessment_id from the invitation
-      const { data: invitation, error: invError } = await supabase
-        .from("invitations")
-        .select("assessment_id")
-        .eq("invitation_id", invitation_id)
-        .single();
-      if (invError || !invitation) {
-        throw new Error("Failed to fetch invitation");
-      }
-      const assessment_id = invitation.assessment_id;
-
-      // 2. Prepare payload for assignment
-      const quiz_id = quiz.quiz_id ?? quiz.id;
-      if (typeof quiz_id !== "number") {
-        throw new Error("Invalid quiz id");
-      }
-
-      // 3. Call the assign API route
+      // 3. Call the assign API route (assessment_id already in state)
       const response = await fetch("/api/assign", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          assessment_id,
-          quiz_id,
-        }),
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ assessment_id: assessmentId, quiz_id: quiz.quiz_id }),
       });
       if (!response.ok) {
         const errorData = await response.json();
         throw new Error(errorData.error || "Failed to assign quiz");
       }
 
-      // Signal parent to refresh available list
+      // Signal parent to refresh
       onAssigned();
     } catch (err) {
       console.error(
@@ -135,25 +96,20 @@ const AvailableTask: React.FC<AvailableTaskProps> = ({
         {quizzes.length === 0 ? (
           <p className="text-gray-600">No quizzes available to assign.</p>
         ) : (
-          quizzes.map((quiz: Quiz) => {
-            const keyId = quiz.quiz_id ?? quiz.id;
-            return (
-              <div
-                key={keyId}
-                className="flex justify-between items-center p-2 border rounded"
+          quizzes.map((quiz) => (
+            <div
+              key={quiz.quiz_id}
+              className="flex justify-between items-center p-2 border rounded"
+            >
+              <span>{quiz.title ?? "Untitled Quiz"}</span>
+              <button
+                className="ml-4 px-3 py-1 bg-blue-500 text-white rounded cursor-pointer hover:bg-blue-600 transition-colors"
+                onClick={() => handleAssignQuiz(quiz)}
               >
-                <span>{quiz.title ?? "Untitled Quiz"}</span>
-                <button
-                  className="ml-4 px-3 py-1 bg-blue-500 text-white rounded cursor-pointer hover:bg-blue-600 transition-colors"
-                  onClick={() => {
-                    handleAssignQuiz(quiz);
-                  }}
-                >
-                  Assign
-                </button>
-              </div>
-            );
-          })
+                Assign
+              </button>
+            </div>
+          ))
         )}
       </div>
     </div>

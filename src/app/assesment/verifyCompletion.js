@@ -1,25 +1,20 @@
 import { createClient } from "@/utils/supabase/server";
+import { getQuizStatus } from "@/lib/db/assessments";
 
-export default async function verifyCompletion(assessmentId, quizId) 
-{
+export default async function verifyCompletion(assessmentId, quizId) {
   const supabase = await createClient();
 
-  const { data, error } = await supabase
-    .from('assessment_quizzes')
-    .select('status')
-    .eq('assessment_id', assessmentId)
-    .eq('quiz_id', quizId)
-    .single();
+  const result = await getQuizStatus(supabase, assessmentId, quizId);
 
-  if (error) {
-    console.error('Supabase error:', error);
+  if (!result.ok) {
+    console.error('Supabase error:', result.error);
     return false;
   }
 
-  if(data.status !== 'completed') {
+  if (result.data !== 'completed') {
     console.log('Quiz is not completed');
     return false;
   }
 
-  return true; 
+  return true;
 }
