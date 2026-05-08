@@ -1,6 +1,11 @@
 import { createClient } from "@/utils/supabase/server";
 import { NextRequest, NextResponse } from "next/server";
 import { getUserById } from "@/lib/db/users";
+import {
+  findInvitationsByParticipants,
+  createInvitation,
+  patchInvitationByParticipants,
+} from "@/lib/db/invitations";
 
 export async function POST(request: NextRequest) {
   let body: Record<string, unknown>;
@@ -37,6 +42,7 @@ export async function POST(request: NextRequest) {
     );
   }
 
+  // Look up the invitation code (invitation_codes table — outside service layer scope)
   const { data: inviteData, error: inviteError } = await supabase
     .from("invitation_codes")
     .select("*")
@@ -50,39 +56,42 @@ export async function POST(request: NextRequest) {
     );
   }
 
-  // If you already accepted an invitation
-  const { data: existingList } = await supabase
-    .from("invitations")
-    .select("*")
-    .eq("business_user_id", inviteData.business_user_id)
-    .eq("candidate_user_id", user.id)
-    .eq("position", inviteData.position)
-    .limit(1);
-
-  if (existingList && existingList.length > 0) {
+  // Check for duplicate invitation
+  const dupResult = await findInvitationsByParticipants(
+    supabase,
+    inviteData.business_user_id,
+    user.id,
+    inviteData.position
+  );
+  if (!dupResult.ok) {
     return NextResponse.json(
-      { error: "You’ve already accepted this invitation." },
+      { error: "Failed to check for existing invitation." },
+      { status: 500 }
+    );
+  }
+  if (dupResult.data.length > 0) {
+    return NextResponse.json(
+      { error: "You've already accepted this invitation." },
       { status: 400 }
     );
   }
 
-  const { error: insertError } = await supabase.from("invitations").insert([
-    {
-      business_user_id: inviteData.business_user_id,
-      candidate_user_id: user.id,
-      position: inviteData.position,
-      status: "completed",
-    },
-  ]);
-
-  if (insertError) {
-    console.error("Insert error:", insertError);
+  // Create the invitation row
+  const createResult = await createInvitation(supabase, {
+    business_user_id: inviteData.business_user_id,
+    candidate_user_id: user.id,
+    position: inviteData.position,
+    status: "completed",
+  });
+  if (!createResult.ok) {
+    console.error("Insert error:", createResult.error);
     return NextResponse.json(
       { error: "Failed to create invitation." },
       { status: 500 }
     );
   }
 
+  // Mark the invitation code as used
   const { error: updateError } = await supabase
     .from("invitation_codes")
     .update({ status: "completed" })
@@ -96,7 +105,7 @@ export async function POST(request: NextRequest) {
     );
   }
 
-  // Copy note from invitation_codes and update the corresponding invitation
+  // Fetch notes from the invitation code, then copy to the invitation row
   const { data: noteData, error: noteFetchError } = await supabase
     .from("invitation_codes")
     .select("notes")
@@ -111,15 +120,15 @@ export async function POST(request: NextRequest) {
     );
   }
 
-  const { error: noteUpdateError } = await supabase
-    .from("invitations")
-    .update({ notes: noteData.notes })
-    .eq("business_user_id", inviteData.business_user_id)
-    .eq("candidate_user_id", user.id)
-    .eq("position", inviteData.position);
-
-  if (noteUpdateError) {
-    console.error("Note update error:", noteUpdateError);
+  const patchResult = await patchInvitationByParticipants(
+    supabase,
+    inviteData.business_user_id,
+    user.id,
+    inviteData.position,
+    { notes: noteData.notes }
+  );
+  if (!patchResult.ok) {
+    console.error("Note update error:", patchResult.error);
     return NextResponse.json(
       { error: "Failed to update note in invitation." },
       { status: 500 }

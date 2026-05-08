@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import { getAssignedQuizes } from "@/app/helper/get/getAssignedQuizes";
 import { createClient } from "@/utils/supabase/client";
+import { getAssessmentForInvitation, listAssignedQuizzes, type AssignedQuiz } from "@/lib/db/assessments";
 
 interface AssignedTaskProps {
   invitation_id: string;
@@ -13,53 +13,34 @@ const AssignedTask = ({
   refreshToggle,
   OnUnassigned,
 }: AssignedTaskProps) => {
-  interface Quiz {
-    quiz?: {
-      quiz_id?: string;
-      title?: string;
-    };
-    status?: string;
-  }
-
-  const [quizzes, setQuizzes] = useState<Quiz[]>([]);
+  const [quizzes, setQuizzes] = useState<AssignedQuiz[]>([]);
   const [assessmentID, setAssessmentID] = useState<string>("");
 
   useEffect(() => {
     const fetchQuizzes = async () => {
-      const supabase = await createClient();
-      const { data: invitation, error: invitationError } = await supabase
-        .from("invitations")
-        .select("assessment_id")
-        .eq("invitation_id", invitation_id)
-        .single();
+      const supabase = createClient();
 
-      if (invitationError || !invitation) return;
+      const assessResult = await getAssessmentForInvitation(supabase, invitation_id);
+      if (!assessResult.ok) return;
 
-      setAssessmentID(invitation.assessment_id);
+      const assessmentId = assessResult.data.assessment_id;
+      setAssessmentID(assessmentId);
 
-      const result = await getAssignedQuizes(invitation.assessment_id);
-      if (
-        result &&
-        typeof result === "object" &&
-        "quizzes" in result &&
-        (!("error" in result) || !result.error)
-      ) {
-        setQuizzes((result as { quizzes: Quiz[] }).quizzes || []);
+      const quizzesResult = await listAssignedQuizzes(supabase, assessmentId);
+      if (quizzesResult.ok) {
+        setQuizzes(quizzesResult.data);
       }
     };
 
     fetchQuizzes();
   }, [invitation_id, refreshToggle]);
 
-  // Function to unassign a quiz by deleting the row via API
-  const handleUnassign = async (quizId?: string) => {
+  const handleUnassign = async (quizId?: number | string) => {
     if (!quizId) return;
     try {
       const response = await fetch("/api/unassign", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ invitation_id, quiz_id: quizId }),
       });
       if (response.ok) {

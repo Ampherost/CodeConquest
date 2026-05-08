@@ -3,7 +3,6 @@ import { redirect } from "next/navigation";
 import { createClient } from "@/utils/supabase/server";
 import getUserRolebyEmail from "@/app/helper/get/getUserRolebyEmail";
 import getUserID from "@/app/helper/get/getUserID";
-import getAssignedAssesment from "@/app/helper/get/getAssignedAssesment";
 import { getQuizQuestions } from "@/lib/db/quizzes";
 import isAssessmentLinked from "@/app/assesment/verifyUser";
 import QuizTimer from "../../../timer";
@@ -35,7 +34,6 @@ export default async function functionQuizPage({ params }) {
     redirect("/unauthorized");
   }
 
-  const assignedAssessment = await getAssignedAssesment(assesmentID, quizID);
   const questionsResult = await getQuizQuestions(supabase, Number(quizID));
   const quizQuestions = questionsResult.ok ? questionsResult.data : [];
 

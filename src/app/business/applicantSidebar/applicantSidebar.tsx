@@ -7,6 +7,8 @@ import defaultProfilePic from "../../../../public/assets/defaultProfile.png";
 import expand from "../../../../public/assets/expand.png";
 import { useState, useEffect } from "react";
 import { createClient } from "@/utils/supabase/client";
+import { getCandidateProfile } from "@/lib/db/candidates";
+import { getInvitation } from "@/lib/db/invitations";
 
 import Image from "next/image";
 
@@ -51,32 +53,22 @@ const ApplicantSidebar = ({
         try {
           const supabase = createClient();
 
-          const { data: nameData, error: nameError } = await supabase
-            .from("candidate_users")
-            .select("first_name, last_name")
-            .eq("user_id", candidateID)
-            .single();
-
-          if (nameError || !nameData) {
+          const profileResult = await getCandidateProfile(supabase, candidateID);
+          if (!profileResult.ok) {
             setName("Unknown Candidate");
           } else {
-            setName(`${nameData.first_name} ${nameData.last_name}`);
+            setName(`${profileResult.data.first_name} ${profileResult.data.last_name}`);
           }
 
-          const { data: inviteData, error: inviteError } = await supabase
-            .from("invitations")
-            .select("status, position, notes")
-            .eq("invitation_id", invitationID)
-            .single();
-
-          if (inviteError || !inviteData) {
+          const inviteResult = await getInvitation(supabase, invitationID);
+          if (!inviteResult.ok) {
             setStatus("Unknown");
             setPosition("Unknown");
             setNotes("Unknown");
           } else {
-            setStatus(inviteData.status);
-            setPosition(inviteData.position);
-            setNotes(inviteData.notes);
+            setStatus(inviteResult.data.status);
+            setPosition(inviteResult.data.position);
+            setNotes(inviteResult.data.notes ?? "None");
           }
         } catch (err) {
           console.error("Error fetching sidebar data:", err);

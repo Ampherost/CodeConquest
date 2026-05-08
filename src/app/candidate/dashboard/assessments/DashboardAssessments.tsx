@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 import { createClient } from "@/utils/supabase/client";
+import { listInvitationsForCandidate } from "@/lib/db/invitations";
 import DashboardHeader from "../../../components/dashboard/DashboardHeader";
 import ProfilePanel from "../profilePanel/ProfilePanel";
 import InvitationPanel from "../notificationPanel/InvitationPanel";
@@ -15,7 +16,7 @@ type AssessmentInvite = {
   invitation_id: string;
   position: string;
   assessment_id: string;
-  quiz_id: string | null;
+  quiz_id: number | null;
   status: string;
 };
 
@@ -40,50 +41,37 @@ const DashboardAssessments: React.FC<Props> = ({ userEmail }) => {
 
     if (!user) return;
 
-    const { data, error } = await supabase
-      .from("invitations")
-      .select(
-        `
-      invitation_id,
-      position,
-      status,
-      assessment_id,
-      assessment_quizzes:assessment_id (
-        quiz_id,
-        status
-      )
-    `
-      )
-      .eq("candidate_user_id", user.id);
+    const result = await listInvitationsForCandidate(supabase, user.id);
+    if (!result.ok) return;
 
-    if (!error && data) {
-      const pending = data.flatMap((inv) =>
-        (Array.isArray(inv.assessment_quizzes) ? inv.assessment_quizzes : [])
-          .filter((q) => q.status === "pending")
-          .map((q) => ({
-            invitation_id: inv.invitation_id,
-            position: inv.position,
-            assessment_id: inv.assessment_id,
-            quiz_id: q.quiz_id,
-            status: q.status,
-          }))
-      );
+    const data = result.data;
 
-      const completed = data.flatMap((inv) =>
-        (Array.isArray(inv.assessment_quizzes) ? inv.assessment_quizzes : [])
-          .filter((q) => q.status === "completed")
-          .map((q) => ({
-            invitation_id: inv.invitation_id,
-            position: inv.position,
-            assessment_id: inv.assessment_id,
-            quiz_id: q.quiz_id,
-            status: q.status,
-          }))
-      );
+    const pending = data.flatMap((inv) =>
+      (Array.isArray(inv.assessment_quizzes) ? inv.assessment_quizzes : [])
+        .filter((q) => q.status === "pending")
+        .map((q) => ({
+          invitation_id: inv.invitation_id,
+          position: inv.position,
+          assessment_id: inv.assessment_id,
+          quiz_id: q.quiz_id,
+          status: q.status,
+        }))
+    );
 
-      setPendingAssessments(pending);
-      setCompletedAssessments(completed);
-    }
+    const completed = data.flatMap((inv) =>
+      (Array.isArray(inv.assessment_quizzes) ? inv.assessment_quizzes : [])
+        .filter((q) => q.status === "completed")
+        .map((q) => ({
+          invitation_id: inv.invitation_id,
+          position: inv.position,
+          assessment_id: inv.assessment_id,
+          quiz_id: q.quiz_id,
+          status: q.status,
+        }))
+    );
+
+    setPendingAssessments(pending);
+    setCompletedAssessments(completed);
   }, []);
 
   useEffect(() => {

@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useCallback } from "react";
-import { createClient } from "@/utils/supabase/client";
 import Link from "next/link";
 import DashboardHeader from "../../../components/dashboard/DashboardHeader";
 import ProfilePanel from "../profilePanel/ProfilePanel";
@@ -17,18 +16,7 @@ const DashboardLearning: React.FC<Props> = ({ userEmail }) => {
   const [isProfileOpen, setProfileOpen] = useState(false);
   const [isInviteOpen, setInviteOpen] = useState(false);
 
-  const fetchInvites = useCallback(async () => {
-    const supabase = createClient();
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
-    if (!user) return;
-
-    await supabase
-      .from("invitations")
-      .select("invitation_id, position, status, assessment_id")
-      .eq("candidate_user_id", user.id);
-  }, []);
+  const fetchInvites = useCallback(async () => {}, []);
 
   return (
     <div className="min-h-screen bg-white dark:bg-zinc-900 text-zinc-900 dark:text-zinc-100">

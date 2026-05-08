@@ -1,9 +1,10 @@
 import { NextResponse } from "next/server";
 import { authenticateRequest } from "@/utils/supabase/apiAuth";
+import { findInvitationByAssessmentAndCandidate } from "@/lib/db/invitations";
+import { getQuizStatus, saveQuizSubmission } from "@/lib/db/assessments";
 
 export async function POST(request) {
   try {
-    // Require authenticated candidate user
     const { supabase, user, error: authError, status: authStatus } = await authenticateRequest("candidate");
     if (authError || !supabase || !user) {
       return NextResponse.json(
@@ -33,43 +34,36 @@ export async function POST(request) {
     }
 
     // Verify the authenticated user is linked to this assessment
-    const { data: invitationLink, error: linkError } = await supabase
-      .from("invitations")
-      .select("invitation_id")
-      .eq("assessment_id", assessmentID)
-      .eq("candidate_user_id", user.id)
-      .maybeSingle();
-
-    if (linkError || !invitationLink) {
+    const invResult = await findInvitationByAssessmentAndCandidate(
+      supabase,
+      assessmentID,
+      user.id
+    );
+    if (!invResult.ok || !invResult.data) {
       return NextResponse.json(
         { error: "You are not authorized to submit this quiz." },
         { status: 403 }
       );
     }
 
-    const mcqAnswers = answers.filter((a) => a.type === "mcq");
-    const mcqQuestionIDs = mcqAnswers.map((a) => a.question_id);
-
-    const { data: statusUpdate, error: statusError } = await supabase
-      .from("assessment_quizzes")
-      .select("status")
-      .eq("assessment_id", assessmentID)
-      .eq("quiz_id", quizID)
-      .single();
-
-    if (statusError || !statusUpdate) {
+    // Guard against double submission
+    const statusResult = await getQuizStatus(supabase, assessmentID, quizID);
+    if (!statusResult.ok || !statusResult.data) {
       return NextResponse.json(
         { error: "Assessment quiz not found" },
         { status: 404 }
       );
     }
-
-    if (statusUpdate.status === "completed") {
+    if (statusResult.data === "completed") {
       return NextResponse.json(
         { error: "Quiz already completed" },
         { status: 400 }
       );
     }
+
+    // Score MCQ answers
+    const mcqAnswers = answers.filter((a) => a.type === "mcq");
+    const mcqQuestionIDs = mcqAnswers.map((a) => a.question_id);
 
     const { data: questionsData, error: fetchError } = await supabase
       .from("questions")
@@ -98,25 +92,24 @@ export async function POST(request) {
       return { ...answer, isCorrect };
     });
 
-    const { data: updateData, error: updateError } = await supabase
-      .from("assessment_quizzes")
-      .update({
-        submission: { submission: updatedAnswers },
-        status: "completed",
-        last_activity: new Date().toTimeString().split(" ")[0],
-      })
-      .eq("assessment_id", assessmentID)
-      .eq("quiz_id", quizID);
+    const lastActivity = new Date().toTimeString().split(" ")[0];
+    const saveResult = await saveQuizSubmission(
+      supabase,
+      assessmentID,
+      quizID,
+      { submission: updatedAnswers },
+      lastActivity
+    );
 
-    if (updateError) {
-      console.error("Error submitting quiz:", updateError);
+    if (!saveResult.ok) {
+      console.error("Error submitting quiz:", saveResult.error);
       return NextResponse.json(
         { error: "Failed to submit quiz" },
         { status: 500 }
       );
     }
 
-    return NextResponse.json({ success: true, data: updateData });
+    return NextResponse.json({ success: true });
   } catch (err) {
     console.error("Unexpected server error:", err);
     return NextResponse.json(
