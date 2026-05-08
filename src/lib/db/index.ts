@@ -2,3 +2,5 @@
 export * from "./errors";
 export * from "./types";
 export * from "./users";
+export * from "./quizzes";
+export * from "./modules";

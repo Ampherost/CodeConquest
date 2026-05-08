@@ -4,7 +4,7 @@ import { createClient } from "@/utils/supabase/server";
 import getUserRolebyEmail from "@/app/helper/get/getUserRolebyEmail";
 import getUserID from "@/app/helper/get/getUserID";
 import getAssignedAssesment from "@/app/helper/get/getAssignedAssesment";
-import getQuizQuestions from "@/app/helper/get/getQuizQuestions";
+import { getQuizQuestions } from "@/lib/db/quizzes";
 import isAssessmentLinked from "@/app/assesment/verifyUser";
 import QuizTimer from "../../../timer";
 import {
@@ -13,7 +13,6 @@ import {
   updateStartTimertoNow,
 } from "../../../updateTimer";
 import verifyCompletion from "../../../verifyCompletion";
-import getBaseQuizzes from "@/app/helper/get/getBaseQuizzes";
 
 export default async function functionQuizPage({ params }) {
   const { assesmentID, quizID } = await params;
@@ -37,7 +36,8 @@ export default async function functionQuizPage({ params }) {
   }
 
   const assignedAssessment = await getAssignedAssesment(assesmentID, quizID);
-  const quizQuestions = await getQuizQuestions(quizID);
+  const questionsResult = await getQuizQuestions(supabase, Number(quizID));
+  const quizQuestions = questionsResult.ok ? questionsResult.data : [];
 
   const startTimer = await updateStartTimertoNow(assesmentID, quizID);
   const timerStart = await getStartTime(assesmentID, quizID);

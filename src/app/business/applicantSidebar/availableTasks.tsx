@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from "react";
 import { createClient } from "@/utils/supabase/client";
 import { getAssignedQuizes } from "@/app/helper/get/getAssignedQuizes";
-import getQuizQuestionsEmployeer from "@/app/helper/get/getQuizQuestionsEmployeer";
+import { listQuizzes } from "@/lib/db/quizzes";
 
 interface AvailableTaskProps {
   invitation_id: string;
@@ -54,7 +54,8 @@ const AvailableTask: React.FC<AvailableTaskProps> = ({
           : [];
 
         // 3. Fetch all quizzes
-        const allQuizzes = await getQuizQuestionsEmployeer();
+        const quizzesResult = await listQuizzes(supabase);
+        const allQuizzes = quizzesResult.ok ? quizzesResult.data : [];
 
         // 4. Filter out quizzes that are already assigned
         const available = allQuizzes.filter((quiz: Quiz) => {

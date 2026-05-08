@@ -2,7 +2,7 @@ import React from "react";
 import Quiz from "@/app/components/Assesment/Quiz";
 import { createClient } from "@/utils/supabase/server";
 import { redirect } from "next/navigation";
-import getQuizQuestions from "@/app/helper/get/getQuizQuestions";
+import { getQuizQuestions } from "@/lib/db/quizzes";
 import getUserRolebyEmail from "@/app/helper/get/getUserRolebyEmail";
 import getUserID from "@/app/helper/get/getUserID";
 
@@ -61,7 +61,8 @@ export default async function ReviewQuizPage({ params }) {
     );
   }
 
-  const quizQuestions = await getQuizQuestions(quizID);
+  const questionsResult = await getQuizQuestions(supabase, Number(quizID));
+  const quizQuestions = questionsResult.ok ? questionsResult.data : [];
 
   // Safely extract the submission data
   let submissionData = fetched?.submission ?? {};
