@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { authenticateRequest } from "@/utils/supabase/apiAuth";
 import { findInvitationByAssessmentAndCandidate } from "@/lib/db/invitations";
 import { getQuizStatus, saveQuizSubmission } from "@/lib/db/assessments";
+import { getQuestionsForScoring } from "@/lib/db/quizzes";
 
 export async function POST(request) {
   try {
@@ -65,18 +66,15 @@ export async function POST(request) {
     const mcqAnswers = answers.filter((a) => a.type === "mcq");
     const mcqQuestionIDs = mcqAnswers.map((a) => a.question_id);
 
-    const { data: questionsData, error: fetchError } = await supabase
-      .from("questions")
-      .select("question_id, options, correct_answer_index")
-      .in("question_id", mcqQuestionIDs);
-
-    if (fetchError || !questionsData) {
-      console.error("Error fetching questions:", fetchError);
+    const scoringResult = await getQuestionsForScoring(supabase, mcqQuestionIDs);
+    if (!scoringResult.ok) {
+      console.error("Error fetching questions:", scoringResult.error);
       return NextResponse.json(
         { error: "Failed to fetch question data" },
         { status: 500 }
       );
     }
+    const questionsData = scoringResult.data;
 
     const updatedAnswers = answers.map((answer) => {
       if (answer.type !== "mcq") return { ...answer, isCorrect: null };

@@ -4,8 +4,10 @@ import {
   getQuizById,
   listQuizzes,
   getQuizQuestions,
+  getQuestionsForScoring,
   type Quiz,
   type Question,
+  type QuestionForScoring,
 } from "@/lib/db/quizzes";
 
 const QUIZ_ROW: Quiz = {
@@ -135,6 +137,58 @@ describe("getQuizQuestions", () => {
       error: { code: "42501", message: "permission denied", details: "", hint: "" },
     });
     const result = await getQuizQuestions(supabase as never, 1);
+
+    expect(result.ok).toBe(false);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// getQuestionsForScoring
+// ---------------------------------------------------------------------------
+
+const SCORING_ROW: QuestionForScoring = {
+  question_id: 10,
+  options: ["Option A", "Option B"],
+  correct_answer_index: 1,
+};
+
+describe("getQuestionsForScoring", () => {
+  it("returns ok with empty array when no question IDs provided", async () => {
+    const supabase = createMockSupabaseClient({ data: [], error: null });
+    const result = await getQuestionsForScoring(supabase as never, []);
+
+    expect(result.ok).toBe(true);
+    if (result.ok) expect(result.data).toEqual([]);
+  });
+
+  it("returns ok with scoring rows when questions found", async () => {
+    const supabase = createMockSupabaseClient({
+      data: [SCORING_ROW],
+      error: null,
+    });
+    const result = await getQuestionsForScoring(supabase as never, [10]);
+
+    expect(result.ok).toBe(true);
+    if (result.ok) {
+      expect(result.data).toHaveLength(1);
+      expect(result.data[0]).toEqual(SCORING_ROW);
+    }
+  });
+
+  it("returns ok with empty array when data is null", async () => {
+    const supabase = createMockSupabaseClient({ data: null, error: null });
+    const result = await getQuestionsForScoring(supabase as never, [10]);
+
+    expect(result.ok).toBe(true);
+    if (result.ok) expect(result.data).toEqual([]);
+  });
+
+  it("returns error on Supabase failure", async () => {
+    const supabase = createMockSupabaseClient({
+      data: null,
+      error: { code: "42501", message: "permission denied", details: "", hint: "" },
+    });
+    const result = await getQuestionsForScoring(supabase as never, [10]);
 
     expect(result.ok).toBe(false);
   });

@@ -72,6 +72,33 @@ export async function listQuizzes(
   return ok((data ?? []) as Quiz[]);
 }
 
+/** Minimal shape needed to score MCQ answers (correct_answer_index included). */
+export type QuestionForScoring = {
+  question_id: number;
+  options: string[];
+  correct_answer_index: number;
+};
+
+/**
+ * Fetch questions by ID for scoring — returns only the fields needed to
+ * evaluate MCQ answers. Used by the submit-quiz route.
+ * Returns an empty array when no IDs are provided or none match.
+ */
+export async function getQuestionsForScoring(
+  supabase: SupabaseClient,
+  questionIds: number[]
+): Promise<Result<QuestionForScoring[]>> {
+  if (questionIds.length === 0) return ok([]);
+
+  const { data, error } = await supabase
+    .from("questions")
+    .select("question_id, options, correct_answer_index")
+    .in("question_id", questionIds);
+
+  if (error) return err(wrapSupabaseError(error)!);
+  return ok((data ?? []) as QuestionForScoring[]);
+}
+
 /**
  * Fetch all questions for a given quiz.
  * Returns an empty array when none exist (not an error).

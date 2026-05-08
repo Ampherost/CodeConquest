@@ -7,4 +7,5 @@ export * from "./modules";
 export * from "./businesses";
 export * from "./candidates";
 export * from "./invitations";
+export * from "./invitation-codes";
 export * from "./assessments";

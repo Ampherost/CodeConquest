@@ -1,6 +1,9 @@
-import { createClient } from "@/utils/supabase/server";
 import { NextRequest, NextResponse } from "next/server";
-import { getUserById } from "@/lib/db/users";
+import { authenticateRequest } from "@/utils/supabase/apiAuth";
+import {
+  getInvitationCodeByCode,
+  updateInvitationCodeStatus,
+} from "@/lib/db/invitation-codes";
 import {
   findInvitationsByParticipants,
   createInvitation,
@@ -24,37 +27,20 @@ export async function POST(request: NextRequest) {
     );
   }
 
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
-  if (!user) {
-    return NextResponse.json({ error: "Unauthorized." }, { status: 401 });
+  const { supabase, user, error, status } = await authenticateRequest("candidate");
+  if (error || !supabase || !user) {
+    return NextResponse.json({ error: error ?? "Unauthorized." }, { status: status ?? 401 });
   }
 
-  const userResult = await getUserById(supabase, user.id);
-
-  if (!userResult.ok || userResult.data.role !== "candidate") {
-    return NextResponse.json(
-      { error: "You are not authorized to accept invitation codes." },
-      { status: 403 }
-    );
-  }
-
-  // Look up the invitation code (invitation_codes table — outside service layer scope)
-  const { data: inviteData, error: inviteError } = await supabase
-    .from("invitation_codes")
-    .select("*")
-    .eq("invite_code", code)
-    .single();
-
-  if (inviteError || !inviteData) {
+  // Look up the invitation code
+  const codeResult = await getInvitationCodeByCode(supabase, code);
+  if (!codeResult.ok) {
     return NextResponse.json(
       { error: "Invalid or expired invitation code." },
       { status: 404 }
     );
   }
+  const inviteData = codeResult.data;
 
   // Check for duplicate invitation
   const dupResult = await findInvitationsByParticipants(
@@ -92,40 +78,22 @@ export async function POST(request: NextRequest) {
   }
 
   // Mark the invitation code as used
-  const { error: updateError } = await supabase
-    .from("invitation_codes")
-    .update({ status: "completed" })
-    .eq("invite_code", code);
-
-  if (updateError) {
-    console.error("Update error:", updateError);
+  const updateResult = await updateInvitationCodeStatus(supabase, code, "completed");
+  if (!updateResult.ok) {
+    console.error("Update error:", updateResult.error);
     return NextResponse.json(
       { error: "Failed to update invitation code status." },
       { status: 500 }
     );
   }
 
-  // Fetch notes from the invitation code, then copy to the invitation row
-  const { data: noteData, error: noteFetchError } = await supabase
-    .from("invitation_codes")
-    .select("notes")
-    .eq("invite_code", code)
-    .single();
-
-  if (noteFetchError) {
-    console.error("Fetch note error:", noteFetchError);
-    return NextResponse.json(
-      { error: "Failed to fetch note from invitation code." },
-      { status: 500 }
-    );
-  }
-
+  // Copy notes from the invitation code to the invitation row
   const patchResult = await patchInvitationByParticipants(
     supabase,
     inviteData.business_user_id,
     user.id,
     inviteData.position,
-    { notes: noteData.notes }
+    { notes: inviteData.notes }
   );
   if (!patchResult.ok) {
     console.error("Note update error:", patchResult.error);

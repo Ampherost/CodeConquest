@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { createClient } from "@/utils/supabase/client";
+import { listPendingInvitationCodesForBusiness } from "@/lib/db/invitation-codes";
 
 interface PendingCandidate {
   user_id: string;
@@ -34,17 +35,12 @@ const PendingApplicants: React.FC<PendingApplicantsProps> = ({
       setLoading(true);
       const supabase = createClient();
 
-      const { data: candRows, error: candError } = await supabase
-        .from("invitation_codes")
-        .select("invite_code, full_name, email, position, notes")
-        .eq("business_user_id", businessUserId)
-        .eq("status", "pending");
-
-      if (candError) {
-        console.error("Error fetching candidate users:", candError);
+      const result = await listPendingInvitationCodesForBusiness(supabase, businessUserId);
+      if (!result.ok) {
+        console.error("Error fetching candidate users:", result.error);
         setCandidates([]);
       } else {
-        setCandidates(candRows as PendingCandidate[]);
+        setCandidates(result.data as PendingCandidate[]);
       }
 
       setLoading(false);

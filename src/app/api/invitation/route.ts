@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { authenticateRequest } from "@/utils/supabase/apiAuth";
+import { createInvitationCode } from "@/lib/db/invitation-codes";
+import { DuplicateError } from "@/lib/db/errors";
 
 export async function POST(req: NextRequest) {
   // Require authenticated business user
@@ -39,32 +41,27 @@ export async function POST(req: NextRequest) {
   }
 
   // Use the authenticated user's ID as business_user_id instead of trusting the client
-  const { data, error: insertError } = await supabase
-    .from("invitation_codes")
-    .insert([
-      {
-        invite_code,
-        business_user_id: user.id,
-        notes,
-        position,
-        full_name,
-        email,
-        status: inviteStatus,
-      },
-    ])
-    .single();
+  const result = await createInvitationCode(supabase, {
+    invite_code,
+    business_user_id: user.id,
+    notes,
+    position,
+    full_name,
+    email,
+    status: inviteStatus,
+  });
 
-  if (insertError) {
+  if (!result.ok) {
     // Handle unique constraint violation (code collision)
-    if (insertError.code === "23505") {
+    if (result.error instanceof DuplicateError) {
       return NextResponse.json(
         { error: "Invitation code already exists. Please try again." },
         { status: 409 }
       );
     }
-    console.error(insertError);
-    return NextResponse.json({ error: insertError.message }, { status: 500 });
+    console.error(result.error);
+    return NextResponse.json({ error: result.error.message }, { status: 500 });
   }
 
-  return NextResponse.json({ message: "Invitation created", data });
+  return NextResponse.json({ message: "Invitation created" });
 }
