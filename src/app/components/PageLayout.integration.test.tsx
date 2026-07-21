@@ -1,20 +1,22 @@
 // src/app/components/PageLayout.integration.test.tsx
-import { render, screen } from '@testing-library/react'
+import { render, screen, act } from '@testing-library/react'
 import Header from './Header'
 import Container from './Container'
 import Footer from './Footer'
 
 describe('Page layout integration', () => {
-  it('renders Header, Container content, and Footer together', () => {
-    render(
-      <>
-        <Header />
-        <Container title="Layout Integration Test">
-          <p>Sample child content</p>
-        </Container>
-        <Footer />
-      </>
-    )
+  it('renders Header, Container content, and Footer together', async () => {
+    await act(async () => {
+      render(
+        <>
+          <Header />
+          <Container title="Layout Integration Test">
+            <p>Sample child content</p>
+          </Container>
+          <Footer />
+        </>
+      )
+    })
 
     // 1) Header’s <nav> should appear
     const nav = screen.getByRole('navigation')
@@ -40,3 +42,4 @@ describe('Page layout integration', () => {
     expect(screen.getByText(/by Russell Ly/i)).toBeInTheDocument()
   })
 })
+

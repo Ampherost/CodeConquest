@@ -19,7 +19,7 @@ const customJestConfig: Config = {
 
   // If you use absolute imports like `import X from '@/components/X'`, map them here:
   moduleNameMapper: {
-    '^@/(.*)$': '<rootDir>/$1',
+    '^@/(.*)$': '<rootDir>/src/$1',
   },
 
   // Load this before running each test file—so you get `toBeInTheDocument()`, etc.

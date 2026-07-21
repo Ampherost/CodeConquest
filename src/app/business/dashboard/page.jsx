@@ -5,12 +5,7 @@ import { createClient } from "@/utils/supabase/client";
 
 import { useState, useEffect } from "react";
 
-import Welcome from "../header/welcome";
-import Invitation from "../header/sendInvitationButton";
-import LogoComponent from "../header/logoComponent";
-import Notifications from "../header/notification";
-import Signout from "../header/signOut";
-import Profile from "../header/userProfile";
+import BusinessHeader from "../header/BusinessHeader";
 import CurrentApplicants from "../applicantsSection/currentApplicants";
 import PendingApplicants from "../applicantsSection/pendingApplicants";
 import ApplicantSidebar from "../applicantSidebar/applicantSidebar";
@@ -45,25 +40,10 @@ const Page = () => {
   return (
     //main page
     <div className="bg-zinc-900 min-h-screen">
-      <div
-        id="header"
-        className="flex flex-row justify-between items-start w-full
-        px-15 py-4"
-      >
-        <div className="flex flex-row items-center space-x-4">
-          <LogoComponent />
-          <Welcome />
-        </div>
-        <div className="flex flex-row items-center space-x-4">
-          <Profile />
-          <Notifications />
-          <Invitation
-            business_user_id={user.id}
-            onSuccess={handleInviteSuccess}
-          />
-          <Signout />
-        </div>
-      </div>
+      <BusinessHeader
+        businessUserId={user.id}
+        onInviteSuccess={handleInviteSuccess}
+      />
       <div className="flex flex-row">
         {sidebarCollapse && (
           <div id="main" className="space-y-5 flex-[3] ">
