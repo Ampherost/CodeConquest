@@ -40,17 +40,17 @@ export const chaptersByModule: Record<string, ChapterContent[]> = {
 ## Major Themes     
      
     
--**Evolving Code Over Time**
+- **Evolving Code Over Time**
 
     Software lives for years or decades; design for maintainability.          
    
     
--**Scaling Development**
+- **Scaling Development**
 
     Large codebases and teams require processes, tooling, and communication.     
     
     
--**Shipping High-Quality Software**
+- **Shipping High-Quality Software**
 
     Catch issues early through reviews, testing, and good engineering practices.    
     
@@ -62,13 +62,13 @@ export const chaptersByModule: Record<string, ChapterContent[]> = {
 > — IEEE 1990 Standard
 
 
--Software is **intangible**, **malleable**, and **human-intensive**.
+- Software is **intangible**, **malleable**, and **human-intensive**.
 
 
--Modifying software is easy; describing and evaluating it is hard.
+- Modifying software is easy; describing and evaluating it is hard.
 
 
--Engineering practices—processes, formality, and tools—are critical to success.
+- Engineering practices—processes, formality, and tools—are critical to success.
     
     
     
