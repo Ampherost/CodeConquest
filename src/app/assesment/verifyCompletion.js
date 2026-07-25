@@ -12,7 +12,6 @@ export default async function verifyCompletion(assessmentId, quizId) {
   }
 
   if (result.data !== 'completed') {
-    console.log('Quiz is not completed');
     return false;
   }
 
