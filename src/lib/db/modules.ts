@@ -14,6 +14,14 @@ export type Module = RawModule & {
   chapterContents: ChapterContent[];
 };
 
+export type DashboardModule = RawModule & {
+  slug: string;
+  level: string;
+  chaptersCount: number;
+  quizzesCount: number;
+  image: string;
+};
+
 // ---------------------------------------------------------------------------
 // Service functions
 //
@@ -32,6 +40,43 @@ export async function listModules(
   _supabase: unknown
 ): Promise<Result<ModuleSummary[]>> {
   return ok(rawModules);
+}
+
+/**
+ * Return all module cards dynamically formatted for dashboard views.
+ */
+export async function listDashboardModules(
+  _supabase: unknown
+): Promise<Result<DashboardModule[]>> {
+  const dashboardList: DashboardModule[] = rawModules.map((mod) => {
+    const chapterContents = chaptersByModule[mod.id] ?? [];
+    const quizCount = chapterContents.reduce(
+      (sum, ch) => sum + (ch.quiz ? ch.quiz.length : 0),
+      0
+    );
+
+    return {
+      ...mod,
+      slug: mod.id,
+      level: mod.level ?? "Beginner",
+      image: mod.image ?? "/assets/software-engineer.png",
+      chaptersCount: mod.chapters ? mod.chapters.length : 0,
+      quizzesCount: quizCount,
+    };
+  });
+
+  return ok(dashboardList);
+}
+
+/**
+ * Return non-W.I.P. modules for current active learning dashboard tab.
+ */
+export async function listCurrentModules(
+  _supabase: unknown
+): Promise<Result<DashboardModule[]>> {
+  const result = await listDashboardModules(_supabase);
+  if (!result.ok) return result;
+  return ok(result.data.filter((m) => m.level !== "W.I.P."));
 }
 
 /**

@@ -1,4 +1,9 @@
-import { listModules, getModuleBySlug } from "@/lib/db/modules";
+import {
+  listModules,
+  listDashboardModules,
+  listCurrentModules,
+  getModuleBySlug,
+} from "@/lib/db/modules";
 import { modules as rawModules } from "../../../../lib/modules";
 import { chaptersByModule } from "../../../../lib/chapters";
 import { NotFoundError } from "@/lib/db/errors";
@@ -41,6 +46,36 @@ describe("listModules", () => {
 });
 
 // ---------------------------------------------------------------------------
+// listDashboardModules & listCurrentModules
+// ---------------------------------------------------------------------------
+
+describe("listDashboardModules and listCurrentModules", () => {
+  it("returns dashboard modules with derived chaptersCount and quizzesCount", async () => {
+    const result = await listDashboardModules(supabase);
+
+    expect(result.ok).toBe(true);
+    if (result.ok) {
+      expect(result.data.length).toBeGreaterThan(0);
+      const seModule = result.data.find((m) => m.slug === "software-engineering");
+      expect(seModule).toBeDefined();
+      if (seModule) {
+        expect(seModule.chaptersCount).toBe(6);
+        expect(typeof seModule.quizzesCount).toBe("number");
+      }
+    }
+  });
+
+  it("filters out W.I.P. modules in listCurrentModules", async () => {
+    const result = await listCurrentModules(supabase);
+
+    expect(result.ok).toBe(true);
+    if (result.ok) {
+      expect(result.data.every((m) => m.level !== "W.I.P.")).toBe(true);
+    }
+  });
+});
+
+// ---------------------------------------------------------------------------
 // getModuleBySlug
 // ---------------------------------------------------------------------------
 
@@ -69,9 +104,6 @@ describe("getModuleBySlug", () => {
   });
 
   it("returns chapterContents as empty array for a module with no chapters in chaptersByModule", async () => {
-    // Add a module that is not in chaptersByModule to verify graceful fallback.
-    // We mock the raw import by testing a slug that doesn't exist in chaptersByModule.
-    // Since all real slugs map fine, we verify "compilers" as a smoke test.
     const slug = "compilers";
     const result = await getModuleBySlug(supabase, slug);
 

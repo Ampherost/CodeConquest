@@ -6,7 +6,7 @@ import DashboardHeader from "../../components/dashboard/DashboardHeader";
 import ProfilePanel from "./profilePanel/ProfilePanel";
 import InvitationPanel from "./notificationPanel/InvitationPanel";
 import ModuleCard from "../../components/ModuleCard";
-import { currentModules } from "../../../../lib/dashboardModules";
+import { listCurrentModules, type DashboardModule } from "@/lib/db/modules";
 
 type LastModule = {
   moduleId: string;
@@ -23,6 +23,15 @@ const DashboardCurrent: React.FC<Props> = ({ userEmail }) => {
   const [isProfileOpen, setProfileOpen] = useState(false);
   const [isInviteOpen, setInviteOpen] = useState(false);
   const [lastModule, setLastModule] = useState<LastModule | null>(null);
+  const [modules, setModules] = useState<DashboardModule[]>([]);
+
+  useEffect(() => {
+    async function loadModules() {
+      const res = await listCurrentModules(null);
+      if (res.ok) setModules(res.data);
+    }
+    loadModules();
+  }, []);
 
   useEffect(() => {
     const stored = localStorage.getItem("lastViewedModule");
@@ -35,7 +44,7 @@ const DashboardCurrent: React.FC<Props> = ({ userEmail }) => {
     }
   }, []);
 
-  const fetchInvites = useCallback(async () => {}, []);
+  const fetchInvites = useCallback(async () => { }, []);
 
   return (
     <div className="min-h-screen bg-white dark:bg-zinc-900 text-zinc-900 dark:text-zinc-100">
@@ -79,7 +88,7 @@ const DashboardCurrent: React.FC<Props> = ({ userEmail }) => {
           </h2>
           <div className="overflow-x-auto">
             <div className="flex gap-6 px-1 py-3 w-max">
-              {currentModules.map((mod, i) => (
+              {modules.map((mod, i) => (
                 <Link href={`/modules/${mod.slug}`} key={i}>
                   <ModuleCard {...mod} />
                 </Link>

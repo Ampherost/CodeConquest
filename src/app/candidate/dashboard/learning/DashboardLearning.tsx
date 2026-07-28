@@ -1,12 +1,12 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import Link from "next/link";
 import DashboardHeader from "../../../components/dashboard/DashboardHeader";
 import ProfilePanel from "../profilePanel/ProfilePanel";
 import InvitationPanel from "../notificationPanel/InvitationPanel";
 import ModuleCard from "../../../components/ModuleCard";
-import { dashboardModules } from "../../../../../lib/dashboardModules";
+import { listDashboardModules, type DashboardModule } from "@/lib/db/modules";
 
 interface Props {
   userEmail: string | null;
@@ -15,6 +15,15 @@ interface Props {
 const DashboardLearning: React.FC<Props> = ({ userEmail }) => {
   const [isProfileOpen, setProfileOpen] = useState(false);
   const [isInviteOpen, setInviteOpen] = useState(false);
+  const [modules, setModules] = useState<DashboardModule[]>([]);
+
+  useEffect(() => {
+    async function loadModules() {
+      const res = await listDashboardModules(null);
+      if (res.ok) setModules(res.data);
+    }
+    loadModules();
+  }, []);
 
   const fetchInvites = useCallback(async () => {}, []);
 
@@ -34,7 +43,7 @@ const DashboardLearning: React.FC<Props> = ({ userEmail }) => {
           </h2>
           <div className="overflow-x-auto">
             <div className="flex gap-6 px-1 py-3 w-max">
-              {dashboardModules.map((mod, i) => (
+              {modules.map((mod, i) => (
                 <Link href={`/modules/${mod.slug}`} key={i}>
                   <ModuleCard {...mod} />
                 </Link>
