@@ -733,4 +733,388 @@ A linear, document-driven approach with well-defined stages:
   },
 ],
 
+  "intro-to-cpp": [
+    {
+      moduleId: "intro-to-cpp",
+      slug: "cpp-basics",
+      title: "C++ Fundamentals & Syntax",
+      guide: `
+# C++ Fundamentals & Syntax
+
+## Overview
+C++ is a high-performance compiled language created by Bjarne Stroustrup as an extension of the C programming language. It provides fine-grained control over system resources and memory while supporting procedural, object-oriented, and generic programming.
+
+## Hello World in C++
+\`\`\`cpp
+#include <iostream>
+
+int main() {
+    std::cout << "Hello, CodeConquest!" << std::endl;
+    return 0;
+}
+\`\`\`
+
+## Key Concepts
+- **Strong Typing**: Variables must be declared with an explicit type (e.g. \`int\`, \`double\`, \`std::string\`, \`bool\`).
+- **Compilation Pipeline**: Source Code (.cpp) → Compiler → Object File (.o) → Linker → Executable binary.
+- **Control Structures**: Standard \`if/else\`, \`switch\`, \`for\` loops, and \`while\` loops.
+- **Headers & Includes**: Declarations live in header files (\`.h\` / \`.hpp\`) or standard library includes (\`<iostream>\`, \`<vector>\`).
+      `.trim(),
+      quiz: [
+        {
+          question: "Which stream object is used for standard output in C++?",
+          options: ["std::cin", "std::cout", "std::cerr", "printf"],
+          answer: "std::cout",
+        },
+      ],
+    },
+    {
+      moduleId: "intro-to-cpp",
+      slug: "pointers-memory",
+      title: "Pointers & Memory Management",
+      guide: `
+# Pointers & Memory Management in C++
+
+## Stack vs. Heap Memory
+- **Stack**: Fast, automatically managed memory for local variables and function calls.
+- **Heap**: Dynamically allocated memory using \`new\` and freed using \`delete\`.
+
+## Pointers and References
+- **Address-Of Operator (\`&\`)**: Gets the memory address of a variable.
+- **Dereference Operator (\`*\`)**: Accesses the value stored at a pointer's memory address.
+
+\`\`\`cpp
+int val = 42;
+int* ptr = &val; // ptr stores the address of val
+
+std::cout << *ptr << std::endl; // prints 42
+\`\`\`
+
+## Dynamic Memory Allocation
+\`\`\`cpp
+int* arr = new int[5]; // Allocate array on heap
+arr[0] = 10;
+
+delete[] arr; // Always free dynamically allocated memory!
+arr = nullptr;
+\`\`\`
+
+## Modern C++ Smart Pointers
+- \`std::unique_ptr\`: Single ownership pointer automatically deleted when out of scope.
+- \`std::shared_ptr\`: Reference-counted shared ownership pointer.
+      `.trim(),
+      quiz: [
+        {
+          question: "Which operator is used to deallocate dynamic memory allocated with 'new' in C++?",
+          options: ["free", "delete", "dealloc", "remove"],
+          answer: "delete",
+        },
+      ],
+    },
+    {
+      moduleId: "intro-to-cpp",
+      slug: "oop-in-cpp",
+      title: "Object-Oriented Programming",
+      guide: `
+# Object-Oriented Programming in C++
+
+## Classes & Objects
+Classes form the foundation of OOP in C++, encapsulating data (member variables) and behaviors (member functions).
+
+\`\`\`cpp
+#include <iostream>
+#include <string>
+
+class Developer {
+private:
+    std::string name;
+    int experienceYears;
+
+public:
+    // Constructor
+    Developer(std::string devName, int yrs) : name(devName), experienceYears(yrs) {}
+
+    void code() {
+        std::cout << name << " is writing C++ code with " << experienceYears << " years experience!" << std::endl;
+    }
+};
+
+int main() {
+    Developer dev("Alex", 3);
+    dev.code();
+    return 0;
+}
+\`\`\`
+
+## Core Pillars of OOP
+1. **Encapsulation**: Using access specifiers (\`private\`, \`protected\`, \`public\`) to restrict direct access to data.
+2. **Inheritance**: Derived classes inherit members from base classes.
+3. **Polymorphism**: Override virtual functions using the \`virtual\` keyword for dynamic dispatch.
+      `.trim(),
+      quiz: [
+        {
+          question: "Which keyword enables dynamic polymorphism and method overriding in C++ base classes?",
+          options: ["override", "virtual", "dynamic", "abstract"],
+          answer: "virtual",
+        },
+      ],
+    },
+  ],
+
+  "databases-sql": [
+    {
+      moduleId: "databases-sql",
+      slug: "intro-relational-db",
+      title: "Relational Databases & SQL Basics",
+      guide: `
+# Relational Databases & SQL Basics
+
+## What is a Relational Database?
+A Relational Database Management System (RDBMS) organizes data into tables consisting of rows (records) and columns (attributes). Tables relate to one another via keys.
+
+## Key Concepts
+- **Primary Key (PK)**: A unique identifier for every row in a table.
+- **Foreign Key (FK)**: A column or group of columns that references a Primary Key in another table to establish relationships.
+- **SQL (Structured Query Language)**: The standard language used to store, manipulate, and retrieve data in databases.
+
+## Essential Data Manipulation Language (DML)
+\`\`\`sql
+-- Create a new table
+CREATE TABLE users (
+    id SERIAL PRIMARY KEY,
+    username VARCHAR(50) NOT NULL UNIQUE,
+    email VARCHAR(100) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Insert a record
+INSERT INTO users (username, email)
+VALUES ('alex_dev', 'alex@codeconquest.io');
+
+-- Query records
+SELECT id, username, email FROM users WHERE username = 'alex_dev';
+
+-- Update a record
+UPDATE users SET email = 'alex_new@codeconquest.io' WHERE id = 1;
+
+-- Delete a record
+DELETE FROM users WHERE id = 1;
+\`\`\`
+      `.trim(),
+      quiz: [
+        {
+          question: "Which SQL constraint uniquely identifies each row in a database table?",
+          options: ["FOREIGN KEY", "PRIMARY KEY", "UNIQUE INDEX", "DEFAULT"],
+          answer: "PRIMARY KEY",
+        },
+      ],
+    },
+    {
+      moduleId: "databases-sql",
+      slug: "queries-joins",
+      title: "Complex Queries & Joins",
+      guide: `
+# Complex Queries & Relational Joins
+
+## Relational Joins Explained
+Joins allow you to combine records from two or more tables based on a related column between them.
+
+| Join Type | Description |
+| :--- | :--- |
+| **INNER JOIN** | Returns records that have matching values in both tables. |
+| **LEFT JOIN** | Returns all records from the left table, and matched records from the right table. |
+| **RIGHT JOIN** | Returns all records from the right table, and matched records from the left table. |
+| **FULL JOIN** | Returns all records when there is a match in either left or right table. |
+
+## Join Example
+\`\`\`sql
+SELECT 
+    orders.id AS order_id, 
+    users.username, 
+    orders.total_amount
+FROM orders
+INNER JOIN users ON orders.user_id = users.id
+WHERE orders.total_amount > 100.00;
+\`\`\`
+
+## Aggregations & Grouping
+Use \`GROUP BY\` alongside aggregate functions like \`COUNT()\`, \`SUM()\`, \`AVG()\`, \`MAX()\`, and \`MIN()\`. Filter aggregated results using the \`HAVING\` clause:
+
+\`\`\`sql
+SELECT user_id, COUNT(*) AS total_orders
+FROM orders
+GROUP BY user_id
+HAVING COUNT(*) >= 5;
+\`\`\`
+      `.trim(),
+      quiz: [
+        {
+          question: "Which type of JOIN returns all records from the left table even if there are no matches in the right table?",
+          options: ["INNER JOIN", "LEFT JOIN", "RIGHT JOIN", "CROSS JOIN"],
+          answer: "LEFT JOIN",
+        },
+      ],
+    },
+    {
+      moduleId: "databases-sql",
+      slug: "indexing-transactions",
+      title: "Indexing & Transactions (ACID)",
+      guide: `
+# Database Indexing & ACID Transactions
+
+## Database Indexes
+An Index is a data structure (typically a B-Tree) that improves the speed of data retrieval operations on a table at the cost of additional storage and slower writes ('INSERT', 'UPDATE', 'DELETE').
+
+\`\`\`sql
+-- Create an index on the email column for fast lookups
+CREATE INDEX idx_users_email ON users(email);
+\`\`\`
+
+## ACID Properties of Transactions
+A database transaction is a sequence of read/write operations executed as a single logical unit.
+
+- **Atomicity**: All operations in the transaction succeed, or the entire transaction fails and rolls back.
+- **Consistency**: Data stays valid according to all database rules and constraints before and after execution.
+- **Isolation**: Concurrent transactions execute independently without interfering with each other.
+- **Durability**: Once a transaction is committed, its changes persist permanently even during a system crash.
+
+## Transaction Syntax
+\`\`\`sql
+BEGIN TRANSACTION;
+
+UPDATE accounts SET balance = balance - 200 WHERE account_id = 101;
+UPDATE accounts SET balance = balance + 200 WHERE account_id = 202;
+
+COMMIT;
+\`\`\`
+      `.trim(),
+      quiz: [
+        {
+          question: "Which ACID property guarantees that all operations in a transaction either complete entirely or roll back completely?",
+          options: ["Atomicity", "Consistency", "Isolation", "Durability"],
+          answer: "Atomicity",
+        },
+      ],
+    },
+  ],
+
+  "dsa": [
+    {
+      moduleId: "dsa",
+      slug: "arrays-linked-lists",
+      title: "Arrays & Linked Lists",
+      guide: `
+# Data Structures: Arrays & Linked Lists
+
+## Arrays
+An Array stores elements in contiguous memory locations. Because memory is sequential, elements can be accessed in constant time O(1) using their index.
+
+- **Access**: O(1)
+- **Search**: O(n)
+- **Insertion / Deletion**: O(n) (requires shifting elements)
+
+## Linked Lists
+A Linked List consists of node objects scattered in memory, where each node contains data and a reference (\`next\` pointer) to the next node.
+
+\`\`\`cpp
+struct Node {
+    int data;
+    Node* next;
+    Node(int val) : data(val), next(nullptr) {}
+};
+\`\`\`
+
+- **Access**: O(n) (must traverse from head)
+- **Insertion at Head**: O(1)
+- **Deletion at Head**: O(1)
+      `.trim(),
+      quiz: [
+        {
+          question: "What is the time complexity of accessing an element by index in a contiguous array?",
+          options: ["O(1)", "O(log n)", "O(n)", "O(n^2)"],
+          answer: "O(1)",
+        },
+      ],
+    },
+    {
+      moduleId: "dsa",
+      slug: "stacks-queues-trees",
+      title: "Stacks, Queues & Trees",
+      guide: `
+# Stacks, Queues & Trees
+
+## Stacks & Queues
+- **Stack (LIFO)**: Last-In, First-Out behavior. Operations: \`push()\`, \`pop()\`, \`peek()\`.
+- **Queue (FIFO)**: First-In, First-Out behavior. Operations: \`enqueue()\`, \`dequeue()\`.
+
+## Binary Search Trees (BST)
+A Binary Tree is a hierarchical structure where each node has at most two children (\`left\` and \`right\`). In a Binary Search Tree (BST):
+- Left child values are strictly smaller than the parent node.
+- Right child values are strictly larger than the parent node.
+
+\`\`\`cpp
+struct TreeNode {
+    int val;
+    TreeNode* left;
+    TreeNode* right;
+    TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
+};
+\`\`\`
+
+## Tree Traversals
+- **In-order (Left, Root, Right)**: Visits nodes in ascending sorted order.
+- **Pre-order (Root, Left, Right)**: Useful for cloning or serializing trees.
+- **Post-order (Left, Right, Root)**: Useful for deleting or evaluating expression trees.
+      `.trim(),
+      quiz: [
+        {
+          question: "Which data structure operates on a Last-In, First-Out (LIFO) principle?",
+          options: ["Queue", "Stack", "Binary Search Tree", "Linked List"],
+          answer: "Stack",
+        },
+      ],
+    },
+    {
+      moduleId: "dsa",
+      slug: "sorting-searching-big-o",
+      title: "Sorting, Searching & Big-O Notation",
+      guide: `
+# Sorting, Searching & Big-O Notation
+
+## Big-O Complexity Hierarchy
+Big-O notation describes the upper bound performance of an algorithm as input size n grows.
+
+1. **O(1)**: Constant time (e.g. Array indexing)
+2. **O(log n)**: Logarithmic time (e.g. Binary Search)
+3. **O(n)**: Linear time (e.g. Iterating a list)
+4. **O(n log n)**: Linearithmic time (e.g. Merge Sort, Quick Sort)
+5. **O(n^2)**: Quadratic time (e.g. Bubble Sort, Insertion Sort)
+
+## Searching Algorithms
+- **Linear Search**: O(n) time on unsorted data.
+- **Binary Search**: O(log n) time on sorted arrays by repeatedly halving the search range.
+
+\`\`\`cpp
+int binarySearch(const std::vector<int>& arr, int target) {
+    int low = 0, high = arr.size() - 1;
+    while (low <= high) {
+        int mid = low + (high - low) / 2;
+        if (arr[mid] == target) return mid;
+        if (arr[mid] < target) low = mid + 1;
+        else high = mid - 1;
+    }
+    return -1;
+}
+\`\`\`
+      `.trim(),
+      quiz: [
+        {
+          question: "What is the average time complexity of Merge Sort?",
+          options: ["O(n)", "O(n log n)", "O(n^2)", "O(log n)"],
+          answer: "O(n log n)",
+        },
+      ],
+    },
+  ],
+
 }

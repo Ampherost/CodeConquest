@@ -3,8 +3,10 @@ import Image from 'next/image';
 interface ModuleCardProps {
   title: string;
   level: string;
-  chapters: number;
-  quizzes: number;
+  chapters?: number | unknown[];
+  chaptersCount?: number;
+  quizzes?: number;
+  quizzesCount?: number;
   image: string;
 }
 
@@ -12,9 +14,20 @@ const ModuleCard: React.FC<ModuleCardProps> = ({
   title,
   level,
   chapters,
+  chaptersCount,
   quizzes,
+  quizzesCount,
   image,
 }) => {
+  const numChapters =
+    chaptersCount ??
+    (typeof chapters === "number"
+      ? chapters
+      : Array.isArray(chapters)
+      ? chapters.length
+      : 0);
+  const numQuizzes = quizzesCount ?? quizzes ?? 0;
+
   return (
     <div className="bg-zinc-800 rounded-xl shadow-md p-4 w-[350px] h-[450px] flex flex-col justify-between">
       <div className="w-full h-90 rounded-md overflow-hidden mb-4 relative">
@@ -25,8 +38,8 @@ const ModuleCard: React.FC<ModuleCardProps> = ({
       <h3 className="font-bold text-lg mb-2">{title}</h3>
 
       <div className="flex text-xs text-zinc-400 gap-4">
-        <span>📚 {chapters} courses</span>
-        <span>🧠 {quizzes} quizzes</span>
+        <span>📚 {numChapters} courses</span>
+        <span>🧠 {numQuizzes} quizzes</span>
       </div>
     </div>
   );

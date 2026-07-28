@@ -45,26 +45,26 @@ export default async function ChapterPage({
     <div className="flex flex-col min-h-screen bg-white dark:bg-zinc-900 text-zinc-900 dark:text-zinc-100">
       <Header />
 
-      {/* Wrap the whole chapter in your Container */}
-      <div className="mx-auto flex-grow px-6 sm:px-10">
+      {/* Wrap the whole chapter in a responsive max-width container */}
+      <main className="w-full max-w-5xl sm:max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 flex-grow">
         <Container title={content.title}>
-          {/* Guide text */}
+          {/* Guide text - max-w-none allows typography to fill the container nicely */}
           <div
-            className="prose dark:prose-invert"
+            className="prose dark:prose-invert max-w-none text-zinc-800 dark:text-zinc-200 leading-relaxed text-base sm:text-lg space-y-4"
             dangerouslySetInnerHTML={{ __html: html }}
           />
 
           {/* Quiz, if any */}
           {content.quiz.length > 0 && (
-            <section className="mt-12">
-              <h2 className="text-xl font-semibold mb-4">Quiz</h2>
+            <section className="mt-12 border-t pt-8 border-zinc-200 dark:border-zinc-700/60">
+              <h3 className="text-xl sm:text-2xl font-bold mb-6 text-zinc-900 dark:text-zinc-100">Quiz</h3>
               <ul className="list-disc pl-6 space-y-4">
                 {content.quiz.map((q, i) => (
                   <li key={i}>
-                    <p className="font-semibold">{q.question}</p>
-                    <ul className="list-decimal pl-6">
+                    <p className="font-semibold text-lg text-zinc-900 dark:text-zinc-100">{q.question}</p>
+                    <ul className="list-decimal pl-6 mt-2 space-y-1">
                       {q.options.map((opt) => (
-                        <li key={opt}>{opt}</li>
+                        <li key={opt} className="text-zinc-700 dark:text-zinc-300">{opt}</li>
                       ))}
                     </ul>
                   </li>
@@ -73,7 +73,7 @@ export default async function ChapterPage({
             </section>
           )}
         </Container>
-      </div>
+      </main>
         {/* Place this at the bottom so it triggers on page load */}
       <ClientTracker
         moduleId={id}
