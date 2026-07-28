@@ -72,17 +72,25 @@ export const modules: Module[] = [
     id: "databases-sql",
     title: "Databases & SQL",
     description: "Master relational databases, SQL queries, indexing, and schema design.",
-    level: "W.I.P.",
+    level: "Intermediate",
     image: "/assets/Databases & SQL.png",
-    chapters: [],
+    chapters: [
+      { id: "intro-relational-db", title: "Relational Databases & SQL Basics" },
+      { id: "queries-joins", title: "Complex Queries & Joins" },
+      { id: "indexing-transactions", title: "Indexing & Transactions (ACID)" },
+    ],
   },
   {
     id: "dsa",
     title: "Data Structures & Algorithms",
     description: "Master core computer science algorithms, complexity analysis, and data structures.",
-    level: "W.I.P.",
+    level: "Intermediate",
     image: "/assets/Data Structures & Algorithms.png",
-    chapters: [],
+    chapters: [
+      { id: "arrays-linked-lists", title: "Arrays & Linked Lists" },
+      { id: "stacks-queues-trees", title: "Stacks, Queues & Trees" },
+      { id: "sorting-searching-big-o", title: "Sorting, Searching & Big-O Notation" },
+    ],
   },
 ]
 
