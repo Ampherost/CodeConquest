@@ -49,5 +49,15 @@ export const modules: Module[] = [
       { id: "tailwindcss-intro", title: "Tailwind CSS" }
     ],
   },
+  {
+    id: "intro-to-cpp",
+    title: "Intro to C++",
+    description: "Learn fundamental C++ concepts including syntax, memory management, pointers, and object-oriented programming.",
+    chapters: [
+      { id: "cpp-basics", title: "C++ Fundamentals & Syntax" },
+      { id: "pointers-memory", title: "Pointers & Memory Management" },
+      { id: "oop-in-cpp", title: "Object-Oriented Programming" }
+    ],
+  },
 ]
 

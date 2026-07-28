@@ -37,6 +37,14 @@ export const dashboardModules: DashboardModule[] = [
     slug: "web-development",
   },
   {
+    title: "Intro to C++",
+    level: "Beginner",
+    chapters: 3,
+    quizzes: 3,
+    image: "/assets/cpp.png",
+    slug: "intro-to-cpp",
+  },
+  {
     title: "Databases & SQL",
     level: "W.I.P.",
     chapters: 0,

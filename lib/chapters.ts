@@ -733,4 +733,132 @@ A linear, document-driven approach with well-defined stages:
   },
 ],
 
+  "intro-to-cpp": [
+    {
+      moduleId: "intro-to-cpp",
+      slug: "cpp-basics",
+      title: "C++ Fundamentals & Syntax",
+      guide: `
+# C++ Fundamentals & Syntax
+
+## Overview
+C++ is a high-performance compiled language created by Bjarne Stroustrup as an extension of the C programming language. It provides fine-grained control over system resources and memory while supporting procedural, object-oriented, and generic programming.
+
+## Hello World in C++
+\`\`\`cpp
+#include <iostream>
+
+int main() {
+    std::cout << "Hello, CodeConquest!" << std::endl;
+    return 0;
+}
+\`\`\`
+
+## Key Concepts
+- **Strong Typing**: Variables must be declared with an explicit type (e.g. \`int\`, \`double\`, \`std::string\`, \`bool\`).
+- **Compilation Pipeline**: Source Code (.cpp) → Compiler → Object File (.o) → Linker → Executable binary.
+- **Control Structures**: Standard \`if/else\`, \`switch\`, \`for\` loops, and \`while\` loops.
+- **Headers & Includes**: Declarations live in header files (\`.h\` / \`.hpp\`) or standard library includes (\`<iostream>\`, \`<vector>\`).
+      `.trim(),
+      quiz: [
+        {
+          question: "Which stream object is used for standard output in C++?",
+          options: ["std::cin", "std::cout", "std::cerr", "printf"],
+          answer: "std::cout",
+        },
+      ],
+    },
+    {
+      moduleId: "intro-to-cpp",
+      slug: "pointers-memory",
+      title: "Pointers & Memory Management",
+      guide: `
+# Pointers & Memory Management in C++
+
+## Stack vs. Heap Memory
+- **Stack**: Fast, automatically managed memory for local variables and function calls.
+- **Heap**: Dynamically allocated memory using \`new\` and freed using \`delete\`.
+
+## Pointers and References
+- **Address-Of Operator (\`&\`)**: Gets the memory address of a variable.
+- **Dereference Operator (\`*\`)**: Accesses the value stored at a pointer's memory address.
+
+\`\`\`cpp
+int val = 42;
+int* ptr = &val; // ptr stores the address of val
+
+std::cout << *ptr << std::endl; // prints 42
+\`\`\`
+
+## Dynamic Memory Allocation
+\`\`\`cpp
+int* arr = new int[5]; // Allocate array on heap
+arr[0] = 10;
+
+delete[] arr; // Always free dynamically allocated memory!
+arr = nullptr;
+\`\`\`
+
+## Modern C++ Smart Pointers
+- \`std::unique_ptr\`: Single ownership pointer automatically deleted when out of scope.
+- \`std::shared_ptr\`: Reference-counted shared ownership pointer.
+      `.trim(),
+      quiz: [
+        {
+          question: "Which operator is used to deallocate dynamic memory allocated with 'new' in C++?",
+          options: ["free", "delete", "dealloc", "remove"],
+          answer: "delete",
+        },
+      ],
+    },
+    {
+      moduleId: "intro-to-cpp",
+      slug: "oop-in-cpp",
+      title: "Object-Oriented Programming",
+      guide: `
+# Object-Oriented Programming in C++
+
+## Classes & Objects
+Classes form the foundation of OOP in C++, encapsulating data (member variables) and behaviors (member functions).
+
+\`\`\`cpp
+#include <iostream>
+#include <string>
+
+class Developer {
+private:
+    std::string name;
+    int experienceYears;
+
+public:
+    // Constructor
+    Developer(std::string devName, int yrs) : name(devName), experienceYears(yrs) {}
+
+    void code() {
+        std::cout << name << " is writing C++ code with " << experienceYears << " years experience!" << std::endl;
+    }
+};
+
+int main() {
+    Developer dev("Alex", 3);
+    dev.code();
+    return 0;
+}
+\`\`\`
+
+## Core Pillars of OOP
+1. **Encapsulation**: Using access specifiers (\`private\`, \`protected\`, \`public\`) to restrict direct access to data.
+2. **Inheritance**: Derived classes inherit members from base classes.
+3. **Polymorphism**: Override virtual functions using the \`virtual\` keyword for dynamic dispatch.
+      `.trim(),
+      quiz: [
+        {
+          question: "Which keyword enables dynamic polymorphism and method overriding in C++ base classes?",
+          options: ["override", "virtual", "dynamic", "abstract"],
+          answer: "virtual",
+        },
+      ],
+    },
+  ],
+
 }
