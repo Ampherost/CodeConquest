@@ -59,8 +59,8 @@ export default async function ChapterPage({
             <section className="mt-12 border-t pt-8 border-zinc-200 dark:border-zinc-700/60">
               <h3 className="text-xl sm:text-2xl font-bold mb-6 text-zinc-900 dark:text-zinc-100">Quiz</h3>
               <ul className="list-disc pl-6 space-y-4">
-                {content.quiz.map((q, i) => (
-                  <li key={i}>
+                {content.quiz.map((q) => (
+                  <li key={q.question}>
                     <p className="font-semibold text-lg text-zinc-900 dark:text-zinc-100">{q.question}</p>
                     <ul className="list-decimal pl-6 mt-2 space-y-1">
                       {q.options.map((opt) => (

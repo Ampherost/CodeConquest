@@ -22,9 +22,18 @@ export async function POST(req: NextRequest) {
     status: assignStatus = "pending",
   } = body as { assessment_id?: string; quiz_id?: number; status?: string };
 
-  if (!assessment_id || !quiz_id) {
+  const quizIdNum = Number(quiz_id);
+  if (!assessment_id || !quiz_id || !Number.isInteger(quizIdNum) || quizIdNum <= 0) {
     return NextResponse.json(
-      { error: "Missing assessment_id or quiz_id" },
+      { error: "Missing or invalid assessment_id or quiz_id" },
+      { status: 400 }
+    );
+  }
+
+  const VALID_STATUSES = ["pending", "in_progress", "completed"] as const;
+  if (!VALID_STATUSES.includes(assignStatus as (typeof VALID_STATUSES)[number])) {
+    return NextResponse.json(
+      { error: `Invalid status. Must be one of: ${VALID_STATUSES.join(", ")}` },
       { status: 400 }
     );
   }
@@ -45,8 +54,8 @@ export async function POST(req: NextRequest) {
   const assignResult = await assignQuizToAssessment(
     supabase,
     assessment_id,
-    Number(quiz_id),
-    String(assignStatus)
+    quizIdNum,
+    assignStatus as string
   );
   if (!assignResult.ok) {
     console.error(assignResult.error);
